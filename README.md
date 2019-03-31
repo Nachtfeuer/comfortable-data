@@ -1,6 +1,8 @@
 # comfortable-data
 Java based REST service for movies, books and similar data using jpa in its backend.
 
+[![Build Status](https://travis-ci.org/Nachtfeuer/comfortable-data.svg?branch=master)](https://travis-ci.org/Nachtfeuer/comfortable-data)
+
 ## Quickstart
 
 ```bash
