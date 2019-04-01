@@ -61,6 +61,12 @@ public class BookControllerTest {
     public void testCreateBookWithJsonResponse() throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
 
+        final var description = "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse,"
+                + " sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird,"
+                + " stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche"
+                + " Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast"
+                + " zum Verhängnis wird.";
+
         final var newBook = Book.builder()
                 .title("Der Unbesiegbare")
                 .originalTitle("Niezwyciezony i inne opowiadania")
@@ -68,6 +74,7 @@ public class BookControllerTest {
                 .author(new Author("Stanislaw Lem"))
                 .publisher(new Publisher("suhrkamp"))
                 .pages(228)
+                .description(description)
                 .build();
 
         final Book responseBook = requestMaker
@@ -79,6 +86,7 @@ public class BookControllerTest {
         assertThat(responseBook.getPages(), equalTo(228));
         assertThat(responseBook.getAuthors().get(0).getFullName(), equalTo("Stanislaw Lem"));
         assertThat(responseBook.getPublisher().getFullName(), equalTo("suhrkamp"));
+        assertThat(responseBook.getDescription(), equalTo(description));
 
         final var books = requestMaker.getListOfBooks(MediaType.APPLICATION_JSON);
         assertThat(books.stream()

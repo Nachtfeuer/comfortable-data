@@ -64,4 +64,6 @@ public class Book implements Serializable {
     private List<Author> authors;
     /** number of pages in the book. */
     private int pages;
+    /** description you usually see on the back side of the book. */
+    private String description;
 }
