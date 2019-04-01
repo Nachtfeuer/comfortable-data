@@ -5,3 +5,6 @@ jdk:
 
 script:
     - ./mvnw -B clean package verify
+
+after_success:
+    - ./mvnw -B coveralls:report
