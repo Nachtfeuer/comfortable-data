@@ -4,4 +4,4 @@ jdk:
     - openjdk11
 
 script:
-    - ./mvnw -B clean package
+    - ./mvnw -B clean package verify
