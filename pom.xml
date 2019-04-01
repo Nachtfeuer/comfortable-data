@@ -100,7 +100,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven.checkstyle.plugin}</version>
                 <configuration>
-                    <configLocation>${basedir}\checkstyle.xml</configLocation>
+                    <configLocation>${basedir}/checkstyle.xml</configLocation>
                 </configuration>
                 <executions>
                     <execution>
