@@ -25,9 +25,9 @@ package comfortable.data.controller;
 
 import comfortable.data.database.Database;
 import comfortable.data.model.Book;
+import comfortable.data.model.CustomMediaType;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,8 +52,8 @@ public class BookController {
      * @param book book to create or update in database.
      * @return persistent book
      */
-    @PostMapping(value = "/books", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Book createOrUpdateBook(@RequestBody final Book book) {
         return database.persist(book);
     }
@@ -63,8 +63,8 @@ public class BookController {
      *
      * @return provide list of books.
      */
-    @GetMapping(value = "/books", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Book> getListOfBooks() {
         return database.queryBooks();
     }

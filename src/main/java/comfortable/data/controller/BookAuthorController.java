@@ -25,9 +25,9 @@ package comfortable.data.controller;
 
 import comfortable.data.database.Database;
 import comfortable.data.model.Author;
+import comfortable.data.model.CustomMediaType;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,8 +52,8 @@ public class BookAuthorController {
      * @param author book author model data.
      * @return created or updated author.
      */
-    @PostMapping(value = "/book/authors", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Author createOrUpdateAuthor(@RequestBody Author author) {
         return database.persist(author);
     }
@@ -63,8 +63,8 @@ public class BookAuthorController {
      *
      * @return provide list of authors.
      */
-    @GetMapping(value = "/book/authors", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Author> getListOfAuthors() {
         return database.queryAuthors();
     }

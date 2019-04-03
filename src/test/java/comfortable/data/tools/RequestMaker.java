@@ -26,8 +26,10 @@ package comfortable.data.tools;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
+import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import org.springframework.http.MediaType;
@@ -62,8 +64,12 @@ public class RequestMaker {
                 .andReturn().getResponse().getContentAsString();
 
         List<Author> authors;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+        if (expectedReponseType == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
+            authors = mapper.readValue(content, new TypeReference<List<Author>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
             authors = mapper.readValue(content, new TypeReference<List<Author>>() {
             });
         } else {
@@ -87,17 +93,21 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Publisher> authors;
+        List<Publisher> publishers;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
-            authors = mapper.readValue(content, new TypeReference<List<Publisher>>() {
+            publishers = mapper.readValue(content, new TypeReference<List<Publisher>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
+            publishers = mapper.readValue(content, new TypeReference<List<Publisher>>() {
             });
         } else {
             final var xmlMapper = new XmlMapper();
-            authors = xmlMapper.readValue(content, new TypeReference<List<Publisher>>() {
+            publishers = xmlMapper.readValue(content, new TypeReference<List<Publisher>>() {
             });
         }
-        return authors;
+        return publishers;
     }
 
     /**
@@ -116,6 +126,10 @@ public class RequestMaker {
         List<Book> books;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
+            books = mapper.readValue(content, new TypeReference<List<Book>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
             books = mapper.readValue(content, new TypeReference<List<Book>>() {
             });
         } else {
@@ -149,8 +163,11 @@ public class RequestMaker {
 
         E responseEntity;
 
-        if (expectedResponseType == MediaType.APPLICATION_JSON) {
+        if (expectedResponseType == CustomMediaType.APPLICATION_JSON) {
             responseEntity = mapper.readValue(content, responseClass);
+        } else if (expectedResponseType == CustomMediaType.APPLICATION_YAML) {
+            final var yamlMapper = new ObjectMapper(new YAMLFactory());
+            responseEntity = yamlMapper.readValue(content, responseClass);
         } else {
             final var xmlMapper = new XmlMapper();
             responseEntity = xmlMapper.readValue(content, responseClass);

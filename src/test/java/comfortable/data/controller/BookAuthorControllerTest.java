@@ -24,6 +24,7 @@
 package comfortable.data.controller;
 
 import comfortable.data.model.Author;
+import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -48,13 +49,19 @@ import org.springframework.test.web.servlet.MockMvc;
 public class BookAuthorControllerTest {
 
     /**
-     * test author
+     * test author.
      */
     private static final String BOOK_TITLE_1 = "Agatha Christie";
+
     /**
-     * another test author
+     * another test author.
      */
     private static final String BOOK_TITLE_2 = "Rex Stout";
+
+    /**
+     * yet another test author.
+     */
+    private static final String BOOK_TITLE_3 = "Stanislaw Lem";
 
     @Autowired
     private MockMvc mvc;
@@ -66,17 +73,7 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testCreateAuthorWithJsonResponse() throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
-        final Author newAuthor = new Author(BOOK_TITLE_2);
-        final Author responseAuthor = requestMaker
-                .createOrUpdate("/book/authors", newAuthor, MediaType.APPLICATION_JSON);
-
-        assertThat(responseAuthor.getFullName(), equalTo(BOOK_TITLE_2));
-
-        final var authors = requestMaker.getListOfAuthors(MediaType.APPLICATION_JSON);
-        assertThat(authors.stream()
-                .filter(author -> author.getFullName().equals(BOOK_TITLE_2))
-                .count(), equalTo(1L));
+        runTest(BOOK_TITLE_1, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
@@ -86,16 +83,39 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testCreateAuthorWithXmlResponse() throws Exception {
+        runTest(BOOK_TITLE_2, CustomMediaType.APPLICATION_XML);
+    }
+
+    /**
+     * Using /authors/create REST to create a new author and to receive the id as XML response.
+     *
+     * @throws Exception (should never happen)
+     */
+    @Test
+    public void testCreateAuthorWithYamlResponse() throws Exception {
+        runTest(BOOK_TITLE_3, CustomMediaType.APPLICATION_YAML);
+    }
+
+    /**
+     * Performing create or update request and a request to retrieve the list. Finally the list
+     * should contain the created (or updated) record once only.
+     *
+     * @param fullName full name of author
+     * @param expectedMediaType expected response type (JSON, XML or YAML).
+     * @throws Exception if coonversion or a request has failed.
+     */
+    private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
-        final Author newAuthor = new Author(BOOK_TITLE_1);
+        final Author newAuthor = new Author(fullName);
         final Author responseAuthor = requestMaker
-                .createOrUpdate("/book/authors", newAuthor, MediaType.APPLICATION_XML);
+                .createOrUpdate("/book/authors", newAuthor, expectedMediaType);
 
-        assertThat(responseAuthor.getFullName(), equalTo(BOOK_TITLE_1));
+        assertThat(responseAuthor.getFullName(), equalTo(fullName));
 
-        final var authors = requestMaker.getListOfAuthors(MediaType.APPLICATION_XML);
+        final var authors = requestMaker.getListOfAuthors(expectedMediaType);
         assertThat(authors.stream()
-                .filter(author -> author.getFullName().equals(BOOK_TITLE_1))
+                .filter(author -> author.getFullName().equals(fullName))
                 .count(), equalTo(1L));
+
     }
 }

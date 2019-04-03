@@ -16,6 +16,7 @@
         <hamcrest.all.version>1.3</hamcrest.all.version>
         <lombok.version>1.18.6</lombok.version>
         <jackson.dataformat.xml.version>2.9.8</jackson.dataformat.xml.version>
+        <jackson.dataformat.yaml.version>2.9.8</jackson.dataformat.yaml.version>
         <objectdb.version>2.6.3</objectdb.version>
         <javax.persistence.version>2.1.0</javax.persistence.version>
         <javax.transaction.api.version>1.3</javax.transaction.api.version>
@@ -67,6 +68,12 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>${jackson.dataformat.xml.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.dataformat.yaml.version}</version>
         </dependency>
         
         <dependency>

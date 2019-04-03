@@ -24,10 +24,10 @@
 package comfortable.data.controller;
 
 import comfortable.data.database.Database;
+import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,8 +52,8 @@ public class BookPublisherController {
      * @param publisher book publisher model data.
      * @return created or updated publisher.
      */
-    @PostMapping(value = "/book/publishers", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value = "/book/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Publisher createOrUpdatePublisher(@RequestBody Publisher publisher) {
         return database.persist(publisher);
     }
@@ -63,8 +63,8 @@ public class BookPublisherController {
      *
      * @return provide list of publishers.
      */
-    @GetMapping(value = "/book/publishers", produces = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/book/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Publisher> getListOfPublishers() {
         return database.queryPublishers();
     }

@@ -25,6 +25,7 @@ package comfortable.data.controller;
 
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
+import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -53,21 +54,64 @@ public class BookControllerTest {
     private MockMvc mvc;
 
     /**
-     * Using /authors/create REST to create a new author and to receive the id as JSON response.
+     * Using /books REST to create a new author and to receive the id as JSON response.
      *
      * @throws Exception (should never happen)
      */
     @Test
     public void testCreateBookWithJsonResponse() throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
+        runTest(createBook(), CustomMediaType.APPLICATION_JSON);
+    }
 
+    /**
+     * Using /books REST to create a new author and to receive the id as XML response.
+     *
+     * @throws Exception (should never happen)
+     */
+    @Test
+    public void testCreateBookWithXmlResponse() throws Exception {
+        runTest(createBook(), CustomMediaType.APPLICATION_XML);
+    }
+
+    /**
+     * Using /books REST to create a new author and to receive the id as YAML response.
+     *
+     * @throws Exception (should never happen)
+     */
+    @Test
+    public void testCreateBookWithYamlResponse() throws Exception {
+        runTest(createBook(), CustomMediaType.APPLICATION_YAML);
+    }
+
+    /**
+     * Performing create or update request and a request to retrieve the list. Finally the list
+     * should contain the created (or updated) record once only.
+     * 
+     * @param theBook the book to create or update in database
+     * @param expectedMediaType the expected response type (XML, JSON or YAML).
+     * @throws Exception when conversion has failed or one request
+     */
+    private void runTest(final Book theBook, final MediaType expectedMediaType) throws Exception {
+        final var requestMaker = new RequestMaker(this.mvc);
+        final Book responseBook = requestMaker
+                .createOrUpdate("/books", theBook, expectedMediaType);
+
+        assertThat(responseBook, equalTo(theBook));
+
+        final var books = requestMaker.getListOfBooks(expectedMediaType);
+        assertThat(books.stream()
+                .filter(book -> book.getTitle().equals(theBook.getTitle()))
+                .count(), equalTo(1L));
+    }
+
+    private Book createBook() {
         final var description = "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse,"
                 + " sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird,"
                 + " stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche"
                 + " Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast"
                 + " zum Verhängnis wird.";
 
-        final var newBook = Book.builder()
+        return Book.builder()
                 .title("Der Unbesiegbare")
                 .originalTitle("Niezwyciezony i inne opowiadania")
                 .isbn("3-518-38959-9")
@@ -76,21 +120,5 @@ public class BookControllerTest {
                 .pages(228)
                 .description(description)
                 .build();
-
-        final Book responseBook = requestMaker
-                .createOrUpdate("/books", newBook, MediaType.APPLICATION_JSON);
-
-        assertThat(responseBook.getTitle(), equalTo("Der Unbesiegbare"));
-        assertThat(responseBook.getOriginalTitle(), equalTo("Niezwyciezony i inne opowiadania"));
-        assertThat(responseBook.getIsbn(), equalTo("3-518-38959-9"));
-        assertThat(responseBook.getPages(), equalTo(228));
-        assertThat(responseBook.getAuthors().get(0).getFullName(), equalTo("Stanislaw Lem"));
-        assertThat(responseBook.getPublisher().getFullName(), equalTo("suhrkamp"));
-        assertThat(responseBook.getDescription(), equalTo(description));
-
-        final var books = requestMaker.getListOfBooks(MediaType.APPLICATION_JSON);
-        assertThat(books.stream()
-                .filter(book -> book.getTitle().equals("Der Unbesiegbare"))
-                .count(), equalTo(1L));
     }
 }
