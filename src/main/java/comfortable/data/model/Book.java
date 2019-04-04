@@ -49,11 +49,11 @@ public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** title of the book in your language. */
-    @Id
     private String title;
     /** title of the book in the original language. */
     private String originalTitle;
     /** book ISBN. */
+    @Id
     private String isbn;
     /** the book publisher. */
     @ManyToOne(cascade = CascadeType.MERGE)

@@ -43,9 +43,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Helpers fpr running requests in the tests.
  */
 public class RequestMaker {
-    /** mocked web layer */
+
+    /**
+     * mocked web layer
+     */
     private final MockMvc mvc;
 
+    /**
+     * Initializes the request make with the mvc.
+     *
+     * @param mvc the web layer.
+     */
     public RequestMaker(final MockMvc mvc) {
         this.mvc = mvc;
     }
@@ -53,22 +61,23 @@ public class RequestMaker {
     /**
      * Get the current list of authors requesting either in JSON or in XML.
      *
-     * @param expectedReponseType XML or JSON
+     * @param expectedResponseType XML or JSON
      * @return list of authors (empty list of nothing has been found).
      * @throws Exception (should never happen)
      */
-    public List<Author> getListOfAuthors(final MediaType expectedReponseType) throws Exception {
+    @SuppressWarnings("unchecked")
+    public List<Author> getListOfAuthors(final MediaType expectedResponseType) throws Exception {
         final String content = this.mvc.perform(get("/book/authors")
-                .accept(expectedReponseType))
+                .accept(expectedResponseType))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         List<Author> authors;
-        if (expectedReponseType == CustomMediaType.APPLICATION_JSON) {
+        if (expectedResponseType == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             authors = mapper.readValue(content, new TypeReference<List<Author>>() {
             });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+        } else if (expectedResponseType == CustomMediaType.APPLICATION_YAML) {
             final var mapper = new ObjectMapper(new YAMLFactory());
             authors = mapper.readValue(content, new TypeReference<List<Author>>() {
             });
@@ -159,19 +168,7 @@ public class RequestMaker {
                 .andReturn().getResponse().getContentAsString();
 
         @SuppressWarnings("unchecked")
-        final Class<E> responseClass = (Class<E>) entity.getClass();
-
-        E responseEntity;
-
-        if (expectedResponseType == CustomMediaType.APPLICATION_JSON) {
-            responseEntity = mapper.readValue(content, responseClass);
-        } else if (expectedResponseType == CustomMediaType.APPLICATION_YAML) {
-            final var yamlMapper = new ObjectMapper(new YAMLFactory());
-            responseEntity = yamlMapper.readValue(content, responseClass);
-        } else {
-            final var xmlMapper = new XmlMapper();
-            responseEntity = xmlMapper.readValue(content, responseClass);
-        }
-        return responseEntity;
+        final var converter = new ContentConverter<E>((Class<E>) entity.getClass(), expectedResponseType);
+        return converter.fromString(content);
     }
 }
