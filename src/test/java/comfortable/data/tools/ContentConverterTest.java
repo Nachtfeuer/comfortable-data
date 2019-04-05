@@ -136,6 +136,7 @@ public class ContentConverterTest {
         assertThat(book.getIsbn(), equalTo("3-518-38959-9"));
         assertThat(book.getDescription(), containsString("ein Raumkreuzer der schweren Klasse"));
         assertThat(book.getTags().get(0).getName(), equalTo("science-fiction"));
+        assertThat(book.getRating(), equalTo("sehr gut"));
     }
 
     /**

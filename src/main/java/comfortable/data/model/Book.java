@@ -80,4 +80,7 @@ public class Book implements Serializable {
     @OneToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Tag> tags;
+
+    /** Personal rating of the book. */
+    private String rating;
 }
