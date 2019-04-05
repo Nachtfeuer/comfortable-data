@@ -61,7 +61,7 @@ public class BookControllerTest {
      */
     @Test
     public void testCreateBookWithJsonResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_JSON);
+        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
@@ -71,7 +71,7 @@ public class BookControllerTest {
      */
     @Test
     public void testCreateBookWithXmlResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_XML);
+        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_XML);
     }
 
     /**
@@ -81,21 +81,35 @@ public class BookControllerTest {
      */
     @Test
     public void testCreateBookWithYamlResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_YAML);
+        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_YAML);
+    }
+
+    /**
+     * Using /books REST to create a new author sending it in YAML format and to receive the id as
+     * JSON response.
+     *
+     * @throws Exception (should never happen)
+     */
+    @Test
+    public void testCreateBookWithYamlRequestAndJsonResponse() throws Exception {
+        runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
-     * 
+     *
      * @param theBook the book to create or update in database
+     * @param contentType the type how to send book data to the server.
      * @param expectedMediaType the expected response type (XML, JSON or YAML).
      * @throws Exception when conversion has failed or one request
      */
-    private void runTest(final Book theBook, final MediaType expectedMediaType) throws Exception {
+    private void runTest(final Book theBook,
+            final MediaType contentType,
+            final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
         final Book responseBook = requestMaker
-                .createOrUpdate("/books", theBook, expectedMediaType);
+                .createOrUpdate("/books", theBook, contentType, expectedMediaType);
 
         assertThat(responseBook, equalTo(theBook));
 

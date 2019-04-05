@@ -108,7 +108,7 @@ public class BookAuthorControllerTest {
         final var requestMaker = new RequestMaker(this.mvc);
         final Author newAuthor = new Author(fullName);
         final Author responseAuthor = requestMaker
-                .createOrUpdate("/book/authors", newAuthor, expectedMediaType);
+                .createOrUpdate("/book/authors", newAuthor, CustomMediaType.APPLICATION_JSON, expectedMediaType);
 
         assertThat(responseAuthor.getFullName(), equalTo(fullName));
 

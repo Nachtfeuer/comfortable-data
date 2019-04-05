@@ -108,7 +108,8 @@ public class BookPublisherControllerTest {
         final var requestMaker = new RequestMaker(this.mvc);
         final Publisher newPublisher = new Publisher(fullName);
         final Publisher responsePublisher = requestMaker
-                .createOrUpdate("/book/publishers", newPublisher, expectedMediaType);
+                .createOrUpdate("/book/publishers", newPublisher,
+                        CustomMediaType.APPLICATION_JSON, expectedMediaType);
 
         assertThat(responsePublisher.getFullName(), equalTo(fullName));
 

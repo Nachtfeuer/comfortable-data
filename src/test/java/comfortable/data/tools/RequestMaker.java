@@ -155,20 +155,24 @@ public class RequestMaker {
      * @param <E> the type like book or author
      * @param path the REST path
      * @param entity the entity to create or update in the database.
+     * @param contentType the format on how to send data to the Server.
      * @param expectedResponseType XML or JSON
      * @return persistent entity.
      * @throws Exception when serialization/deserialization or the request has failed.
      */
-    public <E> E createOrUpdate(final String path, final E entity, final MediaType expectedResponseType) throws Exception {
-        final ObjectMapper mapper = new ObjectMapper();
+    public <E> E createOrUpdate(final String path, final E entity,
+            final MediaType contentType,
+            final MediaType expectedResponseType) throws Exception {
+        @SuppressWarnings("unchecked")
+        final var converter = new ContentConverter<>((Class<E>) entity.getClass(),
+                expectedResponseType, contentType);
+
         final String content = this.mvc.perform(post(path)
                 .accept(expectedResponseType)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(entity))).andExpect(status().isOk())
+                .contentType(contentType)
+                .content(converter.toString(entity))).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        @SuppressWarnings("unchecked")
-        final var converter = new ContentConverter<E>((Class<E>) entity.getClass(), expectedResponseType);
         return converter.fromString(content);
     }
 }
