@@ -82,7 +82,8 @@ public class ContentConverterTest {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
         final var referenceBook = converter.fromString(readBook("/book.yaml"));
 
-        final var jsonConverter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_JSON);
+        final var jsonConverter = new ContentConverter<>(Book.class, 
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
         final var book = jsonConverter.fromString(jsonConverter.toString(referenceBook));
         validateBook(book);
     }
@@ -97,7 +98,8 @@ public class ContentConverterTest {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
         final var referenceBook = converter.fromString(readBook("/book.yaml"));
 
-        final var xmlConverter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_XML);
+        final var xmlConverter = new ContentConverter<>(Book.class,
+                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
         final var book = xmlConverter.fromString(xmlConverter.toString(referenceBook));
         validateBook(book);
     }
@@ -112,7 +114,8 @@ public class ContentConverterTest {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_JSON);
         final var referenceBook = converter.fromString(readBook("/book.json"));
 
-        final var yamlConverter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
+        final var yamlConverter = new ContentConverter<>(Book.class,
+                CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
         final var book = yamlConverter.fromString(yamlConverter.toString(referenceBook));
         validateBook(book);
     }
@@ -130,6 +133,7 @@ public class ContentConverterTest {
         assertThat(book.getPages(), equalTo(226));
         assertThat(book.getIsbn(), equalTo("3-518-38959-9"));
         assertThat(book.getDescription(), containsString("ein Raumkreuzer der schweren Klasse"));
+        assertThat(book.getTags().get(0).getName(), equalTo("science-fiction"));
     }
 
     /**

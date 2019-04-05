@@ -11,5 +11,10 @@
         "fullName": "suhrkamp"
     },
     "pages": 226,
-    "description": "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse, sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird, stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast zum Verhängnis wird."
+    "description": "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse, sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird, stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast zum Verhängnis wird.",
+    "tags": [
+        {
+            "name": "science-fiction"
+        }
+    ]
 }

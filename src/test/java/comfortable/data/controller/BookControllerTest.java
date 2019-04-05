@@ -27,6 +27,7 @@ import comfortable.data.model.Author;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
+import comfortable.data.model.Tag;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -119,6 +120,7 @@ public class BookControllerTest {
                 .publisher(new Publisher("suhrkamp"))
                 .pages(228)
                 .description(description)
+                .tag(new Tag("science-fiction"))
                 .build();
     }
 }

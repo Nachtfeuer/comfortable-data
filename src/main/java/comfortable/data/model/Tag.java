@@ -24,56 +24,31 @@
 package comfortable.data.model;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Book data class.
+ * A tag can be used as category and for filtering.
  */
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Book implements Serializable {
-    /** version of class. */
+@RequiredArgsConstructor
+public class Tag implements Serializable {
+
+    /**
+     * version of class.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** title of the book in your language. */
-    private String title;
-    /** title of the book in the original language. */
-    private String originalTitle;
-
-    /** book ISBN. */
+    /**
+     * name of the tag.
+     */
     @Id
-    private String isbn;
-
-    /** the book publisher. */
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private Publisher publisher;
-
-    /** all authors of the book. */
-    @OneToMany(cascade = CascadeType.MERGE)
-    @Singular
-    private List<Author> authors;
-
-    /** number of pages in the book. */
-    private int pages;
-
-    /** description you usually see on the back side of the book. */
-    private String description;
-    
-    /** all tags of the book. */
-    @OneToMany(cascade = CascadeType.MERGE)
-    @Singular
-    private List<Tag> tags;
+    @NonNull
+    private String name;
 }
