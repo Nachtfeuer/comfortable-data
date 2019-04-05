@@ -52,6 +52,8 @@ public class Book implements Serializable {
     private String title;
     /** title of the book in the original language. */
     private String originalTitle;
+    /** a title of the series if the book refers to one. */
+    private String series;
 
     /** book ISBN. */
     @Id
@@ -60,6 +62,8 @@ public class Book implements Serializable {
     /** the book publisher. */
     @ManyToOne(cascade = CascadeType.MERGE)
     private Publisher publisher;
+    /** the year when this book has been published by given publisher. */
+    private int yearOfPublication;
 
     /** all authors of the book. */
     @OneToMany(cascade = CascadeType.MERGE)

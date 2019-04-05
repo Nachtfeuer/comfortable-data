@@ -128,8 +128,10 @@ public class ContentConverterTest {
     private void validateBook(final Book book) {
         assertThat(book.getTitle(), equalTo("Der Unbesiegbare"));
         assertThat(book.getOriginalTitle(), equalTo("Niezwyciezony i inne opowiadania"));
+        assertThat(book.getSeries(), equalTo("no series"));
         assertThat(book.getAuthors().get(0).getFullName(), equalTo("Stanislaw Lem"));
         assertThat(book.getPublisher().getFullName(), equalTo("suhrkamp"));
+        assertThat(book.getYearOfPublication(), equalTo(1995));
         assertThat(book.getPages(), equalTo(226));
         assertThat(book.getIsbn(), equalTo("3-518-38959-9"));
         assertThat(book.getDescription(), containsString("ein Raumkreuzer der schweren Klasse"));
