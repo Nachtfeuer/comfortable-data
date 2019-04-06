@@ -19,3 +19,4 @@ mvn -N io.takari:maven:0.7.5:wrapper
 ## Links
  - https://github.com/takari/maven-wrapper
  - https://www.objectdb.com/
+ - https://www.baeldung.com/running-setup-logic-on-startup-in-spring
