@@ -54,7 +54,7 @@ public class BookPublisherController {
      */
     @PostMapping(value = "/book/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
-    public Publisher createOrUpdatePublisher(@RequestBody Publisher publisher) {
+    public Publisher createOrUpdatePublisher(@RequestBody final Publisher publisher) {
         return database.persist(publisher);
     }
 

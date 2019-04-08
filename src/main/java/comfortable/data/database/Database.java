@@ -41,19 +41,19 @@ public class Database {
     /**
      * todo.
      */
-    private final EntityManagerFactory emf;
+    private final EntityManagerFactory entityManagerFactory;
 
     /**
      * todo.
      */
-    private final EntityManager em;
+    private final EntityManager entityManager;
 
     /**
      * Initialize persistence layer.
      */
     public Database() {
-        this.emf = Persistence.createEntityManagerFactory("database.odb");
-        this.em = emf.createEntityManager();
+        this.entityManagerFactory = Persistence.createEntityManagerFactory("database.odb");
+        this.entityManager = this.entityManagerFactory.createEntityManager();
     }
 
     /**
@@ -64,9 +64,9 @@ public class Database {
      * @return persistent entity.
      */
     public <E> E persist(final E entity) {
-        this.em.getTransaction().begin();
-        final var result = this.em.merge(entity);
-        this.em.getTransaction().commit();
+        this.entityManager.getTransaction().begin();
+        final var result = this.entityManager.merge(entity);
+        this.entityManager.getTransaction().commit();
         return result;
     }
 
@@ -76,7 +76,8 @@ public class Database {
      * @return list of found authors.
      */
     public List<Author> queryAuthors() {
-        final var query = this.em.createQuery("SELECT a FROM Author a", Author.class);
+        final var query = this.entityManager.createQuery(
+                "SELECT a FROM Author a", Author.class);
         return query.getResultList();
     }
 
@@ -86,7 +87,8 @@ public class Database {
      * @return list of found books.
      */
     public List<Book> queryBooks() {
-        final var query = this.em.createQuery("SELECT b FROM Book b", Book.class);
+        final var query = this.entityManager.createQuery(
+                "SELECT b FROM Book b", Book.class);
         return query.getResultList();
     }
 
@@ -96,7 +98,8 @@ public class Database {
      * @return list of found publishers.
      */
     public List<Publisher> queryPublishers() {
-        final var query = this.em.createQuery("SELECT p FROM Publisher p", Publisher.class);
+        final var query = this.entityManager.createQuery(
+                "SELECT p FROM Publisher p", Publisher.class);
         return query.getResultList();
     }
 }

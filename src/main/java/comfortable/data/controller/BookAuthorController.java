@@ -54,7 +54,7 @@ public class BookAuthorController {
      */
     @PostMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
-    public Author createOrUpdateAuthor(@RequestBody Author author) {
+    public Author createOrUpdateAuthor(@RequestBody final Author author) {
         return database.persist(author);
     }
 

@@ -49,7 +49,7 @@ public class TemplateRenderer {
      *
      * @param initTemplate loaded template.
      */
-    TemplateRenderer(final PebbleTemplate initTemplate) {
+    /* default */ TemplateRenderer(final PebbleTemplate initTemplate) {
         this.context = new HashMap<>();
         this.template = initTemplate;
     }

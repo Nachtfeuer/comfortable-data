@@ -28,6 +28,7 @@ import org.springframework.http.MediaType;
 /**
  * Own media type class to handle also media types that are not defined as constants like yaml.
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public final class CustomMediaType {
 
     /**
