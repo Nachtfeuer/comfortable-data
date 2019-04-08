@@ -28,7 +28,6 @@ import comfortable.data.model.Book;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.springframework.stereotype.Component;
 
@@ -41,19 +40,14 @@ public class Database {
     /**
      * todo.
      */
-    private final EntityManagerFactory entityManagerFactory;
-
-    /**
-     * todo.
-     */
     private final EntityManager entityManager;
 
     /**
      * Initialize persistence layer.
      */
     public Database() {
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("database.odb");
-        this.entityManager = this.entityManagerFactory.createEntityManager();
+        final var entityManagerFactory = Persistence.createEntityManagerFactory("database.odb");
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     /**

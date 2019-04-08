@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Spring REST Application startup.
  */
 @SpringBootApplication
+@SuppressWarnings("PMD.UseUtilityClass")
 public class Application {
 
     /**
