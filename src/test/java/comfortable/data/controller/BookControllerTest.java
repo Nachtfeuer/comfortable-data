@@ -29,7 +29,10 @@ import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.model.Tag;
 import comfortable.data.tools.RequestMaker;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +46,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 /**
  * Testing of {@link BookAuthorController} class.
  */
@@ -50,7 +55,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BookControllerTest {
-
+    
     @Autowired
     private MockMvc mvc;
 
@@ -96,6 +101,23 @@ public class BookControllerTest {
     }
 
     /**
+     * Testingn HTML response.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testHtmlReponse() throws Exception {
+        runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
+        final var content = this.mvc.perform(get("/books").accept(CustomMediaType.TEXT_HTML))
+                .andReturn().getResponse().getContentAsString().trim();
+        
+        assertThat(content, startsWith("<!doctype html>"));
+        assertThat(content, containsString("<td>Der Unbesiegbare</td>"));
+        assertThat(content, containsString("<td>Stanislaw Lem</td>"));
+        assertThat(content, endsWith("</html>"));
+    }
+
+    /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
@@ -110,22 +132,22 @@ public class BookControllerTest {
         final var requestMaker = new RequestMaker(this.mvc);
         final Book responseBook = requestMaker
                 .createOrUpdate("/books", theBook, contentType, expectedMediaType);
-
+        
         assertThat(responseBook, equalTo(theBook));
-
+        
         final var books = requestMaker.getListOfBooks(expectedMediaType);
         assertThat(books.stream()
                 .filter(book -> book.getTitle().equals(theBook.getTitle()))
                 .count(), equalTo(1L));
     }
-
+    
     private Book createBook() {
         final var description = "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse,"
                 + " sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird,"
                 + " stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche"
                 + " Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast"
                 + " zum Verhängnis wird.";
-
+        
         return Book.builder()
                 .title("Der Unbesiegbare")
                 .originalTitle("Niezwyciezony i inne opowiadania")

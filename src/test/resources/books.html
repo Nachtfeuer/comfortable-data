@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Books</title>        
+    </head>
+    <body>
+        <table>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.authors[0].fullName() }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

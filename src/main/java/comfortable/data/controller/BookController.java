@@ -24,9 +24,14 @@
 package comfortable.data.controller;
 
 import comfortable.data.database.Database;
+import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.tools.TemplateEngine;
+import java.io.IOException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,13 +43,20 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class BookController {
+    /** Logger for this class. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     /**
-     * dependency injection of database class responsible for storing and
-     * querying data.
+     * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
     private Database database;
+    
+    /**
+     * Template engine used to render HTML for a list of books.
+     */
+    @Autowired
+    private TemplateEngine templateEngine;
 
     /**
      * Create or update book in database.
@@ -67,5 +79,21 @@ public class BookController {
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Book> getListOfBooks() {
         return database.queryBooks();
+    }
+
+    /**
+     * Provide list of books as HTML.
+     *
+     * @return provide list of book rendered into HTML.
+     */
+    @GetMapping(value = "/books", produces = {CustomMediaType.TEXT_HTML_VALUE})
+    public String renderHtml() {
+        try {
+            final var renderer = this.templateEngine.getRenderer("/books.html");
+            return renderer.add("books", database.queryBooks()).render();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        throw new InternalServerError("Failed to render HTML for books ");
     }
 }

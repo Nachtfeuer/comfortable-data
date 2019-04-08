@@ -59,6 +59,16 @@ public final class CustomMediaType {
      * Media type for YAML.
      */
     public static final MediaType APPLICATION_YAML = MediaType.valueOf(APPLICATION_YAML_VALUE);
+    
+    /**
+     * Media type for HTML.
+     */
+    public static final MediaType TEXT_HTML = MediaType.TEXT_HTML;
+    
+    /**
+     * Value for Media type HTML.
+     */
+    public static final String TEXT_HTML_VALUE= MediaType.TEXT_HTML_VALUE;
 
     /**
      * tool should not be instantiated.
