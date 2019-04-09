@@ -44,7 +44,7 @@ public class BookAuthorController {
      * querying data.
      */
     @Autowired
-    private Database database;
+    private transient Database database;
 
     /**
      * Add (create) given author to the backend (if not present).

@@ -53,13 +53,13 @@ public class BookImporter {
      * when true the book import runs when service has started otherwise not.
      */
     @Value("${books.import.enabled:false}")
-    private boolean booksImportEnabled;
+    private transient boolean booksImportEnabled;
 
     /**
      * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
-    private Database database;
+    private transient Database database;
 
     /**
      * Automatically imports books from a path when the service has been started.

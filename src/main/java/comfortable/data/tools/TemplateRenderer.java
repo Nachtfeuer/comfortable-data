@@ -37,12 +37,12 @@ public class TemplateRenderer {
     /**
      * context data to be used in the template by names.
      */
-    private final Map<String, Object> context;
+    private final transient Map<String, Object> context;
 
     /**
      * the loaded template.
      */
-    private final PebbleTemplate template;
+    private final transient PebbleTemplate template;
 
     /**
      * Initializing render with loaded template.

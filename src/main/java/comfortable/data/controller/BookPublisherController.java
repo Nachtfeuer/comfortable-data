@@ -44,7 +44,7 @@ public class BookPublisherController {
      * querying data.
      */
     @Autowired
-    private Database database;
+    private transient Database database;
 
     /**
      * Add (create) given publisher to the backend (if not present).

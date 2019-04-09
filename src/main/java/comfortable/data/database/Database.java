@@ -40,7 +40,7 @@ public class Database {
     /**
      * todo.
      */
-    private final EntityManager entityManager;
+    private final transient EntityManager entityManager;
 
     /**
      * Initialize persistence layer.

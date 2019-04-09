@@ -37,22 +37,23 @@ import org.springframework.http.MediaType;
  *
  * @param <E> the type to use for the serialization and deserialization.
  */
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class ContentConverter<E> {
 
     /**
      * the class required for deserialization.
      */
-    private final Class<E> theClass;
+    private final transient Class<E> theClass;
 
     /**
      * required by {@link ContentConverter#fromString(java.lang.String)}.
      */
-    private final MediaType source;
+    private final transient MediaType source;
 
     /**
      * required by {@link ContentConverter#toString(java.lang.Object)}.
      */
-    private final MediaType destination;
+    private final transient MediaType destination;
 
     /**
      * Initializing source format and destination format for conversion. Supported are JSON, XML and

@@ -40,7 +40,7 @@ public final class TemplateEngine {
     /**
      * Template engine from https://pebbletemplates.io/.
      */
-    private PebbleEngine engine;
+    private transient PebbleEngine engine;
     
     /**
      * Initialize engine when service has started.

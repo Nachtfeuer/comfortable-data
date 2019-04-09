@@ -50,13 +50,13 @@ public class BookController {
      * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
-    private Database database;
+    private transient Database database;
     
     /**
      * Template engine used to render HTML for a list of books.
      */
     @Autowired
-    private TemplateEngine templateEngine;
+    private transient TemplateEngine templateEngine;
 
     /**
      * Create or update book in database.
