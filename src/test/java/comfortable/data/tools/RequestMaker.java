@@ -30,6 +30,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.model.Movie;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import org.springframework.http.MediaType;
@@ -147,6 +148,36 @@ public class RequestMaker {
             });
         }
         return books;
+    }
+
+    /**
+     * Get the current list of movies requesting either in JSON or in XML.
+     *
+     * @param expectedReponseType XML or JSON
+     * @return list of movies (empty list of nothing has been found).
+     * @throws Exception (should never happen)
+     */
+    public List<Movie> getListOfMovies(final MediaType expectedReponseType) throws Exception {
+        final String content = this.mvc.perform(get("/movies")
+                .accept(expectedReponseType))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<Movie> movies;
+        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+            final var mapper = new ObjectMapper();
+            movies = mapper.readValue(content, new TypeReference<List<Movie>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
+            movies = mapper.readValue(content, new TypeReference<List<Movie>>() {
+            });
+        } else {
+            final var xmlMapper = new XmlMapper();
+            movies = xmlMapper.readValue(content, new TypeReference<List<Movie>>() {
+            });
+        }
+        return movies;
     }
 
     /**

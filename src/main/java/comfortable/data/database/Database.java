@@ -25,6 +25,7 @@ package comfortable.data.database;
 
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
+import comfortable.data.model.Movie;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -94,6 +95,17 @@ public class Database {
     public List<Publisher> queryPublishers() {
         final var query = this.entityManager.createQuery(
                 "SELECT p FROM Publisher p", Publisher.class);
+        return query.getResultList();
+    }
+
+    /**
+     * Querying the list of all movies.
+     *
+     * @return list of found movies.
+     */
+    public List<Movie> queryMovies() {
+        final var query = this.entityManager.createQuery(
+                "SELECT m FROM Movie m", Movie.class);
         return query.getResultList();
     }
 }
