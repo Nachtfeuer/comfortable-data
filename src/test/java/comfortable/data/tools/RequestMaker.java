@@ -31,6 +31,7 @@ import comfortable.data.model.Author;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Movie;
+import comfortable.data.model.Performer;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import org.springframework.http.MediaType;
@@ -118,6 +119,36 @@ public class RequestMaker {
             });
         }
         return publishers;
+    }
+
+        /**
+     * Get the current list of performers requesting either in JSON or in XML.
+     *
+     * @param expectedReponseType XML or JSON
+     * @return list of publishers (empty list of nothing has been found).
+     * @throws Exception (should never happen)
+     */
+    public List<Performer> getListOfPerformers(final MediaType expectedReponseType) throws Exception {
+        final String content = this.mvc.perform(get("/movies/performers")
+                .accept(expectedReponseType))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<Performer> performers;
+        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+            final var mapper = new ObjectMapper();
+            performers = mapper.readValue(content, new TypeReference<List<Performer>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
+            performers = mapper.readValue(content, new TypeReference<List<Performer>>() {
+            });
+        } else {
+            final var xmlMapper = new XmlMapper();
+            performers = xmlMapper.readValue(content, new TypeReference<List<Performer>>() {
+            });
+        }
+        return performers;
     }
 
     /**
