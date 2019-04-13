@@ -25,7 +25,7 @@ package comfortable.data.controller;
 
 import comfortable.data.database.Database;
 import comfortable.data.model.CustomMediaType;
-import comfortable.data.model.Performer;
+import comfortable.data.model.Director;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,38 +34,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for all supported operations on movie performers.
+ * Controller for all supported operations on movie directors.
  */
 @RestController
-public class MoviePerformerController {
+public class MovieDirectorController {
 
     /**
-     * Dependency injection of database class responsible for storing and
+     * dependency injection of database class responsible for storing and
      * querying data.
      */
     @Autowired
     private transient Database database;
 
     /**
-     * Add (create) given perfomer to the backend (if not present).
+     * Add (create) given director to the backend (if not present).
      *
-     * @param performer movie performer model data.
-     * @return created or updated performer.
+     * @param director movie director model data.
+     * @return created or updated director.
      */
-    @PostMapping(value = "/movies/performers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
-    public Performer createOrUpdatePerformer(@RequestBody final Performer performer) {
-        return database.persist(performer);
+    public Director createOrUpdateDirector(@RequestBody final Director director) {
+        return database.persist(director);
     }
 
     /**
-     * Provide list of performers.
+     * Provide list of directors.
      *
-     * @return provide list of performers.
+     * @return list of given directors.
      */
-    @GetMapping(value = "/movies/performers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
-    public List<Performer> getListOfPerformers() {
-        return database.queryPerformers();
+    public List<Director> getListOfDirectors() {
+        return database.queryDirectors();
     }
 }

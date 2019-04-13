@@ -24,7 +24,7 @@
 package comfortable.data.controller;
 
 import comfortable.data.model.CustomMediaType;
-import comfortable.data.model.Performer;
+import comfortable.data.model.Director;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -41,80 +41,80 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Testing of {@link MoviePerformerController} class.
+ * Testing of {@link MovieDirectorController} class.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MoviePerformerControllerTest {
+public class MovieDirectorControllerTest {
 
     /**
-     * test performer.
+     * test director.
      */
-    private static final String PERFORMER_1 = "John Wayne";
+    private static final String DIRECTOR_1 = "Howard Hawks";
 
     /**
-     * another test performer.
+     * another test director.
      */
-    private static final String PERFORMER_2 = "Maureen O'Hara";
+    private static final String DIRECTOR_2 = "Ridley Scott";
 
     /**
-     * yet another test performer.
+     * yet another test director.
      */
-    private static final String PERFORMER_3 = "Cary Grant";
+    private static final String DIRECTOR_3 = "James Cameron";
 
     @Autowired
     private MockMvc mvc;
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as JSON response.
+     * Using /movies/directors REST to create a new director and to receive the id as JSON response.
      *
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreatePerformerWithJsonResponse() throws Exception {
-        runTest(PERFORMER_1, CustomMediaType.APPLICATION_JSON);
+    public void testCreateDirectorWithJsonResponse() throws Exception {
+        runTest(DIRECTOR_1, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as XML response.
+     * Using /movies/directors REST to create a new director and to receive the id as XML response.
      *
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreatePerformerWithXmlResponse() throws Exception {
-        runTest(PERFORMER_2, CustomMediaType.APPLICATION_XML);
+    public void testCreateDirectorWithXmlResponse() throws Exception {
+        runTest(DIRECTOR_2, CustomMediaType.APPLICATION_XML);
     }
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as YAML response.
+     * Using /movies/directors REST to create a new director and to receive the id as YAML response.
      *
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreatePerformerWithYamlResponse() throws Exception {
-        runTest(PERFORMER_3, CustomMediaType.APPLICATION_YAML);
+    public void testCreateDirectorWithYamlResponse() throws Exception {
+        runTest(DIRECTOR_3, CustomMediaType.APPLICATION_YAML);
     }
 
     /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
-     * @param fullName full name of performer
+     * @param fullName full name of director
      * @param expectedMediaType expected response type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
     private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
-        final var  newPerformer = new Performer(fullName);
-        final var responsePerformer = requestMaker
-                .createOrUpdate("/movies/performers", newPerformer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
+        final var  newDirector = new Director(fullName);
+        final var responseDirector = requestMaker
+                .createOrUpdate("/movies/directors", newDirector, CustomMediaType.APPLICATION_JSON, expectedMediaType);
 
-        assertThat(responsePerformer.getFullName(), equalTo(fullName));
+        assertThat(responseDirector.getFullName(), equalTo(fullName));
 
-        final var performers = requestMaker.getListOfPerformers(expectedMediaType);
-        assertThat(performers.stream()
-                .filter(performer -> performer.getFullName().equals(fullName))
+        final var directors = requestMaker.getListOfDirectors(expectedMediaType);
+        assertThat(directors.stream()
+                .filter(director -> director.getFullName().equals(fullName))
                 .count(), equalTo(1L));
 
     }

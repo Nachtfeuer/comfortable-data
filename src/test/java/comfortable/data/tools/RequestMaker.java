@@ -30,6 +30,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.model.Director;
 import comfortable.data.model.Movie;
 import comfortable.data.model.Performer;
 import comfortable.data.model.Publisher;
@@ -121,7 +122,7 @@ public class RequestMaker {
         return publishers;
     }
 
-        /**
+    /**
      * Get the current list of performers requesting either in JSON or in XML.
      *
      * @param expectedReponseType XML or JSON
@@ -209,6 +210,36 @@ public class RequestMaker {
             });
         }
         return movies;
+    }
+
+    /**
+     * Get the current list of directors requesting either in JSON or in XML.
+     *
+     * @param expectedReponseType XML or JSON
+     * @return list of directors (empty list of nothing has been found).
+     * @throws Exception (should never happen)
+     */
+    public List<Director> getListOfDirectors(final MediaType expectedReponseType) throws Exception {
+        final String content = this.mvc.perform(get("/movies/directors")
+                .accept(expectedReponseType))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<Director> directors;
+        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+            final var mapper = new ObjectMapper();
+            directors = mapper.readValue(content, new TypeReference<List<Director>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
+            directors = mapper.readValue(content, new TypeReference<List<Director>>() {
+            });
+        } else {
+            final var xmlMapper = new XmlMapper();
+            directors = xmlMapper.readValue(content, new TypeReference<List<Director>>() {
+            });
+        }
+        return directors;
     }
 
     /**
