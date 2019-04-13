@@ -25,6 +25,7 @@ package comfortable.data.database;
 
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
+import comfortable.data.model.Composer;
 import comfortable.data.model.Director;
 import comfortable.data.model.Movie;
 import comfortable.data.model.Performer;
@@ -130,6 +131,17 @@ public class Database {
     public List<Director> queryDirectors() {
         final var query = this.entityManager.createQuery(
                 "SELECT d FROM Director d", Director.class);
+        return query.getResultList();
+    }
+
+    /**
+     * Querying the list of all composers.
+     *
+     * @return list of found composers.
+     */
+    public List<Composer> queryComposers() {
+        final var query = this.entityManager.createQuery(
+                "SELECT c FROM Composer c", Composer.class);
         return query.getResultList();
     }
 }

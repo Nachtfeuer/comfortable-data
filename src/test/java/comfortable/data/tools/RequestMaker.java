@@ -29,6 +29,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
+import comfortable.data.model.Composer;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Director;
 import comfortable.data.model.Movie;
@@ -240,6 +241,36 @@ public class RequestMaker {
             });
         }
         return directors;
+    }
+
+    /**
+     * Get the current list of composers requesting either in JSON or in XML.
+     *
+     * @param expectedReponseType XML or JSON
+     * @return list of composers (empty list of nothing has been found).
+     * @throws Exception (should never happen)
+     */
+    public List<Composer> getListOfComposers(final MediaType expectedReponseType) throws Exception {
+        final String content = this.mvc.perform(get("/movies/composers")
+                .accept(expectedReponseType))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<Composer> composers;
+        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+            final var mapper = new ObjectMapper();
+            composers = mapper.readValue(content, new TypeReference<List<Composer>>() {
+            });
+        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            final var mapper = new ObjectMapper(new YAMLFactory());
+            composers = mapper.readValue(content, new TypeReference<List<Composer>>() {
+            });
+        } else {
+            final var xmlMapper = new XmlMapper();
+            composers = xmlMapper.readValue(content, new TypeReference<List<Composer>>() {
+            });
+        }
+        return composers;
     }
 
     /**
