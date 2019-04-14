@@ -23,36 +23,26 @@
  */
 package comfortable.data.database;
 
-import comfortable.data.model.Author;
-import comfortable.data.model.Book;
 import comfortable.data.model.Composer;
 import comfortable.data.model.Director;
 import comfortable.data.model.Movie;
 import comfortable.data.model.Performer;
-import comfortable.data.model.Publisher;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Stores data and doess queries on database.
  */
 @Component
 public class Database {
-
     /**
-     * todo.
+     * Injecting entity manager responsible for database.
      */
-    private final transient EntityManager entityManager;
-
-    /**
-     * Initialize persistence layer.
-     */
-    public Database() {
-        final var entityManagerFactory = Persistence.createEntityManagerFactory("database.odb");
-        this.entityManager = entityManagerFactory.createEntityManager();
-    }
+    @Autowired
+    private transient EntityManager entityManager;
 
     /**
      * Create or update entity in database.
@@ -61,44 +51,9 @@ public class Database {
      * @param entity the entity to create or update in database.
      * @return persistent entity.
      */
+    @Transactional
     public <E> E persist(final E entity) {
-        this.entityManager.getTransaction().begin();
-        final var result = this.entityManager.merge(entity);
-        this.entityManager.getTransaction().commit();
-        return result;
-    }
-
-    /**
-     * Querying the list of all authors.
-     *
-     * @return list of found authors.
-     */
-    public List<Author> queryAuthors() {
-        final var query = this.entityManager.createQuery(
-                "SELECT a FROM Author a", Author.class);
-        return query.getResultList();
-    }
-
-    /**
-     * Querying the list of all books.
-     *
-     * @return list of found books.
-     */
-    public List<Book> queryBooks() {
-        final var query = this.entityManager.createQuery(
-                "SELECT b FROM Book b", Book.class);
-        return query.getResultList();
-    }
-
-    /**
-     * Querying the list of all publishers.
-     *
-     * @return list of found publishers.
-     */
-    public List<Publisher> queryPublishers() {
-        final var query = this.entityManager.createQuery(
-                "SELECT p FROM Publisher p", Publisher.class);
-        return query.getResultList();
+        return this.entityManager.merge(entity);
     }
 
     /**
@@ -106,6 +61,7 @@ public class Database {
      *
      * @return list of found movies.
      */
+    @Transactional(readOnly = true)
     public List<Movie> queryMovies() {
         final var query = this.entityManager.createQuery(
                 "SELECT m FROM Movie m", Movie.class);
@@ -117,6 +73,7 @@ public class Database {
      *
      * @return list of found performers.
      */
+    @Transactional(readOnly = true)
     public List<Performer> queryPerformers() {
         final var query = this.entityManager.createQuery(
                 "SELECT p FROM Performer p", Performer.class);
@@ -128,6 +85,7 @@ public class Database {
      *
      * @return list of found directors.
      */
+    @Transactional(readOnly = true)
     public List<Director> queryDirectors() {
         final var query = this.entityManager.createQuery(
                 "SELECT d FROM Director d", Director.class);
@@ -139,6 +97,7 @@ public class Database {
      *
      * @return list of found composers.
      */
+    @Transactional(readOnly = true)
     public List<Composer> queryComposers() {
         final var query = this.entityManager.createQuery(
                 "SELECT c FROM Composer c", Composer.class);

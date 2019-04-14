@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.BookRepository;
 import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
@@ -50,7 +50,7 @@ public class BookController {
      * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient BookRepository repository;
     
     /**
      * Template engine used to render HTML for a list of books.
@@ -67,7 +67,7 @@ public class BookController {
     @PostMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Book createOrUpdateBook(@RequestBody final Book book) {
-        return database.persist(book);
+        return repository.save(book);
     }
 
     /**
@@ -78,7 +78,7 @@ public class BookController {
     @GetMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Book> getListOfBooks() {
-        return database.queryBooks();
+        return repository.findAll();
     }
 
     /**
@@ -90,7 +90,7 @@ public class BookController {
     public String renderHtml() {
         try {
             final var renderer = this.templateEngine.getRenderer("/books.html");
-            return renderer.add("books", database.queryBooks()).render();
+            return renderer.add("books", repository.findAll()).render();
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }

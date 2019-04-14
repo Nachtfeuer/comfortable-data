@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import java.util.List;
@@ -44,7 +44,7 @@ public class BookAuthorController {
      * querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient BookAuthorRepository repository;
 
     /**
      * Add (create) given author to the backend (if not present).
@@ -55,7 +55,7 @@ public class BookAuthorController {
     @PostMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Author createOrUpdateAuthor(@RequestBody final Author author) {
-        return database.persist(author);
+        return repository.save(author);
     }
 
     /**
@@ -66,6 +66,6 @@ public class BookAuthorController {
     @GetMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Author> getListOfAuthors() {
-        return database.queryAuthors();
+        return repository.findAll();
     }
 }

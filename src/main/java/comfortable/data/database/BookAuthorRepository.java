@@ -21,26 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data;
+package comfortable.data.database;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import comfortable.data.model.Author;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Spring REST Application startup.
+ * CRUD Access to author data.
  */
-@SpringBootApplication
-@EnableJpaRepositories
-@SuppressWarnings("PMD.UseUtilityClass")
-public class Application {
+@Transactional(readOnly = true)
+public interface BookAuthorRepository extends JpaRepository<Author, String> {
+
+    @Override
+    List<Author> findAll();
 
     /**
-     * Spring application entry point.
+     * Create or update author.
      *
-     * @param args command line arguments
+     * @param author author to create or update.
+     * @return persistent author.
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+    @Modifying
+    @Transactional
+    @Override
+    Author save(final Author author);
 }

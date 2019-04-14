@@ -21,26 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data;
+package comfortable.data.configuration;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
 
 /**
- * Spring REST Application startup.
+ * Setup for objectdb.
  */
-@SpringBootApplication
-@EnableJpaRepositories
-@SuppressWarnings("PMD.UseUtilityClass")
-public class Application {
+@Configuration
+public class ObjectDbConfig {
 
     /**
-     * Spring application entry point.
+     * Create entity manager factory for objectdb.
      *
-     * @param args command line arguments
+     * @return entity manager factory for objectdb.
      */
-    public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+        return Persistence.createEntityManagerFactory("database.odb");
+    }
+
+    /**
+     * Provide transaction manager instance.
+     *
+     * @return transaction manager instance.
+     * @throws ClassNotFoundException should never happen
+     */
+    @Bean
+    public JpaTransactionManager transactionManager() throws ClassNotFoundException {
+        final var transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory());
+        return transactionManager;
     }
 }
