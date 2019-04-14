@@ -70,7 +70,7 @@ public class BookAuthorControllerTest {
     private MockMvc mvc;
 
     /**
-     * Using /authors/create REST to create a new author and to receive the id as JSON response.
+     * Using /books/authors REST to create a new author and to receive the id as JSON response.
      *
      * @throws Exception (should never happen)
      */
@@ -80,7 +80,7 @@ public class BookAuthorControllerTest {
     }
 
     /**
-     * Using /authors/create REST to create a new author and to receive the id as XML response.
+     * Using /books/authors REST to create a new author and to receive the id as XML response.
      *
      * @throws Exception (should never happen)
      */
@@ -90,7 +90,7 @@ public class BookAuthorControllerTest {
     }
 
     /**
-     * Using /authors/create REST to create a new author and to receive the id as XML response.
+     * Using /books/authors REST to create a new author and to receive the id as XML response.
      *
      * @throws Exception (should never happen)
      */

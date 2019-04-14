@@ -119,6 +119,5 @@ public class MovieComposerControllerTest {
         assertThat(composers.stream()
                 .filter(composer -> composer.getFullName().equals(fullName))
                 .count(), equalTo(1L));
-
     }
 }

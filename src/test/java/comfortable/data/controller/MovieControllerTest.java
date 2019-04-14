@@ -43,7 +43,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Testing of {@link MovieController}
+ * Testing of {@link MovieController}.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

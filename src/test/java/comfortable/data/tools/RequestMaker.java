@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RequestMaker {
 
     /**
-     * mocked web layer
+     * mocked web layer.
      */
     private final MockMvc mvc;
 
@@ -100,7 +100,8 @@ public class RequestMaker {
      * @return list of publishers (empty list of nothing has been found).
      * @throws Exception (should never happen)
      */
-    public List<Publisher> getListOfPublishers(final MediaType expectedReponseType) throws Exception {
+    public List<Publisher> getListOfPublishers(
+            final MediaType expectedReponseType) throws Exception {
         final String content = this.mvc.perform(get("/book/publishers")
                 .accept(expectedReponseType))
                 .andExpect(status().isOk())
@@ -130,7 +131,8 @@ public class RequestMaker {
      * @return list of publishers (empty list of nothing has been found).
      * @throws Exception (should never happen)
      */
-    public List<Performer> getListOfPerformers(final MediaType expectedReponseType) throws Exception {
+    public List<Performer> getListOfPerformers(
+            final MediaType expectedReponseType) throws Exception {
         final String content = this.mvc.perform(get("/movies/performers")
                 .accept(expectedReponseType))
                 .andExpect(status().isOk())
@@ -220,7 +222,8 @@ public class RequestMaker {
      * @return list of directors (empty list of nothing has been found).
      * @throws Exception (should never happen)
      */
-    public List<Director> getListOfDirectors(final MediaType expectedReponseType) throws Exception {
+    public List<Director> getListOfDirectors(
+            final MediaType expectedReponseType) throws Exception {
         final String content = this.mvc.perform(get("/movies/directors")
                 .accept(expectedReponseType))
                 .andExpect(status().isOk())
@@ -250,7 +253,8 @@ public class RequestMaker {
      * @return list of composers (empty list of nothing has been found).
      * @throws Exception (should never happen)
      */
-    public List<Composer> getListOfComposers(final MediaType expectedReponseType) throws Exception {
+    public List<Composer> getListOfComposers(
+            final MediaType expectedReponseType) throws Exception {
         final String content = this.mvc.perform(get("/movies/composers")
                 .accept(expectedReponseType))
                 .andExpect(status().isOk())

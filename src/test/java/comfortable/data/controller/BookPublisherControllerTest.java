@@ -49,17 +49,17 @@ import org.springframework.test.web.servlet.MockMvc;
 public class BookPublisherControllerTest {
 
     /**
-     * test publisher
+     * test publisher.
      */
     private static final String PUBLISHER_1 = "suhrkamp";
 
     /**
-     * another test publisher
+     * another test publisher.
      */
     private static final String PUBLISHER_2 = "dtv";
 
     /**
-     * yet another test publisher
+     * yet another test publisher.
      */
     private static final String PUBLISHER_3 = "heyne";
 
@@ -72,7 +72,7 @@ public class BookPublisherControllerTest {
     /**
      * Using /authors/create REST to create a new publisher and to receive the id as JSON response.
      *
-     * @throws Exception (should never happen)
+     * @throws Exception (should never happen).
      */
     @Test
     public void testCreatePublisherWithJsonResponse() throws Exception {
@@ -82,7 +82,7 @@ public class BookPublisherControllerTest {
     /**
      * Using /authors/create REST to create a new publisher and to receive the id as XML response.
      *
-     * @throws Exception (should never happen)
+     * @throws Exception (should never happen).
      */
     @Test
     public void testCreatePublisherWithXmlResponse() throws Exception {
@@ -92,7 +92,7 @@ public class BookPublisherControllerTest {
     /**
      * Using /authors/create REST to create a new publisher and to receive the id as YAML response.
      *
-     * @throws Exception (should never happen)
+     * @throws Exception (should never happen).
      */
     @Test
     public void testCreatePublisherWithYamlResponse() throws Exception {
@@ -107,7 +107,8 @@ public class BookPublisherControllerTest {
      * @param expectedMediaType expected response type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private void runTest(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
         final Publisher newPublisher = new Publisher(fullName);
         final Publisher responsePublisher = requestMaker
