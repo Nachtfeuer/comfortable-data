@@ -42,9 +42,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class MoviePersistenceTest {
 
+    /**
+     * Injected Database for storing data.
+     */
     @Autowired
     private Database database;
     
+    /**
+     * Testing the storing of a movie.
+     */
     @Test
     public void testPersistingMovie() {
         database.persist(this.createMovie());

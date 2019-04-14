@@ -25,7 +25,6 @@ package comfortable.data.controller;
 
 import comfortable.data.model.Composer;
 import comfortable.data.model.CustomMediaType;
-import comfortable.data.model.Director;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -64,6 +63,9 @@ public class MovieComposerControllerTest {
      */
     private static final String COMPOSER_3 = "James Horner";
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

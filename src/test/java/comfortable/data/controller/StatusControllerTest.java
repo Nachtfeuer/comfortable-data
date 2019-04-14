@@ -47,6 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class StatusControllerTest {
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

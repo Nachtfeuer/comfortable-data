@@ -63,6 +63,9 @@ public class BookPublisherControllerTest {
      */
     private static final String PUBLISHER_3 = "heyne";
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

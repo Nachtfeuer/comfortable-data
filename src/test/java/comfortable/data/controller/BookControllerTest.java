@@ -55,7 +55,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BookControllerTest {
-    
+
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 
@@ -110,7 +113,7 @@ public class BookControllerTest {
         runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
         final var content = this.mvc.perform(get("/books").accept(CustomMediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().trim();
-        
+
         assertThat(content, startsWith("<!doctype html>"));
         assertThat(content, containsString("<td>Der Unbesiegbare</td>"));
         assertThat(content, containsString("<td>Stanislaw Lem</td>"));
@@ -132,22 +135,27 @@ public class BookControllerTest {
         final var requestMaker = new RequestMaker(this.mvc);
         final Book responseBook = requestMaker
                 .createOrUpdate("/books", theBook, contentType, expectedMediaType);
-        
+
         assertThat(responseBook, equalTo(theBook));
-        
+
         final var books = requestMaker.getListOfBooks(expectedMediaType);
         assertThat(books.stream()
                 .filter(book -> book.getTitle().equals(theBook.getTitle()))
                 .count(), equalTo(1L));
     }
-    
+
+    /**
+     * Create a test book instance.
+     *
+     * @return test book instance.
+     */
     private Book createBook() {
         final var description = "\"Der Unbesiegbare\", ein Raumkreuzer der schweren Klasse,"
                 + " sucht nach einem verschollenen Schwesterschiff. Als es geffunden wird,"
                 + " stehen die Wissenschaftler vor einem Rätsel. Es gibt keine findliche"
                 + " Macht und keine Überlebenden: eine Rettungsexpedition, die allen fast"
                 + " zum Verhängnis wird.";
-        
+
         return Book.builder()
                 .title("Der Unbesiegbare")
                 .originalTitle("Niezwyciezony i inne opowiadania")

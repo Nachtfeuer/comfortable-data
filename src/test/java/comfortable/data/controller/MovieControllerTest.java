@@ -50,6 +50,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class MovieControllerTest {
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

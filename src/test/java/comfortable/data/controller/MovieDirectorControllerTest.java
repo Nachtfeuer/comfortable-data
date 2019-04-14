@@ -63,6 +63,9 @@ public class MovieDirectorControllerTest {
      */
     private static final String DIRECTOR_3 = "James Cameron";
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

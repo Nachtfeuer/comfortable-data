@@ -3,6 +3,7 @@ Java based REST service for movies, books and similar data using jpa in its back
 
 [![Build Status](https://travis-ci.org/Nachtfeuer/comfortable-data.svg?branch=master)](https://travis-ci.org/Nachtfeuer/comfortable-data)
 [![Coverage Status](https://coveralls.io/repos/github/Nachtfeuer/comfortable-data/badge.svg?branch=master)](https://coveralls.io/github/Nachtfeuer/comfortable-data?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data/badge)](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data)
 
 ## Quickstart
 

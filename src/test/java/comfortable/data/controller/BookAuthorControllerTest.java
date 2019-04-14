@@ -63,6 +63,9 @@ public class BookAuthorControllerTest {
      */
     private static final String BOOK_TITLE_3 = "Stanislaw Lem";
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 

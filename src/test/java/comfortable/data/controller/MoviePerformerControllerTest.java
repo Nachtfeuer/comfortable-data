@@ -63,6 +63,9 @@ public class MoviePerformerControllerTest {
      */
     private static final String PERFORMER_3 = "Cary Grant";
 
+    /**
+     * Test client for web layer.
+     */
     @Autowired
     private MockMvc mvc;
 
