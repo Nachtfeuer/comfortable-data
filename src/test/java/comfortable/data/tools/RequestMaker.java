@@ -56,7 +56,7 @@ public class RequestMaker {
     /**
      * Initializes the request make with the mvc.
      *
-     * @param mvc the web layer.
+     * @param initMvc the web layer.
      */
     public RequestMaker(final MockMvc initMvc) {
         this.mvc = initMvc;

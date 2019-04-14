@@ -70,7 +70,8 @@ public class MoviePerformerControllerTest {
     private MockMvc mvc;
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as JSON response.
+     * Using /movies/performers REST to create a new performer and to receive the id as JSON
+     * response.
      *
      * @throws Exception (should never happen)
      */
@@ -80,7 +81,8 @@ public class MoviePerformerControllerTest {
     }
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as XML response.
+     * Using /movies/performers REST to create a new performer and to receive the id as XML
+     * response.
      *
      * @throws Exception (should never happen)
      */
@@ -90,7 +92,8 @@ public class MoviePerformerControllerTest {
     }
 
     /**
-     * Using /movies/performers REST to create a new performer and to receive the id as YAML response.
+     * Using /movies/performers REST to create a new performer and to receive the id as YAML
+     * response.
      *
      * @throws Exception (should never happen)
      */
@@ -109,7 +112,7 @@ public class MoviePerformerControllerTest {
      */
     private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
-        final var  newPerformer = new Performer(fullName);
+        final var newPerformer = new Performer(fullName);
         final var responsePerformer = requestMaker
                 .createOrUpdate("/movies/performers", newPerformer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
 

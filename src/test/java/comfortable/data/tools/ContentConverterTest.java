@@ -37,6 +37,21 @@ import org.junit.Test;
 public class ContentConverterTest {
 
     /**
+     * Test book in JSON format.
+     */
+    private static final String BOOK_JSON = "/book.json";
+
+    /**
+     * Test book in XML format.
+     */
+    private static final String BOOK_XML = "/book.xml";
+    
+    /**
+     * Test book in YAML format.
+     */
+    private static final String BOOK_YAML = "/book.yaml";
+
+    /**
      * Testing conversion from JSON.
      *
      * @throws IOException should never happen.
@@ -44,7 +59,7 @@ public class ContentConverterTest {
     @Test
     public void testFromJsonString() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_JSON);
-        final var book = converter.fromString(readBook("/book.json"));
+        final var book = converter.fromString(readBook(BOOK_JSON));
         validateBook(book);
     }
 
@@ -56,7 +71,7 @@ public class ContentConverterTest {
     @Test
     public void testFromXmlString() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_XML);
-        final var book = converter.fromString(readBook("/book.xml"));
+        final var book = converter.fromString(readBook(BOOK_XML));
         validateBook(book);
     }
 
@@ -68,7 +83,7 @@ public class ContentConverterTest {
     @Test
     public void testFromYamlString() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
-        final var book = converter.fromString(readBook("/book.yaml"));
+        final var book = converter.fromString(readBook(BOOK_YAML));
         validateBook(book);
     }
 
@@ -80,9 +95,9 @@ public class ContentConverterTest {
     @Test
     public void testToJson() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
-        final var referenceBook = converter.fromString(readBook("/book.yaml"));
+        final var referenceBook = converter.fromString(readBook(BOOK_YAML));
 
-        final var jsonConverter = new ContentConverter<>(Book.class, 
+        final var jsonConverter = new ContentConverter<>(Book.class,
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
         final var book = jsonConverter.fromString(jsonConverter.toString(referenceBook));
         validateBook(book);
@@ -96,7 +111,7 @@ public class ContentConverterTest {
     @Test
     public void testToXml() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
-        final var referenceBook = converter.fromString(readBook("/book.yaml"));
+        final var referenceBook = converter.fromString(readBook(BOOK_YAML));
 
         final var xmlConverter = new ContentConverter<>(Book.class,
                 CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
@@ -112,7 +127,7 @@ public class ContentConverterTest {
     @Test
     public void testToYaml() throws IOException {
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_JSON);
-        final var referenceBook = converter.fromString(readBook("/book.json"));
+        final var referenceBook = converter.fromString(readBook(BOOK_JSON));
 
         final var yamlConverter = new ContentConverter<>(Book.class,
                 CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
@@ -122,7 +137,7 @@ public class ContentConverterTest {
 
     /**
      * Validating the book data.
-     * 
+     *
      * @param book the book to validate.
      */
     private void validateBook(final Book book) {
