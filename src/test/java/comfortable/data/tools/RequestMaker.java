@@ -58,8 +58,8 @@ public class RequestMaker {
      *
      * @param mvc the web layer.
      */
-    public RequestMaker(final MockMvc mvc) {
-        this.mvc = mvc;
+    public RequestMaker(final MockMvc initMvc) {
+        this.mvc = initMvc;
     }
 
     /**
@@ -76,7 +76,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Author> authors;
+        final List<Author> authors;
         if (expectedResponseType == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             authors = mapper.readValue(content, new TypeReference<List<Author>>() {
@@ -107,7 +107,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Publisher> publishers;
+        final List<Publisher> publishers;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             publishers = mapper.readValue(content, new TypeReference<List<Publisher>>() {
@@ -138,7 +138,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Performer> performers;
+        final List<Performer> performers;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             performers = mapper.readValue(content, new TypeReference<List<Performer>>() {
@@ -168,7 +168,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Book> books;
+        final List<Book> books;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             books = mapper.readValue(content, new TypeReference<List<Book>>() {
@@ -198,7 +198,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Movie> movies;
+        final List<Movie> movies;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             movies = mapper.readValue(content, new TypeReference<List<Movie>>() {
@@ -229,7 +229,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Director> directors;
+        final List<Director> directors;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             directors = mapper.readValue(content, new TypeReference<List<Director>>() {
@@ -260,7 +260,7 @@ public class RequestMaker {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<Composer> composers;
+        final List<Composer> composers;
         if (expectedReponseType == MediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             composers = mapper.readValue(content, new TypeReference<List<Composer>>() {
