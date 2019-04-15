@@ -26,26 +26,15 @@ package comfortable.data.database;
 import comfortable.data.model.Book;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * CRUD Access to author data.
  */
-@Transactional(readOnly = true)
+@Transactional
 public interface BookRepository extends JpaRepository<Book, String> {
 
+    @Transactional(readOnly = true)
     @Override
     List<Book> findAll();
-
-    /**
-     * Create or update book.
-     *
-     * @param book book to create or update.
-     * @return persistent book.
-     */
-    @Modifying
-    @Transactional
-    @Override
-    Book save(final Book book);
 }

@@ -56,7 +56,7 @@ public class BookImporter {
     private transient boolean booksImportEnabled;
 
     /**
-     * dependency injection of database class responsible for storing and querying data.
+     * Dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
     private transient Database database;

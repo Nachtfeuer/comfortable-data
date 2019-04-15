@@ -26,26 +26,15 @@ package comfortable.data.database;
 import comfortable.data.model.Publisher;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * CRUD Access to author data.
  */
-@Transactional(readOnly = true)
+@Transactional
 public interface BookPublisherRepository extends JpaRepository<Publisher, String> {
 
+    @Transactional(readOnly = true)
     @Override
     List<Publisher> findAll();
-
-    /**
-     * Create or update author.
-     *
-     * @param publisher publisher to create or update.
-     * @return persistent publisher.
-     */
-    @Modifying
-    @Transactional
-    @Override
-    Publisher save(final Publisher publisher);
 }

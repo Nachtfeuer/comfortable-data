@@ -42,14 +42,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * Testing {@link BookImporter#importBook(java.nio.file.Path).}
+ * Testing {@link BookImporter#importBook(java.nio.file.Path)}.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BookImporterTest {
 
+    /**
+     * Mocked database instance.
+     */
     @MockBean
     private Database database;
+
+    /**
+     * Injected book importer instance.
+     */
     @Autowired
     private BookImporter bookImporter;
 

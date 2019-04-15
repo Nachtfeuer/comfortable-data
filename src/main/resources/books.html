@@ -1,17 +1,79 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
-        <title>Books</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            .navbar-brand {
+                color: rgba(255, 255, 255, 1.0) !important;
+                font-size: 22px;
+            }
+
+            .series {
+                font-size: 10px;
+            }
+
+            .isbn {
+                font-size: 10px;
+            }
+
+            .tag {
+                font-size: 10px;
+                float: left;
+                margin-right: 2px;
+            }            
+        </style>
     </head>
-    
+
     <body>
-        <table>
-            {% for book in books %}
-            <tr>
-                <td>{{ book.title }}</td>
-                <td>{{ book.authors[0].fullName() }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="content">
+            <nav class="navbar navbar-light bg-dark">
+                <span class="navbar-brand mb-0 h1">Books</span>
+            </nav>
+        </div>
+
+        <div class="container">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Authors</th>
+                        <th>Publisher</th>
+                        <th>Year</th>
+                        <th>Pages</th>
+                        <th>Rating</th>
+                        <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>
+                            <span class="title" title="{{ book.description }}">{{ book.title }}</span>
+                            {% if book.series is not empty %}
+                                <br/><span class="series">{{ book.series }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for author in book.authors %}{{ author.fullName }}<br/>{% endfor %}
+                        </td>
+                        <td>
+                            <span class="publisher">{{ book.publisher.fullName }}</span>
+                            <br/><span class="isbn">{{ book.isbn }}</span>
+                        </td>
+                        <td>{{ book.yearOfPublication }}</td>
+                        <td>{{ book.pages }}</td>
+                        <td>{{ book.rating }}</td>
+                        <td>
+                            {% for tag in book.tags %}
+                                <span class="tag badge badge-dark">{{ tag.name }}</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>
