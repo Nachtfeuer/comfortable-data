@@ -29,6 +29,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -45,6 +46,7 @@ import lombok.Singular;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@IdClass(MovieId.class)
 public class Movie implements Serializable {
     /** version of class. */
     private static final long serialVersionUID = 1L;
@@ -56,8 +58,8 @@ public class Movie implements Serializable {
     /** the original title. */
     @Id
     private String originalTitle;
-    /** list of performers and their roles. */
 
+    /** list of performers and their roles. */
     @ElementCollection
     @Singular
     private List<Role> roles;

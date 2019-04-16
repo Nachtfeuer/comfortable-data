@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.ComposerRepository;
 import comfortable.data.model.Composer;
 import comfortable.data.model.CustomMediaType;
 import java.util.List;
@@ -44,7 +44,7 @@ public class MovieComposerController {
      * querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient ComposerRepository repository;
 
     /**
      * Add (create) given composer to the backend (if not present).
@@ -55,7 +55,7 @@ public class MovieComposerController {
     @PostMapping(value = "/movies/composers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Composer createOrUpdateDirector(@RequestBody final Composer composer) {
-        return database.persist(composer);
+        return this.repository.save(composer);
     }
 
     /**
@@ -66,6 +66,6 @@ public class MovieComposerController {
     @GetMapping(value = "/movies/composers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Composer> getListOfComposers() {
-        return database.queryComposers();
+        return this.repository.findAll();
     }
 }

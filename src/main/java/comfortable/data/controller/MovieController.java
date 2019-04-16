@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.MovieRepository;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Movie;
 import java.util.List;
@@ -42,7 +42,7 @@ public class MovieController {
      * Dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient MovieRepository repository;
 
     /**
      * Create or update movie in database.
@@ -53,7 +53,7 @@ public class MovieController {
     @PostMapping(value = "/movies", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Movie createOrUpdateBook(@RequestBody final Movie movie) {
-        return database.persist(movie);
+        return this.repository.save(movie);
     }
 
     /**
@@ -64,6 +64,6 @@ public class MovieController {
     @GetMapping(value = "/movies", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Movie> getListOfMovies() {
-        return database.queryMovies();
+        return this.repository.findAll();
     }
 }

@@ -23,7 +23,7 @@
  */
 package comfortable.data.importer;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.ContentConverter;
@@ -52,7 +52,7 @@ public class BookImporterTest {
      * Mocked database instance.
      */
     @MockBean
-    private Database database;
+    private BookRepository repository;
 
     /**
      * Injected book importer instance.
@@ -75,7 +75,7 @@ public class BookImporterTest {
         final var book = converter.fromString(content);
 
         bookImporter.importBook(path);
-        Mockito.verify(database).persist(book);
+        Mockito.verify(repository).save(book);
     }
 
     /**
@@ -84,6 +84,6 @@ public class BookImporterTest {
     @Test
     public void testImportBookFails() {
         bookImporter.importBook(null);
-        Mockito.verify(database, never()).persist(any(Book.class));
+        Mockito.verify(repository, never()).save(any(Book.class));
     }
 }

@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.PerformerRepository;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Performer;
 import java.util.List;
@@ -44,7 +44,7 @@ public class MoviePerformerController {
      * querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient PerformerRepository repository;
 
     /**
      * Add (create) given perfomer to the backend (if not present).
@@ -55,7 +55,7 @@ public class MoviePerformerController {
     @PostMapping(value = "/movies/performers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Performer createOrUpdatePerformer(@RequestBody final Performer performer) {
-        return database.persist(performer);
+        return this.repository.save(performer);
     }
 
     /**
@@ -66,6 +66,6 @@ public class MoviePerformerController {
     @GetMapping(value = "/movies/performers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Performer> getListOfPerformers() {
-        return database.queryPerformers();
+        return this.repository.findAll();
     }
 }

@@ -23,7 +23,7 @@
  */
 package comfortable.data.controller;
 
-import comfortable.data.database.Database;
+import comfortable.data.database.DirectorRepository;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Director;
 import java.util.List;
@@ -44,7 +44,7 @@ public class MovieDirectorController {
      * querying data.
      */
     @Autowired
-    private transient Database database;
+    private transient DirectorRepository repository;
 
     /**
      * Add (create) given director to the backend (if not present).
@@ -55,7 +55,7 @@ public class MovieDirectorController {
     @PostMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Director createOrUpdateDirector(@RequestBody final Director director) {
-        return database.persist(director);
+        return this.repository.save(director);
     }
 
     /**
@@ -66,6 +66,6 @@ public class MovieDirectorController {
     @GetMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Director> getListOfDirectors() {
-        return database.queryDirectors();
+        return this.repository.findAll();
     }
 }

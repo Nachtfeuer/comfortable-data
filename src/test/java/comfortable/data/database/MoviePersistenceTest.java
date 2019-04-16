@@ -46,14 +46,14 @@ public class MoviePersistenceTest {
      * Injected Database for storing data.
      */
     @Autowired
-    private Database database;
+    private MovieRepository repository;
     
     /**
      * Testing the storing of a movie.
      */
     @Test
     public void testPersistingMovie() {
-        database.persist(this.createMovie());
+        this.repository.save(this.createMovie());
     }
 
     /**
