@@ -25,16 +25,22 @@ package comfortable.data.database;
 
 import comfortable.data.model.Director;
 import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * CRUD Access to director data.
+ * CRUD Access to movie director data.
  */
 @Transactional
-public interface DirectorRepository extends JpaRepository<Director, String> {
-
+public interface DirectorRepository extends JpaRepository<Director, String>,
+                                            JpaSpecificationExecutor<Director> {
     @Transactional(readOnly = true)
     @Override
     List<Director> findAll();
+
+    @Transactional(readOnly = true)
+    @Override
+    List<Director> findAll(final Specification<Director> spec);
 }

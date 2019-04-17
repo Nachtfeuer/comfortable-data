@@ -27,7 +27,10 @@ import comfortable.data.database.DirectorRepository;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Director;
 import java.util.List;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,13 +62,28 @@ public class MovieDirectorController {
     }
 
     /**
-     * Provide list of directors.
+     * Provide list of all directors.
      *
      * @return list of given directors.
      */
     @GetMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
-    public List<Director> getListOfDirectors() {
+    public List<Director> getListOfAllDirectors() {
         return this.repository.findAll();
+    }
+
+    /**
+     * Provide list of directors by given filter.
+     *
+     * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
+     * @return list of given directors.
+     */
+    @GetMapping(value = "/movies/directors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
+        params = {"fullName"})
+    public List<Director> getListOfDirectorsBySpec(
+            @Spec(path = "fullName", spec = LikeIgnoreCase.class)
+            final Specification<Director> spec) {
+        return this.repository.findAll(spec);
     }
 }
