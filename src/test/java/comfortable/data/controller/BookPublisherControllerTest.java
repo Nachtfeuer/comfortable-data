@@ -23,9 +23,12 @@
  */
 package comfortable.data.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.RequestMaker;
+import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import org.junit.Test;
@@ -39,6 +42,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * Testing of {@link BookPublisherController} class.
@@ -100,6 +105,28 @@ public class BookPublisherControllerTest {
     }
 
     /**
+     * Querying with ignore case for one publisher.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testQueryOnePublisherByFilterWithIgnoreCase() throws Exception {
+        createPublisher(PUBLISHER_1, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_2, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_3, CustomMediaType.APPLICATION_JSON);
+
+        final var mapper = new ObjectMapper();
+        final var content = this.mvc.perform(
+                get("/books/publishers?fullName=suhr").accept(CustomMediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        final List<Publisher> publishers = mapper.readValue(content,
+                new TypeReference<List<Publisher>>() {
+        });
+        assertThat(publishers.size(), equalTo(1));
+        assertThat(publishers.get(0).getFullName(), equalTo(PUBLISHER_1));
+    }
+
+    /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
@@ -109,18 +136,28 @@ public class BookPublisherControllerTest {
      */
     private void runTest(final String fullName,
             final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
-        final Publisher newPublisher = new Publisher(fullName);
-        final Publisher responsePublisher = requestMaker
-                .createOrUpdate("/books/publishers", newPublisher,
-                        CustomMediaType.APPLICATION_JSON, expectedMediaType);
-
+        final var responsePublisher = createPublisher(fullName, expectedMediaType);
         assertThat(responsePublisher.getFullName(), equalTo(fullName));
 
+        final var requestMaker = new RequestMaker(this.mvc);
         final var publishers = requestMaker.getListOfPublishers(expectedMediaType);
         assertThat(publishers.stream()
                 .filter(publisher -> publisher.getFullName().equals(fullName))
                 .count(), equalTo(1L));
+    }
 
+    /**
+     * Create or update author in database.
+     *
+     * @param fullName name of the publisher to be created or updated.
+     * @param expectedMediaType expected response type (JSON, XML or YAML).
+     * @return response publisher.
+     * @throws Exception when request or conversion has failed.
+     */
+    private Publisher createPublisher(final String fullName, final MediaType expectedMediaType) throws Exception {
+        final var requestMaker = new RequestMaker(this.mvc);
+        final Publisher newPublisher = new Publisher(fullName);
+        return requestMaker.createOrUpdate("/books/publishers",
+                newPublisher, CustomMediaType.APPLICATION_JSON, expectedMediaType);
     }
 }

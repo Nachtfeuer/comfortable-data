@@ -79,8 +79,8 @@ public class BookAuthorController {
      */
     @GetMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
-            params = {"fullName"})
-    public List<Author> getListOfAuthorsLikeName(
+        params = {"fullName"})
+    public List<Author> getListOfAuthorsBySpec(
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)
             final Specification<Author> spec) {
         return repository.findAll(spec);

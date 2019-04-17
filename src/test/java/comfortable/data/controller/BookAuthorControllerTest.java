@@ -118,11 +118,12 @@ public class BookAuthorControllerTest {
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
                 get("/books/authors?fullName=agatha").accept(CustomMediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();;
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         final List<Author> authors = mapper.readValue(content,
-                new TypeReference<List<Author>>() {});
+                new TypeReference<List<Author>>() {
+        });
         assertThat(authors.size(), equalTo(1));
-        assertThat(authors.get(0).getFullName(), equalTo("Agatha Christie"));
+        assertThat(authors.get(0).getFullName(), equalTo(BOOK_TITLE_1));
     }
 
     /**
@@ -133,7 +134,8 @@ public class BookAuthorControllerTest {
      * @param expectedMediaType expected response type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private void runTest(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var responseAuthor = createAuthor(fullName, expectedMediaType);
         assertThat(responseAuthor.getFullName(), equalTo(fullName));
 
