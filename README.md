@@ -21,3 +21,4 @@ mvn -N io.takari:maven:0.7.5:wrapper
  - https://github.com/takari/maven-wrapper
  - https://www.objectdb.com/
  - https://www.baeldung.com/running-setup-logic-on-startup-in-spring
+ - https://github.com/tkaczmarzyk/specification-arg-resolver

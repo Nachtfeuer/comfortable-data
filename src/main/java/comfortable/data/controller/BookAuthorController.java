@@ -27,7 +27,10 @@ import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import java.util.List;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookAuthorController {
 
     /**
-     * dependency injection of database class responsible for storing and
-     * querying data.
+     * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
     private transient BookAuthorRepository repository;
@@ -52,7 +54,7 @@ public class BookAuthorController {
      * @param author book author model data.
      * @return created or updated author.
      */
-    @PostMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Author createOrUpdateAuthor(@RequestBody final Author author) {
         return repository.save(author);
@@ -63,9 +65,24 @@ public class BookAuthorController {
      *
      * @return provide list of authors.
      */
-    @GetMapping(value = "/book/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Author> getListOfAuthors() {
         return repository.findAll();
+    }
+
+    /**
+     * Provide list of authors filtered by name containing search string.
+     *
+     * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
+     * @return provide list of authors.
+     */
+    @GetMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
+            params = {"fullName"})
+    public List<Author> getListOfAuthorsLikeName(
+            @Spec(path = "fullName", spec = LikeIgnoreCase.class)
+            final Specification<Author> spec) {
+        return repository.findAll(spec);
     }
 }

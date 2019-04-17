@@ -24,8 +24,10 @@
 package comfortable.data.configuration;
 
 import java.util.List;
+import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -38,5 +40,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void extendMessageConverters(final List<HttpMessageConverter<?>> converters) {
         converters.add(new YamlJackson2HttpMessageConverter());
         WebMvcConfigurer.super.extendMessageConverters(converters);
-    }    
+    }
+
+    @Override
+    public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new SpecificationArgumentResolver());
+        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
+    }
+    
+    
 }

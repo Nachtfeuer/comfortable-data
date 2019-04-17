@@ -71,7 +71,7 @@ public class RequestMaker {
      */
     @SuppressWarnings("unchecked")
     public List<Author> getListOfAuthors(final MediaType expectedResponseType) throws Exception {
-        final String content = this.mvc.perform(get("/book/authors")
+        final String content = this.mvc.perform(get("/books/authors")
                 .accept(expectedResponseType))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -102,7 +102,7 @@ public class RequestMaker {
      */
     public List<Publisher> getListOfPublishers(
             final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/book/publishers")
+        final String content = this.mvc.perform(get("/books/publishers")
                 .accept(expectedReponseType))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

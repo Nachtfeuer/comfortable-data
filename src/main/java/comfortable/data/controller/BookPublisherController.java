@@ -52,7 +52,7 @@ public class BookPublisherController {
      * @param publisher book publisher model data.
      * @return created or updated publisher.
      */
-    @PostMapping(value = "/book/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/books/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Publisher createOrUpdatePublisher(@RequestBody final Publisher publisher) {
         return repository.save(publisher);
@@ -63,7 +63,7 @@ public class BookPublisherController {
      *
      * @return provide list of publishers.
      */
-    @GetMapping(value = "/book/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/books/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Publisher> getListOfPublishers() {
         return repository.findAll();

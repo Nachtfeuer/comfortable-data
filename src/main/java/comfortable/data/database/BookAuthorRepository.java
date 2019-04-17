@@ -25,16 +25,22 @@ package comfortable.data.database;
 
 import comfortable.data.model.Author;
 import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * CRUD Access to author data.
  */
 @Transactional
-public interface BookAuthorRepository extends JpaRepository<Author, String> {
-
+public interface BookAuthorRepository extends JpaRepository<Author, String>,
+                                              JpaSpecificationExecutor<Author> {
     @Transactional(readOnly = true)
     @Override
     List<Author> findAll();
+
+    @Transactional(readOnly = true)
+    @Override
+    List<Author> findAll(final Specification<Author> spec);
 }
