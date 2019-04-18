@@ -27,7 +27,10 @@ import comfortable.data.database.ComposerRepository;
 import comfortable.data.model.Composer;
 import comfortable.data.model.CustomMediaType;
 import java.util.List;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,5 +70,20 @@ public class MovieComposerController {
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public List<Composer> getListOfComposers() {
         return this.repository.findAll();
+    }
+
+    /**
+     * Provide list of composers filtered by name containing search string.
+     *
+     * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
+     * @return list of given composers.
+     */
+    @GetMapping(value = "/movies/composers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
+        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
+        params = {"fullName"})
+    public List<Composer> getListOfComposersBySpec(
+            @Spec(path = "fullName", spec = LikeIgnoreCase.class)
+            final Specification<Composer> spec) {
+        return this.repository.findAll(spec);
     }
 }

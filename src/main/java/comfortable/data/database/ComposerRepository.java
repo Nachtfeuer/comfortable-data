@@ -25,16 +25,22 @@ package comfortable.data.database;
 
 import comfortable.data.model.Composer;
 import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * CRUD Access to composer data.
  */
 @Transactional
-public interface ComposerRepository extends JpaRepository<Composer, String> {
-
+public interface ComposerRepository extends JpaRepository<Composer, String>,
+                                            JpaSpecificationExecutor<Composer> {
     @Transactional(readOnly = true)
     @Override
     List<Composer> findAll();
+
+    @Transactional(readOnly = true)
+    @Override
+    List<Composer> findAll(final Specification<Composer> spec);
 }
