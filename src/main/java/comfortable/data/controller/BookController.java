@@ -27,8 +27,8 @@ import comfortable.data.database.BookRepository;
 import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
-import comfortable.data.tools.TemplateEngine;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +42,11 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on books.
  */
 @RestController
-public class BookController {
-    /** Logger for this class. */
+public final class BookController {
+
+    /**
+     * Logger for this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     /**
@@ -51,12 +54,6 @@ public class BookController {
      */
     @Autowired
     private transient BookRepository repository;
-    
-    /**
-     * Template engine used to render HTML for a list of books.
-     */
-    @Autowired
-    private transient TemplateEngine templateEngine;
 
     /**
      * Create or update book in database.
@@ -87,13 +84,25 @@ public class BookController {
      * @return provide list of book rendered into HTML.
      */
     @GetMapping(value = "/books", produces = {CustomMediaType.TEXT_HTML_VALUE})
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public String renderHtml() {
+        InputStream stream = null;
+
         try {
-            final var renderer = this.templateEngine.getRenderer("/books.html");
-            return renderer.add("books", repository.findAll()).render();
+            stream = getClass().getResourceAsStream("/books.dynamic.html");
+            return new String(stream.readAllBytes(), "utf-8");
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            }
         }
-        throw new InternalServerError("Failed to render HTML for books ");
+
+        throw new InternalServerError("Failed to provide HTML for books");
     }
 }

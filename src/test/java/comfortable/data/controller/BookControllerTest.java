@@ -115,8 +115,6 @@ public class BookControllerTest {
                 .andReturn().getResponse().getContentAsString().trim();
 
         assertThat(content, startsWith("<!doctype html>"));
-        assertThat(content, containsString("<td>Der Unbesiegbare</td>"));
-        assertThat(content, containsString("<td>Stanislaw Lem</td>"));
         assertThat(content, endsWith("</html>"));
     }
 
