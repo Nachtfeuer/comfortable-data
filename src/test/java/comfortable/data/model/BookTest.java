@@ -30,8 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
 
 /**
- *
- * @author Thomas Lehmann
+ * Testing of class {@link Book}.
  */
 public class BookTest {
 

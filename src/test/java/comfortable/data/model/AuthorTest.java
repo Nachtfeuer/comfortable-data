@@ -28,19 +28,24 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
- *
- * @author Thomas Lehmann
+ * Testing of class {@link Author}.
  */
 public class AuthorTest {
-    /** test title */
+    /** test title. */
     private static final String AUTHOR_1 = "Agatha Christie";
 
+    /**
+     * Testing default constructor.
+     */
     @Test
     public void testDefault() {
         final Author author = new Author();
         assertThat(author.getFullName(), equalTo(null));
     }
 
+    /**
+     * Testing changing of values.
+     */
     @Test
     public void testChange() {
         final Author author = new Author();

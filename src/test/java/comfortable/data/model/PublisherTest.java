@@ -28,16 +28,21 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
- *
- * @author Thomas Lehmann
+ * Testing of class {@link Publisher}.
  */
 public class PublisherTest {
+    /**
+     * Testing of default constructor.
+     */
     @Test
     public void testDefault() {
         final Publisher publisher = new Publisher();
         assertThat(publisher.getFullName(), equalTo(null));
     }
 
+    /**
+     * Testing changing of values.
+     */
     @Test
     public void testChange() {
         final Publisher publisher = new Publisher();

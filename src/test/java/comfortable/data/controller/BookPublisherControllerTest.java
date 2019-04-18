@@ -154,7 +154,8 @@ public class BookPublisherControllerTest {
      * @return response publisher.
      * @throws Exception when request or conversion has failed.
      */
-    private Publisher createPublisher(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private Publisher createPublisher(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
         final Publisher newPublisher = new Publisher(fullName);
         return requestMaker.createOrUpdate("/books/publishers",

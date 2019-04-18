@@ -154,7 +154,8 @@ public class BookAuthorControllerTest {
      * @return response author.
      * @throws Exception when request or conversion has failed.
      */
-    private Author createAuthor(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private Author createAuthor(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
         final Author newAuthor = new Author(fullName);
         return requestMaker.createOrUpdate("/books/authors",
