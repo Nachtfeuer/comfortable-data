@@ -23,9 +23,12 @@
  */
 package comfortable.data.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Performer;
 import comfortable.data.tools.RequestMaker;
+import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import org.junit.Test;
@@ -39,6 +42,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * Testing of {@link MoviePerformerController} class.
@@ -103,6 +108,28 @@ public class MoviePerformerControllerTest {
     }
 
     /**
+     * Querying with ignore case for one performer.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testQueryOnePerformerByFilterWithIgnoreCase() throws Exception {
+        createPerformer(PERFORMER_1, CustomMediaType.APPLICATION_JSON);
+        createPerformer(PERFORMER_2, CustomMediaType.APPLICATION_JSON);
+        createPerformer(PERFORMER_3, CustomMediaType.APPLICATION_JSON);
+
+        final var mapper = new ObjectMapper();
+        final var content = this.mvc.perform(
+                get("/movies/performers?fullName=john").accept(CustomMediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        final List<Performer> performers = mapper.readValue(content,
+                new TypeReference<List<Performer>>() {
+        });
+        assertThat(performers.size(), equalTo(1));
+        assertThat(performers.get(0).getFullName(), equalTo(PERFORMER_1));
+    }
+    
+    /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
@@ -111,17 +138,29 @@ public class MoviePerformerControllerTest {
      * @throws Exception if coonversion or a request has failed.
      */
     private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var newPerformer = new Performer(fullName);
-        final var responsePerformer = requestMaker
-                .createOrUpdate("/movies/performers", newPerformer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
-
+        final var responsePerformer = this.createPerformer(fullName, expectedMediaType);
         assertThat(responsePerformer.getFullName(), equalTo(fullName));
 
+        final var requestMaker = new RequestMaker(this.mvc);
         final var performers = requestMaker.getListOfPerformers(expectedMediaType);
         assertThat(performers.stream()
                 .filter(performer -> performer.getFullName().equals(fullName))
                 .count(), equalTo(1L));
+    }
 
+    /**
+     * Create or update performer in database.
+     *
+     * @param fullName name of the performer to be created or updated.
+     * @param expectedMediaType expected response type (JSON, XML or YAML).
+     * @return response performer.
+     * @throws Exception when request or conversion has failed.
+     */
+    private Performer createPerformer(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
+        final var requestMaker = new RequestMaker(this.mvc);
+        final Performer newPerformer = new Performer(fullName);
+        return requestMaker.createOrUpdate("/movies/performers",
+                newPerformer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
     }
 }
