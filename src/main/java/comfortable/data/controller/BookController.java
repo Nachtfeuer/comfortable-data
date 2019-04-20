@@ -27,11 +27,8 @@ import comfortable.data.database.BookRepository;
 import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
-import java.io.IOException;
-import java.io.InputStream;
+import comfortable.data.tools.FileTools;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public final class BookController {
-
-    /**
-     * Logger for this class.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     /**
      * dependency injection of database class responsible for storing and querying data.
@@ -86,21 +78,9 @@ public final class BookController {
     @GetMapping(value = "/books", produces = {CustomMediaType.TEXT_HTML_VALUE})
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public String renderHtml() {
-        InputStream stream = null;
-
-        try {
-            stream = getClass().getResourceAsStream("/books.dynamic.html");
-            return new String(stream.readAllBytes(), "utf-8");
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage(), e);
-                }
-            }
+        final var content = FileTools.readResource("/books.dynamic.html");
+        if (content != null) {
+            return content;
         }
 
         throw new InternalServerError("Failed to provide HTML for books");
