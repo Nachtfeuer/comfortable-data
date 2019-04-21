@@ -32,63 +32,86 @@
     </head>
 
     <body>
-        <div class="content">
-            <nav class="navbar navbar-light bg-dark">
-                <span class="navbar-brand mb-0 h1">Books</span>
-            </nav>
+        <div id="content" class="content">
+            <div class="container">
+                <nav class="navbar navbar-light bg-dark">
+                    <span class="navbar-brand mb-0 h1">Books</span>
+
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search"
+                               placeholder="Search" aria-label="Search"
+                               v-model="search">
+                    </form>
+                </nav>
+            </div>
+
+            <div class="container">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Authors</th>
+                            <th>Publisher</th>
+                            <th>Year</th>
+                            <th>Pages</th>
+                            <th>Rating</th>
+                            <th>Tags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="book in filteredBooks">
+                            <td>
+                                <span class="title" v-bind:title="book.description">{{ book.title }}</span>
+                                <span class="series" v-if="book.series"><br/>{{ book.series }}</span>
+                            </td>
+                            <td>
+                                <span v-for="author in book.authors">{{author.fullName}}<b/></span>
+                            </td>
+                            <td>
+                                <span class="publisher">{{ book.publisher.fullName }}</span>
+                                <br/><span class="isbn">{{ book.isbn }}</span>
+                            </td>
+                            <td>{{ book.yearOfPublication }}</td>
+                            <td>{{ book.pages }}</td>
+                            <td>{{ book.rating }}</td>
+                            <td>
+                                <span class="tag badge badge-dark" v-for="tag in book.tags">{{tag.name}}<b/></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>      
 
-        <div id="content" class="container">
-            <table class="table table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Authors</th>
-                        <th>Publisher</th>
-                        <th>Year</th>
-                        <th>Pages</th>
-                        <th>Rating</th>
-                        <th>Tags</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="book in books">
-                        <td>
-                            <span class="title" v-bind:title="book.description">{{ book.title }}</span>
-                            <span class="series" v-if="book.series"><br/>{{ book.series }}</span>
-                        </td>
-                        <td>
-                            <span v-for="author in book.authors">{{author.fullName}}<b/></span>
-                        </td>
-                        <td>
-                            <span class="publisher">{{ book.publisher.fullName }}</span>
-                            <br/><span class="isbn">{{ book.isbn }}</span>
-                        </td>
-                        <td>{{ book.yearOfPublication }}</td>
-                        <td>{{ book.pages }}</td>
-                        <td>{{ book.rating }}</td>
-                        <td>
-                            <span class="tag badge badge-dark" v-for="tag in book.tags">{{tag.name}}<b/></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
         <script>
-        var app = new Vue({
-            el: '#content',
-            data() {
-                return {
-                    books: []
-                }
-            },
-            mounted() {
-                axios
-                    .get('/books')
-                    .then(response => (this.books = response.data))
-            }
-        })
+var app = new Vue({
+    el: '#content',
+    data: {
+        search: '',
+        books: []
+    },
+    computed: {
+        filteredBooks() {
+            var searchText = this.search.toLowerCase();
+            return this.books.filter( book => {
+                return book.title.toLowerCase().includes(searchText) ||
+                    book.authors.filter(author => {
+                        return author.fullName.toLowerCase().includes(searchText);
+                    }).length > 0 ||
+                    book.publisher.fullName.toLowerCase().includes(searchText) ||
+                    (book.rating && book.rating.toLowerCase().includes(searchText)) ||
+                    (book.tags && book.tags.filter(tag => {
+                        return tag.name.toLowerCase().includes(searchText);
+                    }).length > 0)
+            });
+        }
+    },
+    mounted() {
+        axios
+                .get('/books')
+                .then(response => (this.books = response.data))
+    }
+})
         </script>
     </body>
 </html>
