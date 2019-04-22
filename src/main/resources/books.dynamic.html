@@ -5,10 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Books</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"></link>
 
         <!-- production version, optimized for size and speed -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
 
         <style>
             .navbar-brand {
@@ -64,8 +67,13 @@
                         <tr v-for="(book, index) in filteredBooks">
                             <td>{{ index+1 }}</td>
                             <td>
-                                <span class="title" v-bind:title="book.description">{{ book.title }}</span>
+                                <span class="title" v-on:click="$bvModal.show('description' + index)">{{ book.title }}</span>
                                 <span class="series" v-if="book.series"><br/>{{ book.series }}</span>
+                                <b-modal ok-only scrollable centered
+                                         header-bg-variant="dark" header-text-variant="light"
+                                         v-bind:id="'description' + index" v-bind:title="book.title">
+                                    {{ book.description }}
+                                </b-modal>
                             </td>
                             <td>
                                 <span v-for="author in book.authors">{{author.fullName}}<b/></span>
@@ -111,8 +119,8 @@ var app = new Vue({
     },
     mounted() {
         axios
-                .get('/books')
-                .then(response => (this.books = response.data))
+            .get('/books')
+            .then(response => (this.books = response.data))
     }
 })
         </script>
