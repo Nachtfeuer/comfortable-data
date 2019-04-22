@@ -104,7 +104,7 @@ public class BookControllerTest {
     }
 
     /**
-     * Testingn HTML response.
+     * Testing HTML response.
      *
      * @throws Exception should never happen.
      */
@@ -115,6 +115,7 @@ public class BookControllerTest {
                 .andReturn().getResponse().getContentAsString().trim();
 
         assertThat(content, startsWith("<!doctype html>"));
+        assertThat(content, containsString("<title>Books</title>"));
         assertThat(content, endsWith("</html>"));
     }
 

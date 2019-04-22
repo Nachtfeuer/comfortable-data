@@ -29,7 +29,10 @@ import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.RequestMaker;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,6 +127,23 @@ public class BookAuthorControllerTest {
         });
         assertThat(authors.size(), equalTo(1));
         assertThat(authors.get(0).getFullName(), equalTo(BOOK_TITLE_1));
+    }
+
+    /**
+     * Testing HTML response.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testHtmlReponse() throws Exception {
+        createAuthor(BOOK_TITLE_1, CustomMediaType.APPLICATION_JSON);
+        final var content = this.mvc.perform(get("/books/authors")
+                .accept(CustomMediaType.TEXT_HTML))
+                .andReturn().getResponse().getContentAsString().trim();
+
+        assertThat(content, startsWith("<!doctype html>"));
+        assertThat(content, containsString("<title>Books / Authors</title>"));
+        assertThat(content, endsWith("</html>"));
     }
 
     /**

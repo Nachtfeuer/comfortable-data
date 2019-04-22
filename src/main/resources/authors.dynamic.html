@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Books</title>
+        <title>Books / Authors</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
         <!-- production version, optimized for size and speed -->
@@ -36,7 +36,7 @@
         <div id="content" class="content">
             <div class="container">
                 <nav class="navbar navbar-light bg-dark">
-                    <span class="navbar-brand mb-0 h1">Books</span>
+                    <span class="navbar-brand mb-0 h1">Books / Authors</span>
 
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search"
@@ -51,34 +51,14 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Title</th>
                             <th>Authors</th>
-                            <th>Publisher</th>
-                            <th>Year</th>
-                            <th>Pages</th>
-                            <th>Rating</th>
-                            <th>Tags</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(book, index) in filteredBooks">
+                        <tr v-for="(author, index) in filteredAuthors">
                             <td>{{ index+1 }}</td>
                             <td>
-                                <span class="title" v-bind:title="book.description">{{ book.title }}</span>
-                                <span class="series" v-if="book.series"><br/>{{ book.series }}</span>
-                            </td>
-                            <td>
-                                <span v-for="author in book.authors">{{author.fullName}}<b/></span>
-                            </td>
-                            <td>
-                                <span class="publisher">{{ book.publisher.fullName }}</span>
-                                <br/><span class="isbn">{{ book.isbn }}</span>
-                            </td>
-                            <td>{{ book.yearOfPublication }}</td>
-                            <td>{{ book.pages }}</td>
-                            <td>{{ book.rating }}</td>
-                            <td>
-                                <span class="tag badge badge-dark" v-for="tag in book.tags">{{tag.name}}<b/></span>
+                                <span>{{author.fullName}}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -91,28 +71,20 @@ var app = new Vue({
     el: '#content',
     data: {
         search: '',
-        books: []
+        authors: []
     },
     computed: {
-        filteredBooks() {
+        filteredAuthors() {
             var searchText = this.search.toLowerCase();
-            return this.books.filter( book => {
-                return book.title.toLowerCase().includes(searchText) ||
-                    book.authors.filter(author => {
-                        return author.fullName.toLowerCase().includes(searchText);
-                    }).length > 0 ||
-                    book.publisher.fullName.toLowerCase().includes(searchText) ||
-                    (book.rating && book.rating.toLowerCase().includes(searchText)) ||
-                    (book.tags && book.tags.filter(tag => {
-                        return tag.name.toLowerCase().includes(searchText);
-                    }).length > 0)
+            return this.authors.filter( author => {
+                return author.fullName.toLowerCase().includes(searchText);
             });
         }
     },
     mounted() {
         axios
-                .get('/books')
-                .then(response => (this.books = response.data))
+                .get('/books/authors')
+                .then(response => (this.authors = response.data))
     }
 })
         </script>
