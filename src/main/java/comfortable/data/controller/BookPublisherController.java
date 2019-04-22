@@ -24,8 +24,10 @@
 package comfortable.data.controller;
 
 import comfortable.data.database.BookPublisherRepository;
+import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
+import comfortable.data.tools.FileTools;
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on book publishers.
  */
 @RestController
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class BookPublisherController {
 
     /**
@@ -85,5 +88,22 @@ public class BookPublisherController {
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)
             final Specification<Publisher> spec) {
         return repository.findAll(spec);
+    }
+
+
+    /**
+     * Provide list of books publishers as HTML.
+     *
+     * @return provide list of book publishers rendered into HTML.
+     */
+    @GetMapping(value = "/books/publishers", produces = {CustomMediaType.TEXT_HTML_VALUE})
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public String renderHtml() {
+        final var content = FileTools.readResource("/publishers.dynamic.html");
+        if (content != null) {
+            return content;
+        }
+
+        throw new InternalServerError("Failed to provide HTML for book publishers");
     }
 }

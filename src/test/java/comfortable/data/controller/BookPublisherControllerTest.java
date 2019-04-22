@@ -29,7 +29,10 @@ import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.RequestMaker;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,6 +127,24 @@ public class BookPublisherControllerTest {
         });
         assertThat(publishers.size(), equalTo(1));
         assertThat(publishers.get(0).getFullName(), equalTo(PUBLISHER_1));
+    }
+
+
+    /**
+     * Testing HTML response.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testHtmlReponse() throws Exception {
+        createPublisher(PUBLISHER_1, CustomMediaType.APPLICATION_JSON);
+        final var content = this.mvc.perform(get("/books/publishers")
+                .accept(CustomMediaType.TEXT_HTML))
+                .andReturn().getResponse().getContentAsString().trim();
+
+        assertThat(content, startsWith("<!doctype html>"));
+        assertThat(content, containsString("<title>Books / Publishers</title>"));
+        assertThat(content, endsWith("</html>"));
     }
 
     /**

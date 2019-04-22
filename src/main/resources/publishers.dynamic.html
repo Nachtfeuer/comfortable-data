@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Books / Publishers</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <!-- production version, optimized for size and speed -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <style>
+            .navbar-brand {
+                color: rgba(255, 255, 255, 1.0) !important;
+                font-size: 22px;
+            }
+
+            .series {
+                font-size: 10px;
+            }
+
+            .isbn {
+                font-size: 10px;
+            }
+
+            .tag {
+                font-size: 10px;
+                float: left;
+                margin-right: 2px;
+            }            
+        </style>
+    </head>
+
+    <body>
+        <div id="content" class="content">
+            <div class="container">
+                <nav class="navbar navbar-light bg-dark">
+                    <span class="navbar-brand mb-0 h1">Books / Publishers</span>
+
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search"
+                               placeholder="Search" aria-label="Search"
+                               v-model="search">
+                    </form>
+                </nav>
+            </div>
+
+            <div class="container">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Publishers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(publisher, index) in filteredPublishers">
+                            <td>{{ index+1 }}</td>
+                            <td>
+                                <span>{{publisher.fullName}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>      
+
+        <script>
+var app = new Vue({
+    el: '#content',
+    data: {
+        search: '',
+        publishers: []
+    },
+    computed: {
+        filteredPublishers() {
+            var searchText = this.search.toLowerCase();
+            return this.publishers.filter( publisher => {
+                return publisher.fullName.toLowerCase().includes(searchText);
+            });
+        }
+    },
+    mounted() {
+        axios
+            .get('/books/publishers')
+            .then(response => (this.publishers = response.data))
+    }
+})
+        </script>
+    </body>
+</html>
