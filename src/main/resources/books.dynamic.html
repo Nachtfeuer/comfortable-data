@@ -7,7 +7,8 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"></link>
 
-        <!-- production version, optimized for size and speed -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>        
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -37,17 +38,26 @@
 
     <body>
         <div id="content" class="content">
-            <div class="container">
-                <nav class="navbar navbar-light bg-dark">
-                    <span class="navbar-brand mb-0 h1">Books</span>
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <a class="navbar-brand" href="#">Books</a>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            Other Resources
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/books/authors">Authors</a>
+                            <a class="dropdown-item" href="/books/publishers">Publisher</a>
+                        </div>
+                    </li>
+                </ul>
 
-                    <form class="form-inline my-2 my-lg-0">
+                <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search"
-                               placeholder="Search" aria-label="Search"
-                               v-model="search">
-                    </form>
-                </nav>
-            </div>
+                                placeholder="Search" aria-label="Search"
+                                v-model="search">
+                </form>
+            </nav>
 
             <div class="container">
                 <table class="table table-striped table-sm">
