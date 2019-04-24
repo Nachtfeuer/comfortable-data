@@ -44,12 +44,21 @@ public class AuthorTest {
     }
 
     /**
-     * Testing changing of values.
+     * Testing changing of values via setter.
      */
     @Test
-    public void testChange() {
+    public void testSetter() {
         final Author author = new Author();
         author.setFullName(AUTHOR_1);
+        assertThat(author.getFullName(), equalTo(AUTHOR_1));
+    }
+
+    /**
+     * Testing creation via builder.
+     */
+    @Test
+    public void testBuilder() {
+        final var author = Author.builder().fullName(AUTHOR_1).build();
         assertThat(author.getFullName(), equalTo(AUTHOR_1));
     }
 }

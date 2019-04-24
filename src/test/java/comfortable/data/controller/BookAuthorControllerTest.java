@@ -177,7 +177,7 @@ public class BookAuthorControllerTest {
     private Author createAuthor(final String fullName,
             final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
-        final Author newAuthor = new Author(fullName);
+        final Author newAuthor = Author.builder().fullName(fullName).build();
         return requestMaker.createOrUpdate("/books/authors",
                 newAuthor, CustomMediaType.APPLICATION_JSON, expectedMediaType);
     }

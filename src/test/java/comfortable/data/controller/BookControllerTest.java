@@ -159,7 +159,7 @@ public class BookControllerTest {
                 .title("Der Unbesiegbare")
                 .originalTitle("Niezwyciezony i inne opowiadania")
                 .isbn("3-518-38959-9")
-                .author(new Author("Stanislaw Lem"))
+                .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(new Publisher("suhrkamp"))
                 .pages(228)
                 .description(description)
