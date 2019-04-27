@@ -56,8 +56,14 @@ public class AuthorPersistenceTest {
         // create author instance with random name (don't care about creation date and time)
         final var initialAuthor = Author.builder().fullName(uuid.toString()).build();
         // persist author expecting that creation date and time will be set
-        final var persistentAuthor = repository.save(initialAuthor);
+        LOGGER.info("before save");
+        repository.save(initialAuthor);
+        LOGGER.info("after save and before flush");
+        repository.flush();
+        LOGGER.info("after flush");
+
+        final var persistentAuthor = repository.findById(uuid.toString());
         LOGGER.info("{}", persistentAuthor);
-        assertThat(initialAuthor.getFullName(), equalTo(persistentAuthor.getFullName()));
+        assertThat(initialAuthor.getFullName(), equalTo(persistentAuthor.get().getFullName()));
     }
 }

@@ -93,6 +93,7 @@ public class BookImporter {
                 final var converter = new ContentConverter<>(Book.class,
                         CustomMediaType.APPLICATION_YAML);
                 this.repository.save(converter.fromString(content));
+                this.repository.flush();
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

@@ -21,40 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.configuration;
+package comfortable.data.tools;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * Setup for objectdb.
+ * Suppressing interface for findbug/spotbugs warnings.
  */
-@Configuration
-public class ObjectDbConfig {
+@Retention(CLASS)
+public @interface SuppressFBWarnings {
 
     /**
-     * Create entity manager factory for objectdb.
-     *
-     * @return entity manager factory for objectdb.
+     * The set of FindBugs warnings that are to be suppressed in annotated element. The value can be
+     * a bug category, kind or pattern.
+     * 
+     * @return list of warnings.
      */
-    @Bean
-    public EntityManagerFactory entityManagerFactory() {
-        return Persistence.createEntityManagerFactory("database.odb");
-    }
+    String[] value() default {};
 
     /**
-     * Provide transaction manager instance.
+     * Optional documentation of the reason why the warning is suppressed.
      *
-     * @return transaction manager instance.
-     * @throws ClassNotFoundException should never happen
+     * @return Optional documentation.
      */
-    @Bean
-    public JpaTransactionManager transactionManager() throws ClassNotFoundException {
-        final var transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory());
-        return transactionManager;
-    }
+    String justification() default "";
 }

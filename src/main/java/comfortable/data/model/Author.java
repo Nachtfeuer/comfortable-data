@@ -23,6 +23,7 @@
  */
 package comfortable.data.model;
 
+import comfortable.data.tools.SuppressFBWarnings;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,8 +31,6 @@ import java.time.ZoneOffset;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +45,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SuppressFBWarnings("EI_EXPOSE_REP")
 public class Author implements Serializable {
 
     /**
@@ -63,13 +63,15 @@ public class Author implements Serializable {
     /**
      * date and time when this author has been created.
      */
-    // does not make any difference: @Temporal(TemporalType.TIMESTAMP)
+    @SuppressWarnings("PMD.BeanMembersShouldSerialize")
     private Timestamp created;
 
     /**
      * Called before persisting the author.
      */
     @PrePersist
+    @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private void onPrePersist() {
         this.created = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
     }
