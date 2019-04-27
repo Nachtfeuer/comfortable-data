@@ -28,8 +28,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -66,7 +67,7 @@ public class Book implements Serializable {
     private int yearOfPublication;
 
     /** all authors of the book. */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Author> authors;
 
@@ -74,10 +75,11 @@ public class Book implements Serializable {
     private int pages;
 
     /** description you usually see on the back side of the book. */
+    @Lob
     private String description;
     
     /** all tags of the book. */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Tag> tags;
 

@@ -3,7 +3,9 @@
     <originalTitle>Niezwyciezony i inne opowiadania</originalTitle>
     <series>no series</series>
     <authors>
-        <author>Stanislaw Lem</author>
+        <author>
+            <fullName>Stanislaw Lem</fullName>
+        </author>
     </authors>
     <isbn>3-518-38959-9</isbn>
     <publisher>suhrkamp</publisher>

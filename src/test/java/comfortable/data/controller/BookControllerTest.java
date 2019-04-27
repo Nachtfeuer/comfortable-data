@@ -135,6 +135,7 @@ public class BookControllerTest {
         final Book responseBook = requestMaker
                 .createOrUpdate("/books", theBook, contentType, expectedMediaType);
 
+        theBook.getAuthors().get(0).setCreated(responseBook.getAuthors().get(0).getCreated());
         assertThat(responseBook, equalTo(theBook));
 
         final var books = requestMaker.getListOfBooks(expectedMediaType);
@@ -164,6 +165,7 @@ public class BookControllerTest {
                 .pages(228)
                 .description(description)
                 .tag(new Tag("science-fiction"))
+                .tag(new Tag("evolution"))
                 .build();
     }
 }
