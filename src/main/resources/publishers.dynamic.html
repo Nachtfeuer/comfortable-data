@@ -90,7 +90,17 @@ var app = new Vue({
     mounted() {
         axios
             .get('/books/publishers')
-            .then(response => (this.publishers = response.data))
+            .then(response => (this.publishers = response.data));
+
+        if (localStorage.publisherSearch) {
+            this.search = localStorage.publisherSearch;
+        }
+    },
+    
+    watch: {
+        search(newSearch) {
+            localStorage.publisherSearch = newSearch;
+        }
     }
 })
         </script>

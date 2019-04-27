@@ -124,10 +124,21 @@ var app = new Vue({
             });
         }
     },
+
     mounted() {
         axios
             .get('/books')
-            .then(response => (this.books = response.data))
+            .then(response => (this.books = response.data));
+
+        if (localStorage.bookSearch) {
+            this.search = localStorage.bookSearch;
+        }
+    },
+    
+    watch: {
+        search(newSearch) {
+            localStorage.bookSearch = newSearch;
+        }
     }
 })
         </script>

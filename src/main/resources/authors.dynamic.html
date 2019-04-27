@@ -89,8 +89,18 @@ var app = new Vue({
     },
     mounted() {
         axios
-                .get('/books/authors')
-                .then(response => (this.authors = response.data))
+            .get('/books/authors')
+            .then(response => (this.authors = response.data));
+        
+        if (localStorage.authorSearch) {
+            this.search = localStorage.authorSearch;
+        }
+    },
+    
+    watch: {
+        search(newSearch) {
+            localStorage.authorSearch = newSearch;
+        }
     }
 })
         </script>
