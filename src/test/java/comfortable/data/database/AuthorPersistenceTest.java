@@ -29,8 +29,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,11 +39,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AuthorPersistenceTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorPersistenceTest.class);
-    
+
+    /**
+     * Repository to use for saving/persisting authors.
+     */
     @Autowired
     private BookAuthorRepository repository;
-    
+
     /**
      * Testing persisting a new author.
      */
@@ -55,15 +55,11 @@ public class AuthorPersistenceTest {
         final var uuid = UUID.randomUUID();
         // create author instance with random name (don't care about creation date and time)
         final var initialAuthor = Author.builder().fullName(uuid.toString()).build();
-        // persist author expecting that creation date and time will be set
-        LOGGER.info("before save");
+        // persist author expecting that creation date and time will be set        LOGGER.info("before save");
         repository.save(initialAuthor);
-        LOGGER.info("after save and before flush");
         repository.flush();
-        LOGGER.info("after flush");
 
         final var persistentAuthor = repository.findById(uuid.toString());
-        LOGGER.info("{}", persistentAuthor);
         assertThat(initialAuthor.getFullName(), equalTo(persistentAuthor.get().getFullName()));
     }
 }
