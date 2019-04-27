@@ -41,21 +41,18 @@
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
                 <a class="navbar-brand" href="#">Books</a>
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                            Other Resources
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="/books/authors">Authors</a>
-                            <a class="dropdown-item" href="/books/publishers">Publisher</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books/authors">Authors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books/publishers">Publishers</a>
                     </li>
                 </ul>
 
                 <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search"
-                                placeholder="Search" aria-label="Search"
-                                v-model="search">
+                    <input class="form-control mr-sm-2" type="search"
+                           placeholder="Search" aria-label="Search"
+                           v-model="search">
                 </form>
             </nav>
 
