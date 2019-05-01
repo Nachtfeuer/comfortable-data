@@ -58,14 +58,14 @@
                         <tr>
                             <th>#</th>
                             <th>Authors</th>
+                            <th>Created</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(author, index) in filteredAuthors">
                             <td>{{ index+1 }}</td>
-                            <td>
-                                <span>{{author.fullName}}</span>
-                            </td>
+                            <td>{{author.fullName}}</td>
+                            <td>{{author.created}}</td>
                         </tr>
                     </tbody>
                 </table>

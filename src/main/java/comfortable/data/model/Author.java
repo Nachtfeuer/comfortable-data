@@ -23,11 +23,13 @@
  */
 package comfortable.data.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import comfortable.data.tools.SuppressFBWarnings;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -63,6 +65,8 @@ public class Author implements Serializable {
     /**
      * date and time when this author has been created.
      */
+    @Column(updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
     @SuppressWarnings("PMD.BeanMembersShouldSerialize")
     private Timestamp created;
 
