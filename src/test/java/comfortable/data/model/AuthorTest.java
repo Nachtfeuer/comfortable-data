@@ -23,12 +23,12 @@
  */
 package comfortable.data.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
@@ -68,17 +68,20 @@ public class AuthorTest {
     }
 
     /**
-     * Testing conversion to JSON.
+     * Testing conversion to JSON and the way back.
      * @throws java.lang.Exception should never happen
      */
     @Test
-    public void testToJson() throws Exception {
+    public void testToAndFromJson() throws Exception {
         final var timestamp = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
         final var author = Author.builder().fullName(AUTHOR_1).created(timestamp).build();
         
         final var mapper = new ObjectMapper();
-        final var expectedJson = "{\"fullName\":\"Agatha Christie\","
-                + "\"created\":xxx}".replace("xxx", ""+timestamp.getTime());
-        assertThat(mapper.writeValueAsString(author), equalTo(expectedJson));
+        final var json = mapper.writeValueAsString(author);
+        final var finalAuthor = mapper.readValue(json, Author.class);
+        final var diff = finalAuthor.getCreated().getTime() - author.getCreated().getTime();
+        
+        assertThat(finalAuthor.getFullName(), equalTo(author.getFullName()));
+        assertThat(diff, lessThanOrEqualTo(1000L));
     }
 }
