@@ -4,6 +4,7 @@ dist: xenial
 
 jdk:
     - openjdk11
+    - openjdk12
 
 script:
     - ./mvnw -B clean package verify
