@@ -36,6 +36,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * Book data class.
@@ -67,7 +69,8 @@ public class Book implements Serializable {
     private int yearOfPublication;
 
     /** all authors of the book. */
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Singular
     private List<Author> authors;
 
@@ -80,6 +83,7 @@ public class Book implements Serializable {
     
     /** all tags of the book. */
     @ManyToMany(cascade = CascadeType.MERGE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Singular
     private List<Tag> tags;
 

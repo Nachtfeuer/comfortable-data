@@ -26,6 +26,7 @@ package comfortable.data.database;
 import comfortable.data.model.Author;
 import java.util.UUID;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,5 +62,6 @@ public class AuthorPersistenceTest {
 
         final var persistentAuthor = repository.findById(uuid.toString());
         assertThat(initialAuthor.getFullName(), equalTo(persistentAuthor.get().getFullName()));
+        assertThat(persistentAuthor.get().getCreated(), not(equalTo(null)));
     }
 }

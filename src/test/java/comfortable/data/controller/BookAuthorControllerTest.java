@@ -32,6 +32,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 
 import org.junit.Test;
@@ -145,6 +146,19 @@ public class BookAuthorControllerTest {
         assertThat(content, containsString("<title>Books / Authors</title>"));
         assertThat(content, endsWith("</html>"));
     }
+    
+    /**
+     * Testing date conversion.
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testCreatedDate() throws Exception {
+        final String content = this.mvc.perform(get("/books/authors")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThat(content, not(containsString("\"created\":\"null\"")));
+    }
 
     /**
      * Performing create or update request and a request to retrieve the list. Finally the list
@@ -161,6 +175,7 @@ public class BookAuthorControllerTest {
 
         final var requestMaker = new RequestMaker(this.mvc);
         final var authors = requestMaker.getListOfAuthors(expectedMediaType);
+
         assertThat(authors.stream()
                 .filter(author -> author.getFullName().equals(fullName))
                 .count(), equalTo(1L));

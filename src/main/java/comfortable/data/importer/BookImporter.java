@@ -23,6 +23,7 @@
  */
 package comfortable.data.importer;
 
+import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Component;
  * Automatically imports books from a path when the service has been started.
  */
 @Component
+@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class BookImporter {
 
     /**
@@ -56,10 +58,16 @@ public class BookImporter {
     private transient boolean booksImportEnabled;
 
     /**
-     * Dependency injection of database class responsible for storing and querying data.
+     * Dependency injection of database class responsible for storing and querying book authors.
      */
     @Autowired
-    private transient BookRepository repository;
+    private transient BookAuthorRepository authorRepository;
+
+    /**
+     * Dependency injection of database class responsible for storing and querying book data.
+     */
+    @Autowired
+    private transient BookRepository bookRepository;
 
     /**
      * Automatically imports books from a path when the service has been started.
@@ -92,7 +100,13 @@ public class BookImporter {
                 final var content = new String(Files.readAllBytes(entry), "utf-8");
                 final var converter = new ContentConverter<>(Book.class,
                         CustomMediaType.APPLICATION_YAML);
-                this.repository.save(converter.fromString(content));
+                final var book = converter.fromString(content);
+                
+                for (final var author: book.getAuthors()) {
+                    this.authorRepository.save(author);
+                }
+
+                this.bookRepository.save(book);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
