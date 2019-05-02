@@ -178,7 +178,7 @@ public class BookPublisherControllerTest {
     private Publisher createPublisher(final String fullName,
             final MediaType expectedMediaType) throws Exception {
         final var requestMaker = new RequestMaker(this.mvc);
-        final Publisher newPublisher = new Publisher(fullName);
+        final Publisher newPublisher = Publisher.builder().fullName(fullName).build();
         return requestMaker.createOrUpdate("/books/publishers",
                 newPublisher, CustomMediaType.APPLICATION_JSON, expectedMediaType);
     }

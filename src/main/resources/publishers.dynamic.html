@@ -58,14 +58,14 @@
                         <tr>
                             <th>#</th>
                             <th>Publishers</th>
+                            <th>Created</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(publisher, index) in filteredPublishers">
                             <td>{{ index+1 }}</td>
-                            <td>
-                                <span>{{publisher.fullName}}</span>
-                            </td>
+                            <td>{{publisher.fullName}}</td>
+                            <td>{{publisher.created}}</td>
                         </tr>
                     </tbody>
                 </table>

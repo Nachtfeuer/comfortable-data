@@ -56,7 +56,7 @@ public final class BookController {
     @PostMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Book createOrUpdateBook(@RequestBody final Book book) {
-        return repository.save(book);
+        return this.repository.save(book);
     }
 
     /**

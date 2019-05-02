@@ -23,7 +23,6 @@
  */
 package comfortable.data.importer;
 
-import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
@@ -56,12 +55,6 @@ public class BookImporter {
      */
     @Value("${books.import.enabled:false}")
     private transient boolean booksImportEnabled;
-
-    /**
-     * Dependency injection of database class responsible for storing and querying book authors.
-     */
-    @Autowired
-    private transient BookAuthorRepository authorRepository;
 
     /**
      * Dependency injection of database class responsible for storing and querying book data.
@@ -100,13 +93,7 @@ public class BookImporter {
                 final var content = new String(Files.readAllBytes(entry), "utf-8");
                 final var converter = new ContentConverter<>(Book.class,
                         CustomMediaType.APPLICATION_YAML);
-                final var book = converter.fromString(content);
-                
-                for (final var author: book.getAuthors()) {
-                    this.authorRepository.save(author);
-                }
-
-                this.bookRepository.save(book);
+                this.bookRepository.save(converter.fromString(content));
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

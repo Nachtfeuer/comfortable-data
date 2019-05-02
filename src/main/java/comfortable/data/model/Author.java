@@ -75,7 +75,7 @@ public class Author implements Serializable {
      */
     @PrePersist
     @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // it is used!
     private void onPrePersist() {
         this.created = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
     }

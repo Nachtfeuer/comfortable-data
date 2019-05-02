@@ -69,7 +69,7 @@ public class Book implements Serializable {
     private int yearOfPublication;
 
     /** all authors of the book. */
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Singular
     private List<Author> authors;

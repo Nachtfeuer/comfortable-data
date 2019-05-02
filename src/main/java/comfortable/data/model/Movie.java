@@ -30,7 +30,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,12 +73,12 @@ public class Movie implements Serializable {
 
     
     /** list of movie directors. */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Director> directors;
     
     /** list of movie composers. */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Composer> composers;
     
@@ -86,7 +86,7 @@ public class Movie implements Serializable {
     private int runtime;
     
     /** all tags of the book. */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Singular
     private List<Tag> tags;
 }

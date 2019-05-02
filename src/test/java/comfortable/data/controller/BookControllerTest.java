@@ -134,8 +134,13 @@ public class BookControllerTest {
         final var requestMaker = new RequestMaker(this.mvc);
         final Book responseBook = requestMaker
                 .createOrUpdate("/books", theBook, contentType, expectedMediaType);
-
+        
+        // adjusting dates
         theBook.getAuthors().get(0).setCreated(responseBook.getAuthors().get(0).getCreated());
+        theBook.getPublisher().setCreated(responseBook.getPublisher().getCreated());
+
+        // why null? assertThat(responseBook.getAuthors().get(0).getCreated(), not(null));
+        // why null? assertThat(responseBook.getPublisher().getCreated(), not(null));
         assertThat(responseBook, equalTo(theBook));
 
         final var books = requestMaker.getListOfBooks(expectedMediaType);
@@ -161,7 +166,7 @@ public class BookControllerTest {
                 .originalTitle("Niezwyciezony i inne opowiadania")
                 .isbn("3-518-38959-9")
                 .author(Author.builder().fullName("Stanislaw Lem").build())
-                .publisher(new Publisher("suhrkamp"))
+                .publisher(Publisher.builder().fullName("suhrkamp").build())
                 .pages(228)
                 .description(description)
                 .tag(new Tag("science-fiction"))
