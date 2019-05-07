@@ -5,10 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Books / Publishers</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"></link>
 
         <!-- production version, optimized for size and speed -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>        
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 
         <style>
             .navbar-brand {
@@ -35,7 +39,7 @@
     <body>
         <div id="content" class="content">
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-                <a class="navbar-brand" href="#">Books</a>
+                <a class="navbar-brand" href="#">Books / Publishers ({{ publishers.length }})</a>
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/books">Home</a>
@@ -46,11 +50,30 @@
                 </ul>
 
                 <form class="form-inline my-2 my-lg-0">
+                    <b-button variant="outline-success" class="mr-sm-2" v-b-modal.new-publisher>New Publisher</b-button>
                     <input class="form-control mr-sm-2" type="search"
                            placeholder="Search" aria-label="Search"
-                           v-model="search">
+                           v-model="search">                    
                 </form>
             </nav>
+
+            <b-modal id="new-publisher" title="New Publisher"
+                     header-bg-variant="dark" header-text-variant="light"
+                     @show="resetAddPublisher"
+                     @ok="handleAddPublisher">
+                <b-form-group id="form-full-name"
+                              :state="fullNameState"
+                              label="Full Name:" label-for="input-full-name"
+                              invalid-feedback="Full name is required!"
+                              @submit.stop.prevent="handleAddPublisher">
+                    <b-form-input
+                        id="input-full-name"
+                        :state="fullNameState"
+                        v-model="new_publisher.fullName"
+                        required
+                        placeholder="Enter full name"></b-form-input>
+                </b-form-group>
+            </b-modal>
 
             <div class="container">
                 <table class="table table-striped table-sm">
@@ -77,8 +100,39 @@ var app = new Vue({
     el: '#content',
     data: {
         search: '',
-        publishers: []
+        publishers: [],
+        fullNameState: null,
+        new_publisher: {
+            fullName: ''
+        }
     },
+
+    methods: {
+        resetAddPublisher(event) {
+            this.new_publisher.fullName = '';
+            this.fullNameState = null;
+        },
+
+        handleAddPublisher(event) {
+            if (this.new_publisher.fullName.length > 0) {
+                axios
+                    .post('/books/publishers', this.new_publisher)
+                    .then(response => {
+                        this.loadPublishers();
+                    });
+            } else {
+                event.preventDefault();
+                this.fullNameState = 'invalid';
+            }
+        },
+
+        loadPublishers() {
+            axios
+                .get('/books/publishers')
+                .then(response => (this.publishers = response.data));
+        }
+    },
+
     computed: {
         filteredPublishers() {
             var searchText = this.search.toLowerCase();
@@ -87,10 +141,9 @@ var app = new Vue({
             });
         }
     },
+
     mounted() {
-        axios
-            .get('/books/publishers')
-            .then(response => (this.publishers = response.data));
+        this.loadPublishers();
 
         if (localStorage.publisherSearch) {
             this.search = localStorage.publisherSearch;

@@ -59,14 +59,19 @@
 
             <b-modal id="new-author" title="New Author"
                      header-bg-variant="dark" header-text-variant="light"
+                     @show="resetAddAuthor"
                      @ok="handleAddAuthor">
-                <b-form-group id="form-full-name" label="Full Name:" label-for="input-full-name">
+                <b-form-group id="form-full-name"
+                              :state="fullNameState"
+                              label="Full Name:" label-for="input-full-name"
+                              invalid-feedback="Full name is required!"
+                              @submit.stop.prevent="handleAddAuthor">
                     <b-form-input
                         id="input-full-name"
+                        :state="fullNameState"
                         v-model="new_author.fullName"
                         required
-                        placeholder="Enter Full Name"
-                        ></b-form-input>
+                        placeholder="Enter Full Name"></b-form-input>
                 </b-form-group>
             </b-modal>
 
@@ -91,51 +96,65 @@
         </div>      
 
         <script>
-            var app = new Vue({
-                el: '#content',
-                data: {
-                    search: '',
-                    authors: [],
-                    new_author: {
-                        fullName: ''
-                    }
-                },
-                computed: {
-                    filteredAuthors() {
-                        var searchText = this.search.toLowerCase();
-                        return this.authors.filter( author => {
-                            return author.fullName.toLowerCase().includes(searchText);
-                        });
-                    }
-                },
-                methods: {
-                    handleAddAuthor(event) {
-                        axios
-                            .post('/books/authors', this.new_author)
-                            .then(response => (this.loadAuthors()));
-                        this.new_author.fullName = '';
-                    },
-                    
-                    loadAuthors() {
-                        axios
-                            .get('/books/authors')
-                            .then(response => (this.authors = response.data));
-                    }
-                },
+var app = new Vue({
+    el: '#content',
+    data: {
+        search: '',
+        authors: [],
+        fullNameState: null,
+        new_author: {
+            fullName: ''
+        }
+    },
 
-                mounted() {
-                    this.loadAuthors();
-                    if (localStorage.authorSearch) {
-                        this.search = localStorage.authorSearch;
-                    }
-                },
+    computed: {
+        filteredAuthors() {
+            var searchText = this.search.toLowerCase();
+            return this.authors.filter( author => {
+                return author.fullName.toLowerCase().includes(searchText);
+            });
+        }
+    },
 
-                watch: {
-                    search(newSearch) {
-                        localStorage.authorSearch = newSearch;
-                    }
-                }
-            })
+    methods: {
+        resetAddAuthor(event) {
+            this.new_author.fullName = '';
+            this.fullNameState = null;
+        },
+
+        handleAddAuthor(event) {
+            if (this.new_author.fullName.length > 0) {
+                axios
+                    .post('/books/authors', this.new_author)
+                    .then(response => {
+                        this.loadAuthors()
+                    });
+            } else {
+                event.preventDefault();
+                this.fullNameState = 'invalid';
+            }
+        },
+
+        loadAuthors() {
+            axios
+                .get('/books/authors')
+                .then(response => (this.authors = response.data));
+        }
+    },
+
+    mounted() {
+        this.loadAuthors();
+        if (localStorage.authorSearch) {
+            this.search = localStorage.authorSearch;
+        }
+    },
+
+    watch: {
+        search(newSearch) {
+            localStorage.authorSearch = newSearch;
+        }
+    }
+})
         </script>
     </body>
 </html>
