@@ -6,34 +6,13 @@
         <title>Books</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"></link>
+        <link type="text/css" rel="stylesheet" href="/resources/comfortable.data.css"></link>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>        
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
-
-        <style>
-            .navbar-brand {
-                color: rgba(255, 255, 255, 1.0) !important;
-                font-size: 22px;
-            }
-
-            .series {
-                font-size: 10px;
-            }
-
-            .isbn {
-                font-size: 10px;
-            }
-
-            .tag {
-                font-size: 10px;
-                float: left;
-                margin-right: 2px;
-            }            
-        </style>
     </head>
 
     <body>
@@ -89,58 +68,6 @@
             </div>
         </div>      
 
-        <script>
-var app = new Vue({
-    el: '#content',
-    data: {
-        sortBy: 'title',
-        sortDesc: false,
-        search: '',
-        fields: [
-            {key: 'index', label: '#'},
-            {key: 'title', label: 'Title', sortable: true},
-            {key: 'authors', label: 'Authors', sortable: true},
-            {key: 'publisher', label: 'Publisher'},
-            {key: 'yearOfPublication', label: 'Year'},
-            {key: 'pages', label: 'Pages', sortable: true},
-            {key: 'rating', label: 'Rating', sortable: true},
-            {key: 'tags', label: 'Tags', sortable: true}
-        ],
-        books: []
-    },
-
-    mounted() {
-        axios
-            .get('/books')
-            .then(response => (this.books = response.data));
-
-        if (localStorage.bookSearch) {
-            this.search = localStorage.bookSearch;
-        }
-    },
-    
-    watch: {
-        search(newSearch) {
-            localStorage.bookSearch = newSearch;
-        }
-    },
-    
-    methods: {
-        filterBook(book) {
-            console.log(book)
-            var searchText = this.search.toLowerCase();
-            return book.title.toLowerCase().includes(searchText) ||
-                book.authors.filter(author => {
-                    return author.fullName.toLowerCase().includes(searchText);
-                }).length > 0 ||
-                book.publisher.fullName.toLowerCase().includes(searchText) ||
-                (book.rating && book.rating.toLowerCase().includes(searchText)) ||
-                (book.tags && book.tags.filter(tag => {
-                    return tag.name.toLowerCase().includes(searchText);
-                }).length > 0);
-        }
-    }
-})
-        </script>
+        <script src="/resources/books.js"></script>
     </body>
 </html>

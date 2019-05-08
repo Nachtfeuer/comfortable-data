@@ -25,16 +25,37 @@ package comfortable.data.configuration;
 
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.EncodedResourceResolver;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
 /**
  * Configuration of the Jackson YAML converter to the spring framework.
  */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+    /**
+     * Time in seconds for how long to keep static files in cache.
+     */
+    @Value("${resources.cache.period:3600}")
+    private transient Integer resourcesCachePeriod;
+
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry
+          .addResourceHandler("/resources/**")
+          .addResourceLocations("classpath:/javascript/")
+          .addResourceLocations("classpath:/stylesheet/")
+          .setCachePeriod(this.resourcesCachePeriod)
+          .resourceChain(true)
+          .addResolver(new EncodedResourceResolver())
+          .addResolver(new PathResourceResolver());
+    }
 
     @Override
     public void extendMessageConverters(final List<HttpMessageConverter<?>> converters) {

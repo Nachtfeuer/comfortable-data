@@ -6,6 +6,7 @@
         <title>Books / Authors</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"></link>
+        <link type="text/css" rel="stylesheet" href="/resources/comfortable.data.css"></link>
 
         <!-- production version, optimized for size and speed -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -13,27 +14,6 @@
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
-        <style>
-            .navbar-brand {
-                color: rgba(255, 255, 255, 1.0) !important;
-                font-size: 22px;
-            }
-
-            .series {
-                font-size: 10px;
-            }
-
-            .isbn {
-                font-size: 10px;
-            }
-
-            .tag {
-                font-size: 10px;
-                float: left;
-                margin-right: 2px;
-            }            
-        </style>
     </head>
 
     <body>
@@ -95,66 +75,6 @@
             </div>
         </div>      
 
-        <script>
-var app = new Vue({
-    el: '#content',
-    data: {
-        search: '',
-        authors: [],
-        fullNameState: null,
-        new_author: {
-            fullName: ''
-        }
-    },
-
-    computed: {
-        filteredAuthors() {
-            var searchText = this.search.toLowerCase();
-            return this.authors.filter( author => {
-                return author.fullName.toLowerCase().includes(searchText);
-            });
-        }
-    },
-
-    methods: {
-        resetAddAuthor(event) {
-            this.new_author.fullName = '';
-            this.fullNameState = null;
-        },
-
-        handleAddAuthor(event) {
-            if (this.new_author.fullName.length > 0) {
-                axios
-                    .post('/books/authors', this.new_author)
-                    .then(response => {
-                        this.loadAuthors()
-                    });
-            } else {
-                event.preventDefault();
-                this.fullNameState = 'invalid';
-            }
-        },
-
-        loadAuthors() {
-            axios
-                .get('/books/authors')
-                .then(response => (this.authors = response.data));
-        }
-    },
-
-    mounted() {
-        this.loadAuthors();
-        if (localStorage.authorSearch) {
-            this.search = localStorage.authorSearch;
-        }
-    },
-
-    watch: {
-        search(newSearch) {
-            localStorage.authorSearch = newSearch;
-        }
-    }
-})
-        </script>
+        <script src="/resources/authors.js"></script>
     </body>
 </html>
