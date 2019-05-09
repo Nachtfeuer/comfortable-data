@@ -31,8 +31,8 @@ var app = new Vue({
             {key: 'index', label: '#'},
             {key: 'title', label: 'Title', sortable: true},
             {key: 'authors', label: 'Authors', sortable: true},
-            {key: 'publisher', label: 'Publisher'},
-            {key: 'yearOfPublication', label: 'Year'},
+            {key: 'publisher', label: 'Publisher', sortable: true},
+            {key: 'yearOfPublication', label: 'Year', sortable: false},
             {key: 'pages', label: 'Pages', sortable: true},
             {key: 'rating', label: 'Rating', sortable: true},
             {key: 'tags', label: 'Tags', sortable: true}
@@ -40,6 +40,7 @@ var app = new Vue({
         books: []
     },
 
+    // lifecycle: called after the instance has been mounted to the defined element
     mounted() {
         axios
             .get('/books')
@@ -57,8 +58,54 @@ var app = new Vue({
     },
     
     methods: {
+        /**
+         * Comparing two books (-1=less, 0=equal, +1=greater).
+         *
+         * @param {Book} bookA first book to compare with second one.
+         * @param {Book} bookB second book to compare with first one.
+         * @param {String} key on of the keys defined in the fields.
+         * @returns {Number|diff}
+         */
+        sortCompare(bookA, bookB, key) {
+            if (key === 'title') {
+                return bookA.title.localeCompare(bookB.title);
+            } else if (key === 'authors') {
+                var maxLength = Math.min(bookA.authors.length, bookB.authors.length);
+                for (var ix = 0; ix < maxLength; ++ix) {
+                    diff = bookA.authors[ix].fullName.localeCompare(bookB.authors[ix].fullName);
+                    if (diff !== 0) {
+                        return diff;
+                    }
+                }
+                return bookB.authors.length - bookA.authors.length;
+            } else if (key === 'publisher') {
+                return bookA.publisher.fullName.localeCompare(bookB.publisher.fullName);
+            } else if (key == 'pages') {
+                return bookB.pages - bookA.pages;
+            } else if (key === 'rating') {
+                var ratingA = bookA.rating === null? '': bookA.rating;
+                var ratingB = bookB.rating === null? '': bookB.rating;
+                return ratingA.localeCompare(ratingB);
+            } else if (key === 'tags') {
+                var maxLength = Math.min(bookA.tags.length, bookB.tags.length);
+                for (var ix = 0; ix < maxLength; ++ix) {
+                    diff = bookA.tags[ix].name.localeCompare(bookB.tags[ix].name);
+                    if (diff !== 0) {
+                        return diff;
+                    }
+                }
+                return bookB.tags.length - bookA.tags.length;
+            }
+            return -1;
+        },
+
+        /**
+         * Filter for a list of books depending on a search string.
+         *
+         * @param {Book} book to check for visibility.
+         * @returns true when given book should be visible otherwise false
+         */
         filterBook(book) {
-            console.log(book)
             var searchText = this.search.toLowerCase();
             return book.title.toLowerCase().includes(searchText) ||
                 book.authors.filter(author => {

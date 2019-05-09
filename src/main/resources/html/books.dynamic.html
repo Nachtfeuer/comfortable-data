@@ -39,7 +39,7 @@
                 <b-table class="table table-striped table-sm"
                          :fields="fields" :items="books"
                          :filter="search" :filter-function="filterBook"
-                         :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
+                         :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
                     <template slot="index" slot-scope="data">{{ data.index + 1 }}</template>
                     <template slot="title" slot-scope="data">
                         <span class="title" v-on:click="$bvModal.show('description' + data.index)">{{ data.item.title }}</span>

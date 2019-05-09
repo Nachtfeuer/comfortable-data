@@ -97,7 +97,7 @@ public class BookAuthorController {
     @GetMapping(value = "/books/authors", produces = {CustomMediaType.TEXT_HTML_VALUE})
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public String renderHtml() {
-        final var content = FileTools.readResource("/authors.dynamic.html");
+        final var content = FileTools.readResource("/html/authors.dynamic.html");
         if (content != null) {
             return content;
         }
