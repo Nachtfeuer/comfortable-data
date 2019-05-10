@@ -23,38 +23,41 @@
  */
 package comfortable.data.model;
 
+import java.util.List;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
  * Represents the REST API Status/Details.
  */
 @Component
+@ConfigurationProperties
 @Data
 public class Status {
 
     /**
      * Version of the project defined in the pom.xml.
      */
-    @Value("${api.version}")
-    private String version;
+    private String apiVersion;
 
     /**
      * The current git branch (build).
      */
-    @Value("${git.branch}")
     private String gitBranch;
 
     /**
      * The current git commit id (build).
      */
-    @Value("${git.commit.id}")
     private String gitCommitId;
 
     /**
      * The related git remote origin url (build).
      */
-    @Value("${git.remote.origin.url}")
     private String gitRemoteOriginUrl;
+    
+    /**
+     * The used third party libraries.
+     */
+    private List<ThirdParty> thirdParty;    
 }

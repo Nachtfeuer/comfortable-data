@@ -67,7 +67,7 @@ public class StatusControllerTest {
         final var mapper = new ContentConverter<>(Status.class, CustomMediaType.APPLICATION_JSON);
         final var status = mapper.fromString(content);
 
-        assertThat(status.getVersion(), equalTo("1.0.0-SNAPSHOT"));
+        assertThat(status.getApiVersion(), equalTo("1.0.0-SNAPSHOT"));
         assertThat(status.getGitBranch(), equalTo("master"));
         assertThat(status.getGitCommitId(),
                 equalTo("4c2f9b0cb37f2277433459aea3296a974c65308a"));

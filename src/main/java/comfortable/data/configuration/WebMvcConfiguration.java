@@ -55,6 +55,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
           .resourceChain(true)
           .addResolver(new EncodedResourceResolver())
           .addResolver(new PathResourceResolver());
+
+        registry
+          .addResourceHandler("/resources/libraries/**")
+          .addResourceLocations("classpath:/libraries/javascript/")
+          .addResourceLocations("classpath:/libraries/stylesheet/")
+          .setCachePeriod(this.resourcesCachePeriod)
+          .resourceChain(true)
+          .addResolver(new EncodedResourceResolver())
+          .addResolver(new PathResourceResolver());
     }
 
     @Override
