@@ -1,0 +1,8 @@
+component_depth: 1
+
+languages:
+    - java
+    - javascript
+
+exclude:
+    - /src/main/resources/libraries/.*
