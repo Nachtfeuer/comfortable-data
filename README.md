@@ -11,10 +11,10 @@ Java based REST service for movies, books and similar data using jpa in its back
    a lot of legal issues.
  - myself I intend to store my own bought books, movies, music and data like
    this to solve following problems:
-  - full control over the data
-  - being flexible in extending for required functionality
-  - supporting YAML, JSON and XML to import and export data in any direction
-  - providing also useful UI to search, filter and to add new data
+   - full control over the data
+   - being flexible in extending for required functionality
+   - supporting YAML, JSON and XML to import and export data in any direction
+   - providing also useful UI to search, filter and to add new data
 
 ## Quickstart
 
