@@ -26,6 +26,7 @@ package comfortable.data.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -89,4 +90,8 @@ public class Book implements Serializable {
 
     /** Personal rating of the book. */
     private String rating;
+    
+    /** When available the book cover. */
+    @Embedded
+    private Image cover;
 }

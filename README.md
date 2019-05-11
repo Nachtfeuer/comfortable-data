@@ -5,6 +5,17 @@ Java based REST service for movies, books and similar data using jpa in its back
 [![Coverage Status](https://coveralls.io/repos/github/Nachtfeuer/comfortable-data/badge.svg?branch=master)](https://coveralls.io/github/Nachtfeuer/comfortable-data?branch=master)
 [![CodeFactor](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data/badge)](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data)
 
+## Goals
+
+ - a service in a local environment; no provider since this might raise
+   a lot of legal issues.
+ - myself I intend to store my own bought books, movies, music and data like
+   this to solve following problems:
+  - full control over the data
+  - being flexible in extending for required functionality
+  - supporting YAML, JSON and XML to import and export data in any direction
+  - providing also useful UI to search, filter and to add new data
+
 ## Quickstart
 
 ```bash

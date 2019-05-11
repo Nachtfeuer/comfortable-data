@@ -23,6 +23,7 @@
  */
 package comfortable.data.tools;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,5 +48,15 @@ public class FileToolsTest {
     @Test
     public void testReadResourceFileDoesNotExist() {
         assertThat(FileTools.readResource("/unknown.xml"), equalTo(null));
+    }
+
+    /**
+     * Testing encode file content as base64 and back.
+     */
+    @Test
+    public void testEncodeFileAsBase64() {
+        final var path = getClass().getResource("/simple.txt").getFile();
+        final var base64 = FileTools.encodeAsBase64(path);
+        assertThat(new String(Base64.decodeBase64(base64)), equalTo("hello world!\n"));
     }
 }

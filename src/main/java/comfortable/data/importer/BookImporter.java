@@ -26,6 +26,7 @@ package comfortable.data.importer;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.model.Image;
 import comfortable.data.tools.ContentConverter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,6 +51,11 @@ public class BookImporter {
      * Logger for this class.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(BookImporter.class);
+
+    /**
+     * File extension used for book import.
+     */
+    private static final String BOOK_EXTENSION_YAML = ".yaml";
 
     /**
      * when true the book import runs when service has started otherwise not.
@@ -71,7 +78,7 @@ public class BookImporter {
             final var path = System.getProperty("user.home");
             try {
                 Files.list(Paths.get(path, "books"))
-                        .filter(entry -> entry.toString().endsWith(".yaml"))
+                        .filter(entry -> entry.toString().endsWith(BOOK_EXTENSION_YAML))
                         .forEach(entry -> importBook(entry));
             } catch (IOException e) {
                 LOGGER.info(e.getMessage());
@@ -93,7 +100,18 @@ public class BookImporter {
                 final var content = new String(Files.readAllBytes(entry), "utf-8");
                 final var converter = new ContentConverter<>(Book.class,
                         CustomMediaType.APPLICATION_YAML);
-                this.bookRepository.save(converter.fromString(content));
+                final var newBook = converter.fromString(content);
+                final var imagePath = Path.of(entry.toString()
+                        .replace(BOOK_EXTENSION_YAML, ".jpg"));
+
+                if (Files.isReadable(imagePath)) {
+                    newBook.setCover(Image.builder()
+                            .imageData(Files.readAllBytes(imagePath))
+                            .contentType(MediaType.IMAGE_JPEG_VALUE)
+                            .build());
+                }
+
+                this.bookRepository.save(newBook);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

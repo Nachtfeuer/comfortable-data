@@ -26,11 +26,15 @@ package comfortable.data.importer;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.model.Image;
 import comfortable.data.tools.ContentConverter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +43,7 @@ import static org.mockito.Mockito.never;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -68,11 +73,19 @@ public class BookImporterTest {
      */
     @Test
     public void testImportBook() throws IOException, URISyntaxException {
+        final var stream = getClass().getResourceAsStream("/book.jpg");
+        final var image = Image.builder()
+                .imageData(stream.readAllBytes())
+                .contentType(MediaType.IMAGE_JPEG_VALUE)
+                .build();
+        stream.close();
+        
         final var path = Paths.get(getClass().getResource("/book.yaml").toURI());
         final var content = new String(Files.readAllBytes(path), "utf-8");
 
         final var converter = new ContentConverter<>(Book.class, CustomMediaType.APPLICATION_YAML);
         final var book = converter.fromString(content);
+        book.setCover(image);
 
         bookImporter.importBook(path);
         Mockito.verify(repository).save(book);

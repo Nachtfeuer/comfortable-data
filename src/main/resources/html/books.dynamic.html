@@ -51,6 +51,7 @@
                         <b-modal ok-only scrollable centered
                                  header-bg-variant="dark" header-text-variant="light"
                                  v-bind:id="'description' + data.index" v-bind:title="data.item.title">
+                            <img v-if="data.item.cover" class="cover" v-bind:src="'data:' + data.item.cover.data"/>
                             {{ data.item.description }}
                         </b-modal>
                     </template>

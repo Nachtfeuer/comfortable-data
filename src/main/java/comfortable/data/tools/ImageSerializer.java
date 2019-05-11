@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-.navbar-brand {
-    color: rgba(255, 255, 255, 1.0) !important;
-    font-size: 22px;
-}
+package comfortable.data.tools;
 
-.series {
-    font-size: 10px;
-}
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import comfortable.data.model.Image;
+import java.io.IOException;
 
-.isbn {
-    font-size: 10px;
-}
+/**
+ * Serializes an {@link Image} instance into a base64 based JSON.
+ */
+public class ImageSerializer extends JsonSerializer<Image> {
 
-.tag {
-    font-size: 10px;
-    float: left;
-    margin-right: 2px;
-}            
-
-.cover {
-    float: left;
-    margin-right: 5px;
-    pargin-bottom: 5px;
-    width: 150px;
+    @Override
+    public void serialize(final Image image, final JsonGenerator generator,
+            final SerializerProvider provider) throws IOException {
+        generator.writeStartObject();
+        generator.writeStringField("data", image.toBase64());
+        generator.writeEndObject();
+    }
 }

@@ -23,8 +23,11 @@
  */
 package comfortable.data.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,5 +77,23 @@ public final class FileTools {
             }
         }
         return result;
+    }
+
+    /**
+     * Encode file content as base64.
+     *
+     * @param path path and name of file to read and encode into base64.
+     * @return null or base64 encoded file content.
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public static String encodeAsBase64(final String path) {
+        String content = null;
+        try {
+            final var bytes = FileUtils.readFileToByteArray(new File(path));
+            content = Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return content;
     }
 }
