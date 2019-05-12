@@ -31,12 +31,27 @@ mvn -N io.takari:maven:0.7.5:wrapper
 ```
 
 ## Links
+
+### Build
  - https://github.com/takari/maven-wrapper
+ 
+### Database
  - https://www.h2database.com/html/main.html
+ 
+### UI
  - https://jquery.com/
  - https://vuejs.org/
  - https://getbootstrap.com/
  - https://bootstrap-vue.js.org/
  - https://www.baeldung.com/running-setup-logic-on-startup-in-spring
  - https://www.baeldung.com/spring-mvc-static-resources
+
+### Documentation
+ - https://spring.io/guides/gs/testing-restdocs/
+ - https://asciidoctor.org/docs/asciidoctor-maven-plugin/
+ - https://asciidoctor.org/
+ - https://scacap.github.io/spring-auto-restdocs/
+ - https://docs.spring.io/spring-restdocs/docs/1.2.6.RELEASE/reference/html5/
+ 
+### Request Handling
  - https://github.com/tkaczmarzyk/specification-arg-resolver
