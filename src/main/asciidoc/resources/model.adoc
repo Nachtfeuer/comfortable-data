@@ -1,0 +1,19 @@
+
+=== The Data Model
+
+==== Using POJO classes
+
+All data which is sent, received, saved and loaded is
+basing on one consistent data model following the rules
+of POJO classes.
+
+==== The main rules
+
+Since using one data model the internal class are published
+to the outside world via the responses forcing to following
+rules:
+
+ * Any names may not change
+ * The field type may not change
+
+
