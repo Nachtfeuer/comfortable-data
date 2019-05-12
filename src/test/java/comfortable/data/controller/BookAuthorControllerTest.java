@@ -134,13 +134,15 @@ public class BookAuthorControllerTest {
         final var documentName = "get/books/authors/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get("/books/authors?fullName=a").accept(CustomMediaType.APPLICATION_JSON))
+                get("/books/authors?fullName=is").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
                 .andReturn().getResponse().getContentAsString();
+
         final List<Author> authors = mapper.readValue(content,
                 new TypeReference<List<Author>>() {
         });
+
         // sorting by ascending names
         authors.sort((entryA, entryB) -> entryA.getFullName().compareTo(entryB.getFullName()));
 

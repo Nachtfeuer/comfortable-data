@@ -1,0 +1,57 @@
+=== Book Publishers REST API
+
+In all cases you can create a new publisher using the POST HTTP verb.
+When the publisher is persistet a creation date will be adjusted;
+the internally used time zone is UTC.
+
+You cannot change the name afterwards.
+
+The formats YAML, JSON and XML are supported in any combinations.
+
+==== Create Publisher with JSON
+
+.curl
+include::{snippets}/post/books/publishers/json/json/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/publishers/json/json/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/publishers/json/json/http-response.adoc[]
+
+==== Create Publisher with XML
+
+.curl
+include::{snippets}/post/books/publishers/xml/xml/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/publishers/xml/xml/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/publishers/xml/xml/http-response.adoc[]
+
+==== Create Publisher with YAML
+
+.curl
+include::{snippets}/post/books/publishers/x-yaml/x-yaml/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/publishers/x-yaml/x-yaml/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/publishers/x-yaml/x-yaml/http-response.adoc[]
+
+==== Get Publisher By Name
+
+This query is searching for publisher names containing the given
+string ignoring the letter case. The example is using JSON only
+but XML and YAML are supported as well.
+
+.curl
+include::{snippets}/get/books/publishers/byFullName/curl-request.adoc[]
+
+.request
+include::{snippets}/get/books/publishers/byFullName/http-request.adoc[]
+
+.response
+include::{snippets}/get/books/publishers/byFullName/http-response.adoc[]

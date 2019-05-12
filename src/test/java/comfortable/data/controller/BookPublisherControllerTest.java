@@ -23,12 +23,16 @@
  */
 package comfortable.data.controller;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
+import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
-import java.util.List;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -40,13 +44,17 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 /**
  * Testing of {@link BookPublisherController} class.
@@ -54,6 +62,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 public class BookPublisherControllerTest {
 
     /**
@@ -84,7 +93,8 @@ public class BookPublisherControllerTest {
      */
     @Test
     public void testCreatePublisherWithJsonResponse() throws Exception {
-        runTest(PUBLISHER_1, CustomMediaType.APPLICATION_XML);
+        runTest(PUBLISHER_1,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
@@ -93,8 +103,12 @@ public class BookPublisherControllerTest {
      * @throws Exception (should never happen).
      */
     @Test
-    public void testCreatePublisherWithXmlResponse() throws Exception {
-        runTest(PUBLISHER_2, CustomMediaType.APPLICATION_XML);
+    public void testCreatePublisherWithXmlOnly() throws Exception {
+        runTest(PUBLISHER_2,
+                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML
+    
+
+    );
     }
 
     /**
@@ -103,8 +117,9 @@ public class BookPublisherControllerTest {
      * @throws Exception (should never happen).
      */
     @Test
-    public void testCreatePublisherWithYamlResponse() throws Exception {
-        runTest(PUBLISHER_3, CustomMediaType.APPLICATION_YAML);
+    public void testCreatePublisherWithYamlOnly() throws Exception {
+        runTest(PUBLISHER_3,
+                CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
     }
 
     /**
@@ -114,21 +129,31 @@ public class BookPublisherControllerTest {
      */
     @Test
     public void testQueryOnePublisherByFilterWithIgnoreCase() throws Exception {
-        createPublisher(PUBLISHER_1, CustomMediaType.APPLICATION_JSON);
-        createPublisher(PUBLISHER_2, CustomMediaType.APPLICATION_JSON);
-        createPublisher(PUBLISHER_3, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_1,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_2,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_3,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
 
+        final var documentName = "get/books/publishers/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get("/books/publishers?fullName=suhr").accept(CustomMediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+                get("/books/publishers?fullName=h").accept(CustomMediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
         final List<Publisher> publishers = mapper.readValue(content,
                 new TypeReference<List<Publisher>>() {
         });
-        assertThat(publishers.size(), equalTo(1));
-        assertThat(publishers.get(0).getFullName(), equalTo(PUBLISHER_1));
-    }
 
+        // sorting by ascending names
+        publishers.sort((entryA, entryB) -> entryA.getFullName().compareTo(entryB.getFullName()));
+
+        assertThat(publishers.size(), equalTo(2));
+        assertThat(publishers.get(0).getFullName(), equalTo(PUBLISHER_3));
+        assertThat(publishers.get(1).getFullName(), equalTo(PUBLISHER_1));
+    }
 
     /**
      * Testing HTML response.
@@ -137,7 +162,9 @@ public class BookPublisherControllerTest {
      */
     @Test
     public void testHtmlReponse() throws Exception {
-        createPublisher(PUBLISHER_1, CustomMediaType.APPLICATION_JSON);
+        createPublisher(PUBLISHER_1,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+
         final var content = this.mvc.perform(get("/books/publishers")
                 .accept(CustomMediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().trim();
@@ -156,12 +183,14 @@ public class BookPublisherControllerTest {
      * @throws Exception if coonversion or a request has failed.
      */
     private void runTest(final String fullName,
-            final MediaType expectedMediaType) throws Exception {
-        final var responsePublisher = createPublisher(fullName, expectedMediaType);
+            final MediaType contentType,
+            final MediaType expectedResponseType) throws Exception {
+        final var responsePublisher = createPublisher(fullName,
+                contentType, expectedResponseType);
         assertThat(responsePublisher.getFullName(), equalTo(fullName));
 
         final var requestMaker = new RequestMaker(this.mvc);
-        final var publishers = requestMaker.getListOfPublishers(expectedMediaType);
+        final var publishers = requestMaker.getListOfPublishers(expectedResponseType);
         assertThat(publishers.stream()
                 .filter(publisher -> publisher.getFullName().equals(fullName))
                 .count(), equalTo(1L));
@@ -176,10 +205,23 @@ public class BookPublisherControllerTest {
      * @throws Exception when request or conversion has failed.
      */
     private Publisher createPublisher(final String fullName,
-            final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
+            final MediaType acceptContentType,
+            final MediaType responseContentType) throws Exception {
         final Publisher newPublisher = Publisher.builder().fullName(fullName).build();
-        return requestMaker.createOrUpdate("/books/publishers",
-                newPublisher, CustomMediaType.APPLICATION_JSON, expectedMediaType);
+        final var converter = new ContentConverter<>(Publisher.class,
+                responseContentType, acceptContentType);
+
+        final var documentName = "post/books/publishers/"
+                + acceptContentType.toString().replace("application", "")
+                + responseContentType.toString().replace("application", "");
+
+        final String content = this.mvc.perform(post("/books/publishers")
+                .accept(responseContentType)
+                .contentType(acceptContentType)
+                .content(converter.toString(newPublisher))).andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
+
+        return converter.fromString(content);
     }
 }
