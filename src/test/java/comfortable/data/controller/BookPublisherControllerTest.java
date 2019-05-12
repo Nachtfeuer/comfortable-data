@@ -179,7 +179,8 @@ public class BookPublisherControllerTest {
      * should contain the created (or updated) record once only.
      *
      * @param fullName full name of publisher
-     * @param expectedMediaType expected response type (JSON, XML or YAML).
+     * @param contentType request content type (JSON, XML or YAML).
+     * @param expectedResponseType response content type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
     private void runTest(final String fullName,
@@ -200,7 +201,8 @@ public class BookPublisherControllerTest {
      * Create or update author in database.
      *
      * @param fullName name of the publisher to be created or updated.
-     * @param expectedMediaType expected response type (JSON, XML or YAML).
+     * @param acceptContentType request content type (JSON, XML or YAML).
+     * @param responseContentType response content type (JSON, XML or YAML).
      * @return response publisher.
      * @throws Exception when request or conversion has failed.
      */

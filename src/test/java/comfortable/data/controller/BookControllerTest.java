@@ -80,7 +80,7 @@ public class BookControllerTest {
     }
 
     /**
-     * Using /books REST to create a new author and to receive the id as XML response.
+     * Using /books REST to create a new author with XML.
      *
      * @throws Exception (should never happen)
      */
@@ -91,7 +91,7 @@ public class BookControllerTest {
     }
 
     /**
-     * Using /books REST to create a new author and to receive the id as YAML response.
+     * Using /books REST to create a new author with YAML.
      *
      * @throws Exception (should never happen)
      */
@@ -122,8 +122,8 @@ public class BookControllerTest {
      * should contain the created (or updated) record once only.
      *
      * @param theBook the book to create or update in database
-     * @param contentType the type how to send book data to the server.
-     * @param expectedMediaType the expected response type (XML, JSON or YAML).
+     * @param acceptContentType the type how to send book data to the server.
+     * @param responseContentType the expected response type (XML, JSON or YAML).
      * @throws Exception when conversion has failed or one request
      */
     private void runTest(final Book theBook,
