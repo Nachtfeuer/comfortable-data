@@ -28,6 +28,7 @@ import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.model.Tag;
+import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
@@ -40,13 +41,17 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 /**
  * Testing of {@link BookAuthorController} class.
@@ -54,6 +59,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 public class BookControllerTest {
 
     /**
@@ -68,8 +74,9 @@ public class BookControllerTest {
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreateBookWithJsonResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+    public void testCreateBookWithJsonOnly() throws Exception {
+        runTest(createBook(),
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
@@ -78,8 +85,9 @@ public class BookControllerTest {
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreateBookWithXmlResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_XML);
+    public void testCreateBookWithXmlOnly() throws Exception {
+        runTest(createBook(),
+                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
     }
 
     /**
@@ -88,19 +96,9 @@ public class BookControllerTest {
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreateBookWithYamlResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_YAML);
-    }
-
-    /**
-     * Using /books REST to create a new author sending it in YAML format and to receive the id as
-     * JSON response.
-     *
-     * @throws Exception (should never happen)
-     */
-    @Test
-    public void testCreateBookWithYamlRequestAndJsonResponse() throws Exception {
-        runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
+    public void testCreateBookWithYamlOnly() throws Exception {
+        runTest(createBook(),
+                CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
     }
 
     /**
@@ -129,11 +127,23 @@ public class BookControllerTest {
      * @throws Exception when conversion has failed or one request
      */
     private void runTest(final Book theBook,
-            final MediaType contentType,
-            final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
-        final Book responseBook = requestMaker
-                .createOrUpdate("/books", theBook, contentType, expectedMediaType);
+            final MediaType acceptContentType,
+            final MediaType responseContentType) throws Exception {
+        final var converter = new ContentConverter<>(Book.class,
+                responseContentType, acceptContentType);
+
+        final var documentName = "post/books/"
+                + acceptContentType.toString().replace("application", "")
+                + responseContentType.toString().replace("application", "");
+
+        final String content = this.mvc.perform(post("/books")
+                .accept(responseContentType)
+                .contentType(acceptContentType)
+                .content(converter.toString(theBook))).andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
+
+        final var responseBook = converter.fromString(content);
         
         // adjusting dates
         theBook.getAuthors().get(0).setCreated(responseBook.getAuthors().get(0).getCreated());
@@ -143,7 +153,9 @@ public class BookControllerTest {
         // why null? assertThat(responseBook.getPublisher().getCreated(), not(null));
         assertThat(responseBook, equalTo(theBook));
 
-        final var books = requestMaker.getListOfBooks(expectedMediaType);
+        final var requestMaker = new RequestMaker(this.mvc);
+        final var books = requestMaker.getListOfBooks(responseContentType);
+
         assertThat(books.stream()
                 .filter(book -> book.getTitle().equals(theBook.getTitle()))
                 .count(), equalTo(1L));
@@ -168,9 +180,11 @@ public class BookControllerTest {
                 .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(Publisher.builder().fullName("suhrkamp").build())
                 .pages(228)
+                .yearOfPublication(1995)
                 .description(description)
                 .tag(new Tag("science-fiction"))
                 .tag(new Tag("evolution"))
+                .rating("sehr gut")
                 .build();
     }
 }

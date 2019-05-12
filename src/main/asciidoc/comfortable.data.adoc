@@ -32,3 +32,4 @@ v1.0
 include::resources/model.adoc[]
 include::resources/books.authors.adoc[]
 include::resources/books.publishers.adoc[]
+include::resources/books.adoc[]

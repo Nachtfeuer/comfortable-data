@@ -1,0 +1,37 @@
+=== Book REST API
+
+In all cases you can create a new book using the POST HTTP verb.
+The formats YAML, JSON and XML are supported in any combinations.
+
+==== Create a book with JSON
+
+.curl
+include::{snippets}/post/books/json/json/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/json/json/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/json/json/http-response.adoc[]
+
+==== Create a book with XML
+
+.curl
+include::{snippets}/post/books/xml/xml/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/xml/xml/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/xml/xml/http-response.adoc[]
+
+==== Create a book with YAML
+
+.curl
+include::{snippets}/post/books/x-yaml/x-yaml/curl-request.adoc[]
+
+.request
+include::{snippets}/post/books/x-yaml/x-yaml/http-request.adoc[]
+
+.response
+include::{snippets}/post/books/x-yaml/x-yaml/http-response.adoc[]
