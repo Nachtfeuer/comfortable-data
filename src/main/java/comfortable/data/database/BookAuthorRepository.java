@@ -43,4 +43,7 @@ public interface BookAuthorRepository extends JpaRepository<Author, String>,
     @Transactional(readOnly = true)
     @Override
     List<Author> findAll(final Specification<Author> spec);
+
+    @Override
+    void deleteAll();
 }

@@ -25,14 +25,17 @@ package comfortable.data.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
 import java.util.List;
+import java.util.Set;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 
@@ -40,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.Before;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -85,13 +89,27 @@ public class BookAuthorControllerTest {
     private MockMvc mvc;
 
     /**
+     * Database access to book authors.
+     */
+    @Autowired
+    private BookAuthorRepository authors;
+    
+    /**
+     * Cleanup authors for consistent tests.
+     */
+    @Before
+    public void setUp() {
+        this.authors.deleteAll();
+    }
+
+    /**
      * Using /books/authors REST to create a new author sending/receiving JSON.
      *
      * @throws Exception (should never happen)
      */
     @Test
     public void testCreateAuthorWithJsonOnly() throws Exception {
-        runTest(BOOK_TITLE_1,
+        runTest(Set.of(BOOK_TITLE_1),
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
     }
 
@@ -102,7 +120,7 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testCreateAuthorWithXmlOnly() throws Exception {
-        runTest(BOOK_TITLE_2,
+        runTest(Set.of(BOOK_TITLE_2),
                 CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
     }
 
@@ -113,7 +131,7 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testCreateAuthorWithYamlOnly() throws Exception {
-        runTest(BOOK_TITLE_3,
+        runTest(Set.of(BOOK_TITLE_3),
                 CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
     }
 
@@ -177,11 +195,23 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testCreatedDate() throws Exception {
-        final String content = this.mvc.perform(get("/books/authors")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        assertThat(content, not(containsString("\"created\":\"null\"")));
+        final var responseAuthor = createAuthor(BOOK_TITLE_1,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+        assertThat(responseAuthor.getCreated(), not(equalTo(null)));
+    }
+
+    /**
+     * Testing date conversion II.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testSameMultipleTimes() throws Exception {
+        for (var ix = 0; ix < 10; ++ix) {
+            final var responseAuthor = createAuthor(BOOK_TITLE_1,
+                    CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+            assertThat(responseAuthor.getCreated(), not(equalTo(null)));
+        }
     }
 
     /**
@@ -193,18 +223,22 @@ public class BookAuthorControllerTest {
      * @param expectedResponseType response content type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName,
+    private void runTest(final Set<String> fullNames,
             final MediaType contentType,
             final MediaType expectedResponseType) throws Exception {
-        final var responseAuthor = createAuthor(fullName, contentType, expectedResponseType);
-        assertThat(responseAuthor.getFullName(), equalTo(fullName));
+        for (var fullName: fullNames) {
+            final var responseAuthor = createAuthor(fullName, contentType, expectedResponseType);
+            assertThat(responseAuthor.getFullName(), equalTo(fullName));            
+        }
 
         final var requestMaker = new RequestMaker(this.mvc);
         final var authors = requestMaker.getListOfAuthors(expectedResponseType);
+        assertThat(authors.size(), equalTo(fullNames.size()));
 
-        assertThat(authors.stream()
-                .filter(author -> author.getFullName().equals(fullName))
-                .count(), equalTo(1L));
+        authors.forEach(author -> {
+            assertThat(fullNames, hasItem(author.getFullName()));
+            assertThat(author.getCreated(), not(equalTo(null)));
+        });
     }
 
     /**

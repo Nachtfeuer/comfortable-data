@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on book authors.
  */
 @RestController
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
 public class BookAuthorController {
 
     /**
@@ -60,7 +60,14 @@ public class BookAuthorController {
     @PostMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
         CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
     public Author createOrUpdateAuthor(@RequestBody final Author author) {
-        return repository.save(author);
+        final Author responseAuthor;
+        final var optionalAuthor = repository.findById(author.getFullName());
+        if(optionalAuthor.isPresent()) {
+            responseAuthor = optionalAuthor.get();
+        } else {
+            responseAuthor = repository.save(author);
+        }
+        return responseAuthor;
     }
 
     /**
