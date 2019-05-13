@@ -81,6 +81,11 @@ public class BookAuthorControllerTest {
      * yet another test author.
      */
     private static final String BOOK_TITLE_3 = "Stanislaw Lem";
+    
+    /**
+     * Retries for same operation.
+     */
+    private static final int RETRIES = 10;
 
     /**
      * Test client for web layer.
@@ -207,7 +212,7 @@ public class BookAuthorControllerTest {
      */
     @Test
     public void testSameMultipleTimes() throws Exception {
-        for (var ix = 0; ix < 10; ++ix) {
+        for (var ix = 0; ix < RETRIES; ++ix) {
             final var responseAuthor = createAuthor(BOOK_TITLE_1,
                     CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
             assertThat(responseAuthor.getCreated(), not(equalTo(null)));
@@ -218,7 +223,7 @@ public class BookAuthorControllerTest {
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
-     * @param fullName full name of author
+     * @param fullNames unique container with full names of authors.
      * @param contentType request content type (JSON, XML or YAML).
      * @param expectedResponseType response content type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
@@ -232,10 +237,10 @@ public class BookAuthorControllerTest {
         }
 
         final var requestMaker = new RequestMaker(this.mvc);
-        final var authors = requestMaker.getListOfAuthors(expectedResponseType);
-        assertThat(authors.size(), equalTo(fullNames.size()));
+        final var listOfAuthors = requestMaker.getListOfAuthors(expectedResponseType);
+        assertThat(listOfAuthors.size(), equalTo(fullNames.size()));
 
-        authors.forEach(author -> {
+        listOfAuthors.forEach(author -> {
             assertThat(fullNames, hasItem(author.getFullName()));
             assertThat(author.getCreated(), not(equalTo(null)));
         });
