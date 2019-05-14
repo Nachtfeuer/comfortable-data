@@ -40,12 +40,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AuthorPersistenceTest {
+    
+    /**
+     * Retries in tests doing the same.
+     */
+    private final static int RETRIES = 10;
 
     /**
      * Repository to use for saving/persisting authors.
      */
     @Autowired
-    private BookAuthorRepository repository;
+    private BookAuthorRepository authors;
 
     /**
      * Testing persisting a new author.
@@ -56,11 +61,10 @@ public class AuthorPersistenceTest {
         final var uuid = UUID.randomUUID();
         // create author instance with random name (don't care about creation date and time)
         final var initialAuthor = Author.builder().fullName(uuid.toString()).build();
-        // persist author expecting that creation date and time will be set        LOGGER.info("before save");
-        repository.save(initialAuthor);
-        repository.flush();
+        // persist author expecting that creation date and time will be set
+        this.authors.save(initialAuthor);
 
-        final var persistentAuthor = repository.findById(uuid.toString());
+        final var persistentAuthor = this.authors.findById(uuid.toString());
         assertThat(initialAuthor.getFullName(), equalTo(persistentAuthor.get().getFullName()));
         assertThat(persistentAuthor.get().getCreated(), not(equalTo(null)));
     }

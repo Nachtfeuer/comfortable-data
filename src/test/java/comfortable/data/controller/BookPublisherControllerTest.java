@@ -27,21 +27,28 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.database.BookPublisherRepository;
 
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
+import java.util.Set;
+import static java.util.stream.Collectors.toList;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import org.junit.Before;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -68,7 +75,7 @@ public class BookPublisherControllerTest {
     /**
      * test publisher.
      */
-    private static final String PUBLISHER_1 = "suhrkamp";
+    private static final String PUBLISHER_1 = "goldmann";
 
     /**
      * another test publisher.
@@ -86,39 +93,52 @@ public class BookPublisherControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private BookPublisherRepository publishers;
+
+    @Before
+    public void setUp() {
+        if (this.publishers.findById(PUBLISHER_1).isPresent()) {
+            this.publishers.deleteById(PUBLISHER_1);
+        }
+        if (this.publishers.findById(PUBLISHER_2).isPresent()) {
+            this.publishers.deleteById(PUBLISHER_2);
+        }
+        if (this.publishers.findById(PUBLISHER_3).isPresent()) {
+            this.publishers.deleteById(PUBLISHER_3);
+        }
+    }
+
     /**
-     * Using /authors/create REST to create a new publisher and to receive the id as JSON response.
+     * Using /books/publisher REST to create a new publisher with JSON only.
      *
      * @throws Exception (should never happen).
      */
     @Test
-    public void testCreatePublisherWithJsonResponse() throws Exception {
-        runTest(PUBLISHER_1,
+    public void testCreatePublisherWithJsonOnly() throws Exception {
+        runTest(Set.of(PUBLISHER_1),
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
     }
 
     /**
-     * Using /authors/create REST to create a new publisher and to receive the id as XML response.
+     * Using /books/publisher REST to create a new publisher with XML only.
      *
      * @throws Exception (should never happen).
      */
     @Test
     public void testCreatePublisherWithXmlOnly() throws Exception {
-        runTest(PUBLISHER_2,
-                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML
-    
-
-    );
+        runTest(Set.of(PUBLISHER_2),
+                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
     }
 
     /**
-     * Using /authors/create REST to create a new publisher and to receive the id as YAML response.
+     * Using /books/publishers REST to create a new publisher with YAML only.
      *
      * @throws Exception (should never happen).
      */
     @Test
     public void testCreatePublisherWithYamlOnly() throws Exception {
-        runTest(PUBLISHER_3,
+        runTest(Set.of(PUBLISHER_3),
                 CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
     }
 
@@ -139,20 +159,21 @@ public class BookPublisherControllerTest {
         final var documentName = "get/books/publishers/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get("/books/publishers?fullName=h").accept(CustomMediaType.APPLICATION_JSON))
+                get("/books/publishers?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
                 .andReturn().getResponse().getContentAsString();
-        final List<Publisher> publishers = mapper.readValue(content,
+        final List<Publisher> listOfPublishers = mapper.readValue(content,
                 new TypeReference<List<Publisher>>() {
         });
 
         // sorting by ascending names
-        publishers.sort((entryA, entryB) -> entryA.getFullName().compareTo(entryB.getFullName()));
+        listOfPublishers.sort((entryA, entryB) ->
+                entryA.getFullName().compareTo(entryB.getFullName()));
 
-        assertThat(publishers.size(), equalTo(2));
-        assertThat(publishers.get(0).getFullName(), equalTo(PUBLISHER_3));
-        assertThat(publishers.get(1).getFullName(), equalTo(PUBLISHER_1));
+        assertThat(listOfPublishers.size(), equalTo(2));
+        assertThat(listOfPublishers.get(0).getFullName(), equalTo(PUBLISHER_1));
+        assertThat(listOfPublishers.get(1).getFullName(), equalTo(PUBLISHER_3));
     }
 
     /**
@@ -175,26 +196,46 @@ public class BookPublisherControllerTest {
     }
 
     /**
+     * Testing date conversion.
+     *
+     * @throws Exception should never happen.
+     */
+    @Test
+    public void testCreatedDate() throws Exception {
+        final var responsePublisher = createPublisher(PUBLISHER_1,
+                CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+        assertThat(responsePublisher.getCreated(), not(equalTo(null)));
+    }
+
+    /**
      * Performing create or update request and a request to retrieve the list. Finally the list
      * should contain the created (or updated) record once only.
      *
-     * @param fullName full name of publisher
+     * @param fullNames unique set of full names of publishers.
      * @param contentType request content type (JSON, XML or YAML).
      * @param expectedResponseType response content type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName,
+    private void runTest(final Set<String> fullNames,
             final MediaType contentType,
             final MediaType expectedResponseType) throws Exception {
-        final var responsePublisher = createPublisher(fullName,
-                contentType, expectedResponseType);
-        assertThat(responsePublisher.getFullName(), equalTo(fullName));
+        for (var fullName : fullNames) {
+            final var responsePublisher = createPublisher(fullName,
+                    contentType, expectedResponseType);
+            assertThat(responsePublisher.getFullName(), equalTo(fullName));
+        }
 
         final var requestMaker = new RequestMaker(this.mvc);
-        final var publishers = requestMaker.getListOfPublishers(expectedResponseType);
-        assertThat(publishers.stream()
-                .filter(publisher -> publisher.getFullName().equals(fullName))
-                .count(), equalTo(1L));
+        final var listOfPublishers = requestMaker.getListOfPublishers(expectedResponseType);
+
+        final var filteredListOfPublishers = listOfPublishers.stream()
+                .filter(publisher -> fullNames.contains(publisher.getFullName()))
+                .collect(toList());
+
+        assertThat(filteredListOfPublishers.size(), equalTo(fullNames.size()));
+        filteredListOfPublishers.forEach(publisher -> {
+            assertThat(publisher.getCreated(), not(equalTo(null)));
+        });
     }
 
     /**
