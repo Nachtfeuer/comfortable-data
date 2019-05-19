@@ -21,7 +21,7 @@
 
         <hamcrest.all.version>1.3</hamcrest.all.version>
         <lombok.version>1.18.6</lombok.version>
-        <jackson.dataformat.xml.version>2.9.8</jackson.dataformat.xml.version>
+        <jackson.dataformat.xml.version>2.9.9</jackson.dataformat.xml.version>
         <jackson.dataformat.yaml.version>2.9.8</jackson.dataformat.yaml.version>
         <h2.version>1.4.199</h2.version>
         <javax.persistence.version>2.1.0</javax.persistence.version>
