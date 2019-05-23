@@ -39,7 +39,6 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 
@@ -47,7 +46,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import org.junit.Before;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +69,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookPublisherControllerTest {
+    /**
+     * Book publishers (base) request.
+     */
+    private static final String REQUEST = "/books/publishers";
+    
+    /**
+     * Replace part of media type for rest documentation (path).
+     */
+    private static final String APPLICATION = "application";
 
     /**
      * test publisher.
@@ -156,10 +163,10 @@ public class BookPublisherControllerTest {
         createPublisher(PUBLISHER_3,
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
 
-        final var documentName = "get/books/publishers/byFullName";
+        final var documentName = "get" + REQUEST + "/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get("/books/publishers?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
+                get(REQUEST +  "?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
                 .andReturn().getResponse().getContentAsString();
@@ -186,7 +193,7 @@ public class BookPublisherControllerTest {
         createPublisher(PUBLISHER_1,
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
 
-        final var content = this.mvc.perform(get("/books/publishers")
+        final var content = this.mvc.perform(get(REQUEST)
                 .accept(CustomMediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().trim();
 
@@ -254,11 +261,11 @@ public class BookPublisherControllerTest {
         final var converter = new ContentConverter<>(Publisher.class,
                 responseContentType, acceptContentType);
 
-        final var documentName = "post/books/publishers/"
-                + acceptContentType.toString().replace("application", "")
-                + responseContentType.toString().replace("application", "");
+        final var documentName = "post" + REQUEST + "/"
+                + acceptContentType.toString().replace(APPLICATION, "")
+                + responseContentType.toString().replace(APPLICATION, "");
 
-        final String content = this.mvc.perform(post("/books/publishers")
+        final String content = this.mvc.perform(post(REQUEST)
                 .accept(responseContentType)
                 .contentType(acceptContentType)
                 .content(converter.toString(newPublisher))).andExpect(status().isOk())

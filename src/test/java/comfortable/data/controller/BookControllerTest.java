@@ -61,6 +61,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookControllerTest {
+    /**
+     * Request (base) for books.
+     */
+    private static final String REQUEST = "/books";
+    
+    /**
+     * Media part for removal for rest documentation (path).
+     */
+    private static final String APPLICATION = "application";
 
     /**
      * Test client for web layer.
@@ -109,7 +118,7 @@ public class BookControllerTest {
     @Test
     public void testHtmlReponse() throws Exception {
         runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
-        final var content = this.mvc.perform(get("/books").accept(CustomMediaType.TEXT_HTML))
+        final var content = this.mvc.perform(get(REQUEST).accept(CustomMediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().trim();
 
         assertThat(content, startsWith("<!doctype html>"));
@@ -132,11 +141,11 @@ public class BookControllerTest {
         final var converter = new ContentConverter<>(Book.class,
                 responseContentType, acceptContentType);
 
-        final var documentName = "post/books/"
-                + acceptContentType.toString().replace("application", "")
-                + responseContentType.toString().replace("application", "");
+        final var documentName = "post" + REQUEST + "/"
+                + acceptContentType.toString().replace(APPLICATION, "")
+                + responseContentType.toString().replace(APPLICATION, "");
 
-        final String content = this.mvc.perform(post("/books")
+        final String content = this.mvc.perform(post(REQUEST)
                 .accept(responseContentType)
                 .contentType(acceptContentType)
                 .content(converter.toString(theBook))).andExpect(status().isOk())
