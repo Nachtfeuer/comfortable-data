@@ -37,6 +37,16 @@ import org.junit.Test;
 public class ContentConverterTest {
 
     /**
+     * Test number of pages.
+     */
+    private static final int PAGES = 226;
+
+    /**
+     * Test year of publication.
+     */
+    private static final int YEAR_OF_PUBLICATION = 1995;
+
+    /**
      * Test book in JSON format.
      */
     private static final String BOOK_JSON = "/book.json";
@@ -45,7 +55,7 @@ public class ContentConverterTest {
      * Test book in XML format.
      */
     private static final String BOOK_XML = "/book.xml";
-    
+
     /**
      * Test book in YAML format.
      */
@@ -146,8 +156,8 @@ public class ContentConverterTest {
         assertThat(book.getSeries(), equalTo("no series"));
         assertThat(book.getAuthors().get(0).getFullName(), equalTo("Stanislaw Lem"));
         assertThat(book.getPublisher().getFullName(), equalTo("suhrkamp"));
-        assertThat(book.getYearOfPublication(), equalTo(1995));
-        assertThat(book.getPages(), equalTo(226));
+        assertThat(book.getYearOfPublication(), equalTo(YEAR_OF_PUBLICATION));
+        assertThat(book.getPages(), equalTo(PAGES));
         assertThat(book.getIsbn(), equalTo("3-518-38959-9"));
         assertThat(book.getDescription(), containsString("ein Raumkreuzer der schweren Klasse"));
         assertThat(book.getTags().get(0).getName(), equalTo("science-fiction"));

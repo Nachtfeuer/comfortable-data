@@ -49,6 +49,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MovieControllerTest {
+    /**
+     * Test year of publication.
+     */
+    private static final int YEAR_OF_PUBLICATION = 1963;
 
     /**
      * Test client for web layer.
@@ -104,7 +108,7 @@ public class MovieControllerTest {
                 .title("the movie title")
                 .originalTitle("the original movie title")
                 .aspectRatio("16:9")
-                .yearOfPublication(1963)
+                .yearOfPublication(YEAR_OF_PUBLICATION)
                 .role(Role.builder()
                         .performer(new Performer("First Performer"))
                         .roleName("Mr. X").build())

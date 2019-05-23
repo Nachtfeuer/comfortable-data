@@ -137,7 +137,8 @@ public class MoviePerformerControllerTest {
      * @param expectedMediaType expected response type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private void runTest(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var responsePerformer = this.createPerformer(fullName, expectedMediaType);
         assertThat(responsePerformer.getFullName(), equalTo(fullName));
 

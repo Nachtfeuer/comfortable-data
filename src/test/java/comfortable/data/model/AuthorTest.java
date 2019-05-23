@@ -36,7 +36,14 @@ import org.junit.Test;
  * Testing of class {@link Author}.
  */
 public class AuthorTest {
-    /** test title. */
+    /**
+     * Max time difference.
+     */
+    private static final long MAX_TIME_DIFF = 500L;
+
+    /**
+     * test title.
+     */
     private static final String AUTHOR_1 = "Agatha Christie";
 
     /**
@@ -69,19 +76,21 @@ public class AuthorTest {
 
     /**
      * Testing conversion to JSON and the way back.
+     *
      * @throws java.lang.Exception should never happen
      */
     @Test
     public void testToAndFromJson() throws Exception {
         final var timestamp = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
         final var author = Author.builder().fullName(AUTHOR_1).created(timestamp).build();
-        
+
         final var mapper = new ObjectMapper();
         final var json = mapper.writeValueAsString(author);
         final var finalAuthor = mapper.readValue(json, Author.class);
         final var diff = finalAuthor.getCreated().getTime() - author.getCreated().getTime();
-        
+
         assertThat(finalAuthor.getFullName(), equalTo(author.getFullName()));
-        assertThat(diff, lessThanOrEqualTo(1000L));
+        // that's because the precision is seconds only.
+        assertThat(diff, lessThanOrEqualTo(MAX_TIME_DIFF));
     }
 }

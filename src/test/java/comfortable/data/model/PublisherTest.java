@@ -31,6 +31,9 @@ import org.junit.Test;
  * Testing of class {@link Publisher}.
  */
 public class PublisherTest {
+    /** Test publisher name. */
+    private static final String PUBLISHER_FULLNAME = "suhrkamp";
+
     /**
      * Testing of default constructor.
      */
@@ -46,7 +49,7 @@ public class PublisherTest {
     @Test
     public void testChange() {
         final Publisher publisher = new Publisher();
-        publisher.setFullName("suhrkamp");
-        assertThat(publisher.getFullName(), equalTo("suhrkamp"));
+        publisher.setFullName(PUBLISHER_FULLNAME);
+        assertThat(publisher.getFullName(), equalTo(PUBLISHER_FULLNAME));
     }
 }

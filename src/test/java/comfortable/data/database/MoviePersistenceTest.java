@@ -41,6 +41,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MoviePersistenceTest {
+    /**
+     * Test year of publication.
+     */
+    private static final int YEAR_OF_PUBLICATION = 1969;
 
     /**
      * Injected Database for storing data.
@@ -66,7 +70,7 @@ public class MoviePersistenceTest {
                 .title("another movie title")
                 .originalTitle("the original movie title")
                 .aspectRatio("16:9")
-                .yearOfPublication(1969)
+                .yearOfPublication(YEAR_OF_PUBLICATION)
                 .role(Role.builder()
                         .performer(new Performer("First Performer"))
                         .roleName("Mr. X").build())
@@ -81,5 +85,4 @@ public class MoviePersistenceTest {
                 .tag(new Tag("utopie"))
                 .build();
     }
-
 }

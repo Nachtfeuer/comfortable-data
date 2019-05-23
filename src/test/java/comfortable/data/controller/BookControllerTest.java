@@ -62,6 +62,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureRestDocs
 public class BookControllerTest {
     /**
+     * Test year of publication.
+     */
+    private static final int YEAR_OF_PUBLICATION = 1995;
+    
+    /**
+     * Test number of pages.
+     */
+    private static final int PAGES = 228;
+
+    /**
      * Request (base) for books.
      */
     private static final String REQUEST = "/books";
@@ -188,8 +198,8 @@ public class BookControllerTest {
                 .isbn("3-518-38959-9")
                 .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(Publisher.builder().fullName("suhrkamp").build())
-                .pages(228)
-                .yearOfPublication(1995)
+                .pages(PAGES)
+                .yearOfPublication(YEAR_OF_PUBLICATION)
                 .description(description)
                 .tag(new Tag("science-fiction"))
                 .tag(new Tag("evolution"))

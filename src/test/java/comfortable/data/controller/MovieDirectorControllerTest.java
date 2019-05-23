@@ -134,7 +134,8 @@ public class MovieDirectorControllerTest {
      * @param expectedMediaType expected response type (JSON, XML or YAML).
      * @throws Exception if coonversion or a request has failed.
      */
-    private void runTest(final String fullName, final MediaType expectedMediaType) throws Exception {
+    private void runTest(final String fullName,
+            final MediaType expectedMediaType) throws Exception {
         final var responseDirector = createDirector(fullName, expectedMediaType);
         assertThat(responseDirector.getFullName(), equalTo(fullName));
 

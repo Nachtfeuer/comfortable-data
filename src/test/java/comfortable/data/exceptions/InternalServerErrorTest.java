@@ -32,11 +32,16 @@ import org.junit.Test;
  */
 public class InternalServerErrorTest {
     /**
+     * Test message.
+     */
+    private static final String MESSAGE = "something bad did happen";
+
+    /**
      * Testing initialization.
      */
     @Test
     public void testInit() {
-        final var exception = new InternalServerError("something bad did happen");
-        assertThat(exception.getMessage(), equalTo("something bad did happen"));
+        final var exception = new InternalServerError(MESSAGE);
+        assertThat(exception.getMessage(), equalTo(MESSAGE));
     }
 }

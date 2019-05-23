@@ -41,12 +41,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- *
- * @author Thomas Lehmann
+ * Testing of class {@link TemplateEngine}.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TemplareEngineTest {
+
+    /**
+     * Test title 1.
+     */
+    private static final String TITLE_1 = "title1";
+
+    /**
+     * Test title 2.
+     */
+    private static final String TITLE_2 = "title2";
 
     /**
      * Template engine for rendering.
@@ -62,14 +71,14 @@ public class TemplareEngineTest {
     @Test
     public void testRenderBooks() throws IOException {
         final List<Book> books = new ArrayList<>();
-        books.add(Book.builder().title("title1").build());
-        books.add(Book.builder().title("title2").build());
+        books.add(Book.builder().title(TITLE_1).build());
+        books.add(Book.builder().title(TITLE_2).build());
 
         final var renderer = templateEngine.getRenderer("/books.html");
         final var content = renderer.add("books", books).render().trim();
         assertThat(content, startsWith("<!doctype html>"));
-        assertThat(content, containsString("title1"));
-        assertThat(content, containsString("title2"));
+        assertThat(content, containsString(TITLE_1));
+        assertThat(content, containsString(TITLE_2));
         assertThat(content, endsWith("</html>"));
     }
 }

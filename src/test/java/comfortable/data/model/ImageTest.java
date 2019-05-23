@@ -36,6 +36,10 @@ import org.springframework.http.MediaType;
  * Testing of class {@link Image}.
  */
 public class ImageTest {
+    /**
+     * Test prefix used for HTML image src.
+     */
+    private static final String JPG_BASE64_PREFIX = "image/jpeg;base64,";
 
     /**
      * Testing {@link Image#toBase64()}.
@@ -45,7 +49,7 @@ public class ImageTest {
     @Test
     public void testToBase64() throws IOException {
         final var image = loadImage();
-        final var base64 = "image/jpeg;base64," + Base64.encodeBase64String(image.getImageData());
+        final var base64 = JPG_BASE64_PREFIX + Base64.encodeBase64String(image.getImageData());
         assertThat(image.toBase64(), equalTo(base64));
     }
 
@@ -58,7 +62,7 @@ public class ImageTest {
     @Test
     public void testToJson() throws JsonProcessingException, IOException {
         final var image = loadImage();
-        final var base64 = "image/jpeg;base64," + Base64.encodeBase64String(image.getImageData());
+        final var base64 = JPG_BASE64_PREFIX + Base64.encodeBase64String(image.getImageData());
         final var mapper = new ObjectMapper();
         final var json = mapper.writeValueAsString(image);
         assertThat(json, equalTo("{\"data\":\"" + base64 + "\"}"));

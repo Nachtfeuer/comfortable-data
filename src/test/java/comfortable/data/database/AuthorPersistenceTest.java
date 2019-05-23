@@ -44,7 +44,7 @@ public class AuthorPersistenceTest {
     /**
      * Retries in tests doing the same.
      */
-    private final static int RETRIES = 10;
+    private static final int RETRIES = 10;
 
     /**
      * Repository to use for saving/persisting authors.

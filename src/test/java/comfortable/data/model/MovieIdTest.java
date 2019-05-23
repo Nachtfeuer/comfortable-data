@@ -32,6 +32,8 @@ import org.junit.Test;
  * Testing of class {@link MoveId}.
  */
 public class MovieIdTest {
+    /** Test invalid id. */
+    private static final int INVALID_ID = 1234;
     /** Test title. */
     private static final String TITLE_1 = "some title";
     /** Test original title. */
@@ -44,7 +46,6 @@ public class MovieIdTest {
     private static final int YEAR_OF_PUBLICATION_1 = 1969;
     /** Test year 2. */
     private static final int YEAR_OF_PUBLICATION_2 = 1970;
-
 
     /**
      * Testing default constructor.
@@ -90,9 +91,10 @@ public class MovieIdTest {
         final var movieId3 = createData(TITLE_2, ORIGINAL_TITLE_2, YEAR_OF_PUBLICATION_2);
         assertThat(movieId1, equalTo(movieId2));
         assertThat(movieId1, not(equalTo(movieId3)));
-        assertThat(movieId1, not(equalTo(1234)));
+        assertThat(movieId1, not(equalTo(INVALID_ID)));
         assertThat(movieId1, not(equalTo(null)));
     }
+
     /**
      * Testing {@link MovieId#hashCode()}.
      */
