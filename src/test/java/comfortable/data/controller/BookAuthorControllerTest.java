@@ -107,14 +107,14 @@ public class BookAuthorControllerTest {
      * Database access to book authors.
      */
     @Autowired
-    private BookAuthorRepository authors;
+    private BookAuthorRepository repository;
 
     /**
      * Cleanup authors for consistent tests.
      */
     @Before
     public void setUp() {
-        this.authors.deleteAll();
+        this.repository.deleteAll();
     }
 
     /**

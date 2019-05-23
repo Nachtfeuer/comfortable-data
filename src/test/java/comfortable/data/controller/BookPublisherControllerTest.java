@@ -100,19 +100,25 @@ public class BookPublisherControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    /**
+     * Database access to the publishers (entities).
+     */
     @Autowired
-    private BookPublisherRepository publishers;
+    private BookPublisherRepository repository;
 
+    /**
+     * Remove all concrete test publishers before test.
+     */
     @Before
     public void setUp() {
-        if (this.publishers.findById(PUBLISHER_1).isPresent()) {
-            this.publishers.deleteById(PUBLISHER_1);
+        if (this.repository.findById(PUBLISHER_1).isPresent()) {
+            this.repository.deleteById(PUBLISHER_1);
         }
-        if (this.publishers.findById(PUBLISHER_2).isPresent()) {
-            this.publishers.deleteById(PUBLISHER_2);
+        if (this.repository.findById(PUBLISHER_2).isPresent()) {
+            this.repository.deleteById(PUBLISHER_2);
         }
-        if (this.publishers.findById(PUBLISHER_3).isPresent()) {
-            this.publishers.deleteById(PUBLISHER_3);
+        if (this.repository.findById(PUBLISHER_3).isPresent()) {
+            this.repository.deleteById(PUBLISHER_3);
         }
     }
 
