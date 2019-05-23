@@ -66,6 +66,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookAuthorControllerTest {
+    
+    /**
+     * The book authors (base) request.
+     */
+    private static final String REQUEST = "/books/authors";
+
+    /**
+     * Part of media type to remove for rest doc.
+     */
+    private static final String APPLICATION = "application";
 
     /**
      * test author.
@@ -81,7 +91,7 @@ public class BookAuthorControllerTest {
      * yet another test author.
      */
     private static final String BOOK_TITLE_3 = "Stanislaw Lem";
-    
+
     /**
      * Retries for same operation.
      */
@@ -98,7 +108,7 @@ public class BookAuthorControllerTest {
      */
     @Autowired
     private BookAuthorRepository authors;
-    
+
     /**
      * Cleanup authors for consistent tests.
      */
@@ -154,10 +164,10 @@ public class BookAuthorControllerTest {
         createAuthor(BOOK_TITLE_3,
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
 
-        final var documentName = "get/books/authors/byFullName";
+        final var documentName = "get" + REQUEST + "/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get("/books/authors?fullName=is").accept(CustomMediaType.APPLICATION_JSON))
+                get(REQUEST + "?fullName=is").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
                 .andReturn().getResponse().getContentAsString();
@@ -184,7 +194,7 @@ public class BookAuthorControllerTest {
         createAuthor(BOOK_TITLE_1,
                 CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
 
-        final var content = this.mvc.perform(get("/books/authors")
+        final var content = this.mvc.perform(get(REQUEST)
                 .accept(CustomMediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().trim();
 
@@ -231,9 +241,9 @@ public class BookAuthorControllerTest {
     private void runTest(final Set<String> fullNames,
             final MediaType contentType,
             final MediaType expectedResponseType) throws Exception {
-        for (var fullName: fullNames) {
+        for (var fullName : fullNames) {
             final var responseAuthor = createAuthor(fullName, contentType, expectedResponseType);
-            assertThat(responseAuthor.getFullName(), equalTo(fullName));            
+            assertThat(responseAuthor.getFullName(), equalTo(fullName));
         }
 
         final var requestMaker = new RequestMaker(this.mvc);
@@ -250,7 +260,7 @@ public class BookAuthorControllerTest {
      * Create or update author in database.
      *
      * @param fullName name of the author to be created or updated.
-     * @param acceptContentType  content type to send (JSON, XML or YAML).
+     * @param acceptContentType content type to send (JSON, XML or YAML).
      * @param responseContentType expected response content type (JSON, XML or YAML).
      * @return response author.
      * @throws Exception when request or conversion has failed.
@@ -262,11 +272,11 @@ public class BookAuthorControllerTest {
         final var converter = new ContentConverter<>(Author.class,
                 responseContentType, acceptContentType);
 
-        final var documentName = "post/books/authors/"
-                + acceptContentType.toString().replace("application", "")
-                + responseContentType.toString().replace("application", "");
+        final var documentName = "post" + REQUEST + "/"
+                + acceptContentType.toString().replace(APPLICATION, "")
+                + responseContentType.toString().replace(APPLICATION, "");
 
-        final String content = this.mvc.perform(post("/books/authors")
+        final String content = this.mvc.perform(post(REQUEST)
                 .accept(responseContentType)
                 .contentType(acceptContentType)
                 .content(converter.toString(newAuthor))).andExpect(status().isOk())
