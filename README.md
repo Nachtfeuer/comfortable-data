@@ -35,6 +35,7 @@ mvn -N io.takari:maven:0.7.5:wrapper
 
 ### Build
  - https://github.com/takari/maven-wrapper
+ - https://www.baeldung.com/executable-jar-with-maven
  
 ### Database
  - https://www.h2database.com/html/main.html
