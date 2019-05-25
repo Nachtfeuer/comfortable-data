@@ -41,9 +41,11 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller for all supported operations on book publishers.
  *
+ * <p>
  * The REST calls (except for the HTML) are all supporting
  * JSON, XML, YAML and MsgPack for sending/recieving data
  * to/from the REST service.
+ * </p>
  */
 @RestController
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
