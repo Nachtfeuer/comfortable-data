@@ -5,6 +5,7 @@ Java based REST service for movies, books and similar data using jpa in its back
 [![Coverage Status](https://coveralls.io/repos/github/Nachtfeuer/comfortable-data/badge.svg?branch=master)](https://coveralls.io/github/Nachtfeuer/comfortable-data?branch=master)
 [![CodeFactor](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data/badge)](https://www.codefactor.io/repository/github/nachtfeuer/comfortable-data)
 [![BCH compliance](https://bettercodehub.com/edge/badge/Nachtfeuer/comfortable-data?branch=master)](https://bettercodehub.com/)
+[![codebeat badge](https://codebeat.co/badges/4ca02579-c36c-4400-8367-7155734a17b1)](https://codebeat.co/projects/github-com-nachtfeuer-comfortable-data-master)
 [![Known Vulnerabilities](https://snyk.io/test/github/nachtfeuer/comfortable-data/badge.svg)](https://snyk.io/test/github/nachtfeuer/comfortable-data) 
 
 ## Goals
