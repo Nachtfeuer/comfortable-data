@@ -58,8 +58,9 @@ public class BookPublisherController {
      * @param publisher book publisher model data.
      * @return created or updated publisher.
      */
-    @PostMapping(value = "/books/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @PostMapping(value = "/books/publishers", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public Publisher createOrUpdatePublisher(@RequestBody final Publisher publisher) {
         final Publisher responsePublisher;
         final var optionalAuthor = repository.findById(publisher.getFullName());
@@ -76,8 +77,9 @@ public class BookPublisherController {
      *
      * @return provide list of publishers.
      */
-    @GetMapping(value = "/books/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @GetMapping(value = "/books/publishers", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public List<Publisher> getListOfPublishers() {
         return repository.findAll();
     }
@@ -88,8 +90,9 @@ public class BookPublisherController {
      * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
      * @return provide list of publishers.
      */
-    @GetMapping(value = "/books/publishers", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
+    @GetMapping(value = "/books/publishers", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE},
         params = {"fullName"})
     public List<Publisher> getListOfPublishersBySpec(
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)

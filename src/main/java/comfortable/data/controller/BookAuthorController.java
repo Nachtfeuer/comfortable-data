@@ -57,12 +57,13 @@ public class BookAuthorController {
      * @param author book author model data.
      * @return created or updated author.
      */
-    @PostMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @PostMapping(value = "/books/authors", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public Author createOrUpdateAuthor(@RequestBody final Author author) {
         final Author responseAuthor;
         final var optionalAuthor = repository.findById(author.getFullName());
-        if(optionalAuthor.isPresent()) {
+        if (optionalAuthor.isPresent()) {
             responseAuthor = optionalAuthor.get();
         } else {
             responseAuthor = repository.save(author);
@@ -75,8 +76,9 @@ public class BookAuthorController {
      *
      * @return provide list of authors.
      */
-    @GetMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @GetMapping(value = "/books/authors", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public List<Author> getListOfAuthors() {
         return repository.findAll();
     }
@@ -87,9 +89,10 @@ public class BookAuthorController {
      * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
      * @return provide list of authors.
      */
-    @GetMapping(value = "/books/authors", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE},
-        params = {"fullName"})
+    @GetMapping(value = "/books/authors", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE},
+            params = {"fullName"})
     public List<Author> getListOfAuthorsBySpec(
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)
             final Specification<Author> spec) {

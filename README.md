@@ -55,3 +55,9 @@ mvn -N io.takari:maven:0.7.5:wrapper
  
 ### Request Handling
  - https://github.com/tkaczmarzyk/specification-arg-resolver
+ 
+### Data (de-)serialization
+ - https://msgpack.org/
+ - https://www.json.org/
+ - https://yaml.org/
+ - https://www.w3.org/TR/2008/REC-xml-20081126/

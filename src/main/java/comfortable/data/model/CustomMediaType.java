@@ -47,6 +47,11 @@ public final class CustomMediaType {
     public static final String APPLICATION_JSON_VALUE = MediaType.APPLICATION_JSON_VALUE;
 
     /**
+     * Value for Media Type for MsgPack.
+     */
+    public static final String APPLICATION_MSGPACK_VALUE = "application/x-msgpack";
+
+    /**
      * Media type for JSON.
      */
     public static final MediaType APPLICATION_JSON = MediaType.APPLICATION_JSON;
@@ -60,16 +65,22 @@ public final class CustomMediaType {
      * Media type for YAML.
      */
     public static final MediaType APPLICATION_YAML = MediaType.valueOf(APPLICATION_YAML_VALUE);
-    
+
     /**
      * Media type for HTML.
      */
     public static final MediaType TEXT_HTML = MediaType.TEXT_HTML;
-    
+
     /**
      * Value for Media type HTML.
      */
-    public static final String TEXT_HTML_VALUE= MediaType.TEXT_HTML_VALUE;
+    public static final String TEXT_HTML_VALUE = MediaType.TEXT_HTML_VALUE;
+
+    /**
+     * Media type for MsgPack.
+     */
+    public static final MediaType APPLICATION_MSGPACK
+            = MediaType.valueOf(APPLICATION_MSGPACK_VALUE);
 
     /**
      * tool should not be instantiated.

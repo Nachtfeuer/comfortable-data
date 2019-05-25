@@ -69,6 +69,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void extendMessageConverters(final List<HttpMessageConverter<?>> converters) {
         converters.add(new YamlJackson2HttpMessageConverter());
+        converters.add(new MsgPackJackson2HttpMessageConverter());
         WebMvcConfigurer.super.extendMessageConverters(converters);
     }
 

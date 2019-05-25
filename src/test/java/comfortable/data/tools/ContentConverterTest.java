@@ -34,6 +34,8 @@ import org.junit.Test;
 /**
  * Testing of class {@link ContentConverter}.
  */
+
+
 public class ContentConverterTest {
 
     /**
@@ -142,6 +144,23 @@ public class ContentConverterTest {
         final var yamlConverter = new ContentConverter<>(Book.class,
                 CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_YAML);
         final var book = yamlConverter.fromString(yamlConverter.toString(referenceBook));
+        validateBook(book);
+    }
+
+    /**
+     * Testing conversion with MsgPack.
+     *
+     * @throws IOException should never happen.
+     */
+    @Test
+    public void testToAndFromMsgPack() throws IOException {
+        final var initialConverter = new ContentConverter<>(
+                Book.class, CustomMediaType.APPLICATION_YAML);
+        final var referenceBook = initialConverter.fromString(readBook(BOOK_YAML));
+
+        final var msgPackConverter = new ContentConverter<>(Book.class,
+                CustomMediaType.APPLICATION_MSGPACK, CustomMediaType.APPLICATION_MSGPACK);
+        final var book = msgPackConverter.fromBytes(msgPackConverter.toBytes(referenceBook));
         validateBook(book);
     }
 

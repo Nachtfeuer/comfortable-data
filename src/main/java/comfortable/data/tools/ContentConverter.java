@@ -29,6 +29,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import comfortable.data.model.CustomMediaType;
 import java.io.IOException;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.http.MediaType;
 
 /**
@@ -103,6 +104,25 @@ public class ContentConverter<E> {
         } else if (this.source == CustomMediaType.APPLICATION_YAML) {
             final var yamlMapper = new ObjectMapper(new YAMLFactory());
             result = yamlMapper.readValue(content, this.theClass);
+        } else if (this.source == CustomMediaType.APPLICATION_MSGPACK) {
+            final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
+            result = msgPackMapper.readValue(content, this.theClass);
+        }
+        return result;
+    }
+
+    /**
+     * Deserializes data from string using the conversion defined by the source media type.
+     *
+     * @param content the data as byte array.
+     * @return deserialized data as instance of the defined generic type.
+     * @throws IOException happens when conversion has failed.
+     */
+    public E fromBytes(final byte[] content) throws IOException {
+        E result = null;
+        if (this.source == CustomMediaType.APPLICATION_MSGPACK) {
+            final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
+            result = msgPackMapper.readValue(content, this.theClass);
         }
         return result;
     }
@@ -110,7 +130,7 @@ public class ContentConverter<E> {
     /**
      * Converting object into defined destination format (XML, JSON or YAML).
      *
-     * @param object the object to coonvert.
+     * @param object the object to convert.
      * @return pass object as string in given format or an empty string when destination type is not
      * supported.
      * @throws JsonProcessingException when conversion has failed.
@@ -126,6 +146,23 @@ public class ContentConverter<E> {
         } else if (this.destination == CustomMediaType.APPLICATION_YAML) {
             final var yamlMapper = new ObjectMapper(new YAMLFactory());
             result = yamlMapper.writeValueAsString(object);
+        }
+        return result;
+    }
+
+    /**
+     * Converting object into defined destination format (MSGPACK).
+     *
+     * @param object the object to convert.
+     * @return pass object as string in given format or an empty string when destination type is not
+     * supported.
+     * @throws JsonProcessingException when conversion has failed.
+     */
+    public byte[] toBytes(final E object) throws JsonProcessingException {
+        byte[] result = null;
+        if (this.destination == CustomMediaType.APPLICATION_MSGPACK) {
+            final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
+            result = msgPackMapper.writeValueAsBytes(object);
         }
         return result;
     }

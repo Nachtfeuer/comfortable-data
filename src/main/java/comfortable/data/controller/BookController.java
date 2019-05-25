@@ -53,8 +53,9 @@ public final class BookController {
      * @param book book to create or update in database.
      * @return persistent book
      */
-    @PostMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @PostMapping(value = "/books", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public Book createOrUpdateBook(@RequestBody final Book book) {
         return this.repository.save(book);
     }
@@ -64,8 +65,9 @@ public final class BookController {
      *
      * @return provide list of books.
      */
-    @GetMapping(value = "/books", produces = {CustomMediaType.APPLICATION_JSON_VALUE,
-        CustomMediaType.APPLICATION_XML_VALUE, CustomMediaType.APPLICATION_YAML_VALUE})
+    @GetMapping(value = "/books", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public List<Book> getListOfBooks() {
         return repository.findAll();
     }
