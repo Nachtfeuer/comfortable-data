@@ -23,6 +23,7 @@
  */
 package comfortable.data.importer;
 
+import comfortable.data.configuration.ApplicationConfiguration;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
@@ -31,7 +32,6 @@ import comfortable.data.tools.ContentConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +42,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * Automatically imports books from a path when the service has been started.
+ * 
+ * <p>
+ * The import relies on following rules:
+ * </p>
+ * <ul>
+ *     <li>Each book filename is the title of the book with the extension .yaml</li>
+ *     <li>If you have an image for the book cover use als the title with the extension .jpg</li>
+ * </ul>
  */
 @Component
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -56,6 +64,11 @@ public class BookImporter {
      * File extension used for book import.
      */
     private static final String BOOK_EXTENSION_YAML = ".yaml";
+    
+    /**
+     * File extension used for book cover import.
+     */
+    private static final String BOOK_COVER_EXTENSION_JPG = ".jpg";
 
     /**
      * when true the book import runs when service has started otherwise not.
@@ -68,6 +81,12 @@ public class BookImporter {
      */
     @Autowired
     private transient BookRepository bookRepository;
+    
+    /**
+     * Application configuration.
+     */
+    @Autowired
+    private transient ApplicationConfiguration configuration;
 
     /**
      * Automatically imports books from a path when the service has been started.
@@ -75,9 +94,8 @@ public class BookImporter {
     @PostConstruct
     public void importBooks() {
         if (this.booksImportEnabled) {
-            final var path = System.getProperty("user.home");
             try {
-                Files.list(Paths.get(path, "books"))
+                Files.list(configuration.getBooksPath())
                         .filter(entry -> entry.toString().endsWith(BOOK_EXTENSION_YAML))
                         .forEach(entry -> importBook(entry));
             } catch (IOException e) {
@@ -102,7 +120,7 @@ public class BookImporter {
                         CustomMediaType.APPLICATION_YAML);
                 final var newBook = converter.fromString(content);
                 final var imagePath = Path.of(entry.toString()
-                        .replace(BOOK_EXTENSION_YAML, ".jpg"));
+                        .replace(BOOK_EXTENSION_YAML, BOOK_COVER_EXTENSION_JPG));
 
                 if (Files.isReadable(imagePath)) {
                     newBook.setCover(Image.builder()
