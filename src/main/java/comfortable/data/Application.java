@@ -29,6 +29,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Spring REST Application startup.
+ * 
+ * It's a standalone application not requiring any
+ * application server like Tomcat or Wildfly.
  */
 @SpringBootApplication
 @EnableJpaRepositories

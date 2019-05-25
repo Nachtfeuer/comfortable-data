@@ -40,6 +40,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for all supported operations on book publishers.
+ *
+ * The REST calls (except for the HTML) are all supporting
+ * JSON, XML, YAML and MsgPack for sending/recieving data
+ * to/from the REST service.
  */
 @RestController
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
@@ -73,9 +77,9 @@ public class BookPublisherController {
     }
 
     /**
-     * Provide list of publishers.
+     * Provide list of all publishers.
      *
-     * @return provide list of publishers.
+     * @return list of publishers.
      */
     @GetMapping(value = "/books/publishers", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,

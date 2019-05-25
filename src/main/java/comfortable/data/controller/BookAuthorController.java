@@ -40,6 +40,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for all supported operations on book authors.
+ *
+ * The REST calls (except for the HTML) are all supporting
+ * JSON, XML, YAML and MsgPack for sending/recieving data
+ * to/from the REST service.
  */
 @RestController
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
@@ -72,9 +76,9 @@ public class BookAuthorController {
     }
 
     /**
-     * Provide list of authors.
+     * Provide list of all authors.
      *
-     * @return provide list of authors.
+     * @return list of all authors.
      */
     @GetMapping(value = "/books/authors", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
@@ -87,7 +91,7 @@ public class BookAuthorController {
      * Provide list of authors filtered by name containing search string.
      *
      * @param spec the search spec (here: fullName allowing "like" and with ignoring letter case)
-     * @return provide list of authors.
+     * @return list of authors.
      */
     @GetMapping(value = "/books/authors", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
