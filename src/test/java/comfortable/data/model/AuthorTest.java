@@ -24,27 +24,40 @@
 package comfortable.data.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.tools.RandomDataProvider;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Testing of class {@link Author}.
  */
 public class AuthorTest {
+
     /**
      * Max time difference.
      */
     private static final long MAX_TIME_DIFF = 500L;
 
     /**
-     * test title.
+     * Provider for test data.
      */
-    private static final String AUTHOR_1 = "Agatha Christie";
+    private static RandomDataProvider provider;
+
+    /**
+     * Load test data.
+     * @throws java.io.IOException should never happen here.
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws IOException {
+        provider = RandomDataProvider.of("/test.data.json");
+    }
 
     /**
      * Testing default constructor.
@@ -60,9 +73,10 @@ public class AuthorTest {
      */
     @Test
     public void testSetter() {
+        final var fullName = AuthorTest.provider.get(RandomDataProvider.AUTHOR);
         final Author author = new Author();
-        author.setFullName(AUTHOR_1);
-        assertThat(author.getFullName(), equalTo(AUTHOR_1));
+        author.setFullName(fullName);
+        assertThat(author.getFullName(), equalTo(fullName));
     }
 
     /**
@@ -70,8 +84,9 @@ public class AuthorTest {
      */
     @Test
     public void testBuilder() {
-        final var author = Author.builder().fullName(AUTHOR_1).build();
-        assertThat(author.getFullName(), equalTo(AUTHOR_1));
+        final var fullName = AuthorTest.provider.get(RandomDataProvider.AUTHOR);
+        final var author = Author.builder().fullName(fullName).build();
+        assertThat(author.getFullName(), equalTo(fullName));
     }
 
     /**
@@ -82,7 +97,8 @@ public class AuthorTest {
     @Test
     public void testToAndFromJson() throws Exception {
         final var timestamp = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
-        final var author = Author.builder().fullName(AUTHOR_1).created(timestamp).build();
+        final var author = Author.builder().fullName(
+                AuthorTest.provider.get(RandomDataProvider.AUTHOR)).created(timestamp).build();
 
         final var mapper = new ObjectMapper();
         final var json = mapper.writeValueAsString(author);

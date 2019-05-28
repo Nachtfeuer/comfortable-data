@@ -29,7 +29,9 @@ import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.model.Tag;
 import comfortable.data.tools.ContentConverter;
+import comfortable.data.tools.RandomDataProvider;
 import comfortable.data.tools.RequestMaker;
+import java.io.IOException;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.BeforeClass;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -61,16 +64,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookControllerTest {
-    /**
-     * Test year of publication.
-     */
-    private static final int YEAR_OF_PUBLICATION = 1995;
     
-    /**
-     * Test number of pages.
-     */
-    private static final int PAGES = 228;
-
     /**
      * Request (base) for books.
      */
@@ -82,10 +76,24 @@ public class BookControllerTest {
     private static final String APPLICATION = "application";
 
     /**
+     * Provider for test data.
+     */
+    private static RandomDataProvider provider;
+
+    /**
      * Test client for web layer.
      */
     @Autowired
     private MockMvc mvc;
+
+    /**
+     * Load test data.
+     * @throws java.io.IOException should never happen here.
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws IOException {
+        provider = RandomDataProvider.of("/test.data.json");
+    }
 
     /**
      * Using /books REST to create a new author and to receive the id as JSON response.
@@ -198,12 +206,12 @@ public class BookControllerTest {
                 .isbn("3-518-38959-9")
                 .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(Publisher.builder().fullName("suhrkamp").build())
-                .pages(PAGES)
-                .yearOfPublication(YEAR_OF_PUBLICATION)
+                .pages(Integer.valueOf(this.provider.get(RandomDataProvider.PAGES)))
+                .yearOfPublication(Integer.valueOf(this.provider.get(RandomDataProvider.YEAR)))
                 .description(description)
                 .tag(new Tag("science-fiction"))
                 .tag(new Tag("evolution"))
-                .rating("sehr gut")
+                .rating(this.provider.get(RandomDataProvider.RATING))
                 .build();
     }
 }

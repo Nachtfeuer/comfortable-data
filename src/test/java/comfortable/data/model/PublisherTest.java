@@ -23,16 +23,31 @@
  */
 package comfortable.data.model;
 
+import comfortable.data.tools.RandomDataProvider;
+import java.io.IOException;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Testing of class {@link Publisher}.
  */
 public class PublisherTest {
-    /** Test publisher name. */
-    private static final String PUBLISHER_FULLNAME = "suhrkamp";
+
+    /**
+     * Provider for test data.
+     */
+    private static RandomDataProvider provider;
+
+    /**
+     * Load test data.
+     * @throws java.io.IOException should never happen here.
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws IOException {
+        provider = RandomDataProvider.of("/test.data.json");
+    }
 
     /**
      * Testing of default constructor.
@@ -48,8 +63,9 @@ public class PublisherTest {
      */
     @Test
     public void testChange() {
+        final var fullName = PublisherTest.provider.get(RandomDataProvider.PUBLISHER);
         final Publisher publisher = new Publisher();
-        publisher.setFullName(PUBLISHER_FULLNAME);
-        assertThat(publisher.getFullName(), equalTo(PUBLISHER_FULLNAME));
+        publisher.setFullName(fullName);
+        assertThat(publisher.getFullName(), equalTo(fullName));
     }
 }

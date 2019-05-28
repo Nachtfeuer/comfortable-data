@@ -1,0 +1,27 @@
+{
+    "author": [
+        "Agatha Christie", "Rex Stout", "Stanislaw Lem", "Michael Moorcook",
+        "Raymond Chandler", "Greg Bear", "Richard Schwartz", "Alan Dean Foster",
+        "Marion Zimmer Bradley", "Brent Weeks", "Richard Herley", "Barbara Hambly",
+        "Ernest Cline", "Tom Wood", "Charlotte MacLeod", "Ellery Queen", "Dan Brown",
+        "Noah Gordon", "Barbara Wood", "Diana Gabaldon", "Sharon Shinn", "Jonathan Stroud",
+        "Brandon Sanderson", "Anne Rice", "Trudi Canavan", "Brian Daley", "Leon Uris"
+    ],
+    "publisher": [
+        "Bastei Lübbe", "Goldmann", "blanvalet", "Heyne", "dtv", "PIPER", "ullstein",
+        "DROEMER", "Fischer", "detebe", "Zaubermond", "Diana", "rororo"
+    ],
+    "year": [
+        1995, 1996, 1997, 1998, 1999, 2000
+    ],
+    "pages": [
+        200, 250, 300, 350, 400, 450, 500, 550, 600, 650
+    ],
+    "tag": [
+        "krimi", "science-fiction", "fantasy", "rpg", "evolution",
+        "komödie", "utopie", "thriller", "horror"
+    ],
+    "rating": [
+        "gut", "sehr gut", "super", "ganz gut", "geht so"
+    ]
+}
