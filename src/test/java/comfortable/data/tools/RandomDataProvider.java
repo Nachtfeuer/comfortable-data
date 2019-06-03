@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -64,6 +63,16 @@ public final class RandomDataProvider {
     public static final String YEAR = "year";
 
     /**
+     * Group "isbn" in data file.
+     */
+    public static final String ISBN = "isbn";
+
+    /**
+     * Group "title" in data file.
+     */
+    public static final String TITLE = "title";
+
+    /**
      * group values like authors, publishers, directory, and so on.
      */
     private final transient Map<String, List<String>> dataMap = new HashMap<>();
@@ -95,7 +104,7 @@ public final class RandomDataProvider {
      * @param count number of random values out of this group
      * @return set of random values.
      */
-    public Set<String> get(final String key, final int count) {
+    public List<String> get(final String key, final int count) {
         final var existingValues = this.dataMap.get(key);
         final var randomValues = new HashSet<String>();
         if (existingValues != null && count <= existingValues.size()) {
@@ -105,7 +114,7 @@ public final class RandomDataProvider {
                 randomValues.add(existingValues.get(index));
             }
         }
-        return randomValues;
+        return randomValues.stream().collect(toList());
     }
     /**
      * Provide a on value for a given group (key).

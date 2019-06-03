@@ -35,7 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface BookAuthorRepository extends JpaRepository<Author, String>,
-                                              JpaSpecificationExecutor<Author> {
+        JpaSpecificationExecutor<Author> {
+
     @Transactional(readOnly = true)
     @Override
     List<Author> findAll();

@@ -64,12 +64,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookControllerTest {
-    
+
     /**
      * Request (base) for books.
      */
     private static final String REQUEST = "/books";
-    
+
     /**
      * Media part for removal for rest documentation (path).
      */
@@ -88,6 +88,7 @@ public class BookControllerTest {
 
     /**
      * Load test data.
+     *
      * @throws java.io.IOException should never happen here.
      */
     @BeforeClass
@@ -171,7 +172,7 @@ public class BookControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         final var responseBook = converter.fromString(content);
-        
+
         // adjusting dates
         theBook.getAuthors().get(0).setCreated(responseBook.getAuthors().get(0).getCreated());
         theBook.getPublisher().setCreated(responseBook.getPublisher().getCreated());
@@ -206,12 +207,14 @@ public class BookControllerTest {
                 .isbn("3-518-38959-9")
                 .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(Publisher.builder().fullName("suhrkamp").build())
-                .pages(Integer.valueOf(this.provider.get(RandomDataProvider.PAGES)))
-                .yearOfPublication(Integer.valueOf(this.provider.get(RandomDataProvider.YEAR)))
+                .pages(Integer.valueOf(
+                        BookControllerTest.provider.get(RandomDataProvider.PAGES)))
+                .yearOfPublication(Integer.valueOf(
+                        BookControllerTest.provider.get(RandomDataProvider.YEAR)))
                 .description(description)
                 .tag(new Tag("science-fiction"))
                 .tag(new Tag("evolution"))
-                .rating(this.provider.get(RandomDataProvider.RATING))
+                .rating(BookControllerTest.provider.get(RandomDataProvider.RATING))
                 .build();
     }
 }

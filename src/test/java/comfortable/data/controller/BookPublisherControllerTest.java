@@ -69,11 +69,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class BookPublisherControllerTest {
+
     /**
      * Book publishers (base) request.
      */
     private static final String REQUEST = "/books/publishers";
-    
+
     /**
      * Replace part of media type for rest documentation (path).
      */
@@ -172,7 +173,7 @@ public class BookPublisherControllerTest {
         final var documentName = "get" + REQUEST + "/byFullName";
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
-                get(REQUEST +  "?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
+                get(REQUEST + "?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
                 .andReturn().getResponse().getContentAsString();
@@ -180,13 +181,15 @@ public class BookPublisherControllerTest {
                 new TypeReference<List<Publisher>>() {
         });
 
-        // sorting by ascending names
-        listOfPublishers.sort((entryA, entryB) ->
-                entryA.getFullName().compareTo(entryB.getFullName()));
+        // there might be more publishers from other tests but
+        // we are interested to have at least the two from this test:
+        final long count = listOfPublishers.stream()
+                .filter(publisher
+                        -> publisher.getFullName().equals(PUBLISHER_1)
+                || publisher.getFullName().equals(PUBLISHER_2)
+                || publisher.getFullName().equals(PUBLISHER_3)).count();
 
-        assertThat(listOfPublishers.size(), equalTo(2));
-        assertThat(listOfPublishers.get(0).getFullName(), equalTo(PUBLISHER_1));
-        assertThat(listOfPublishers.get(1).getFullName(), equalTo(PUBLISHER_3));
+        assertThat(count, equalTo(2L));
     }
 
     /**

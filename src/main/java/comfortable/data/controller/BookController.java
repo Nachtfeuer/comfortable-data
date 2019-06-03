@@ -29,7 +29,13 @@ import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.FileTools;
 import java.util.List;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Joins;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,15 +67,30 @@ public final class BookController {
     }
 
     /**
-     * Provide list of books.
+     * Provide list of books using given gilter.
      *
+     * @param spec represent the filter that can handle the urls parameters passed by the user.
      * @return provide list of books.
      */
     @GetMapping(value = "/books", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
-    public List<Book> getListOfBooks() {
-        return repository.findAll();
+    public List<Book> getListOfBooksBySpec(
+            @Joins({
+                @Join(path = "authors", alias = "a"),
+                @Join(path = "publisher", alias = "p"),
+                @Join(path = "tags", alias = "t")
+            })
+            @And({
+                @Spec(path = "title", params = "title", spec = LikeIgnoreCase.class),
+                @Spec(path = "series", params = "series", spec = LikeIgnoreCase.class),
+                @Spec(path = "isbn", params = "isbn", spec = LikeIgnoreCase.class),
+                @Spec(path = "a.fullName", params = "author", spec = LikeIgnoreCase.class),
+                @Spec(path = "p.fullName", params = "publisher", spec = LikeIgnoreCase.class),
+                @Spec(path = "t.name", params = "tag", spec = LikeIgnoreCase.class)
+            })
+            final Specification<Book> spec) {
+        return repository.findAll(spec);
     }
 
     /**
