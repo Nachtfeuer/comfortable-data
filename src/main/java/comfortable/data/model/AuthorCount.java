@@ -21,42 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.database;
+package comfortable.data.model;
 
-import comfortable.data.model.AuthorCount;
-import comfortable.data.model.Book;
-import java.util.List;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * CRUD Access to author data.
+ * Statistic on how many books in the database are from given the author.
  */
-@Transactional
-public interface BookRepository extends JpaRepository<Book, String>,
-        JpaSpecificationExecutor<Book> {
-
-    @Transactional(readOnly = true)
-    @Override
-    List<Book> findAll();
-
-    @Transactional(readOnly = true)
-    @Override
-    List<Book> findAll(final Specification<Book> spec);
-
-    @Override
-    void deleteAll();
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AuthorCount {
 
     /**
-     * Query authors on how many books they wrote.
-     *
-     * @return list of authors with count of books they wrote.
+     * Full name of the author.
      */
-    @Query("SELECT"
-            + " new comfortable.data.model.AuthorCount(a.fullName, count(b))"
-            + " FROM Book b JOIN b.authors a GROUP BY a.fullName")
-    List<AuthorCount> queryAuthorCount();
+    private String fullName;
+
+    /**
+     * Number of books where the author is found.
+     */
+    private long count;
 }
