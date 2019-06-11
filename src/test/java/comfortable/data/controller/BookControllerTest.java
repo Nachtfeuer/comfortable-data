@@ -23,6 +23,8 @@
  */
 package comfortable.data.controller;
 
+import comfortable.data.database.BookAuthorRepository;
+import comfortable.data.database.BookRepository;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
@@ -41,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +66,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class BookControllerTest {
 
     /**
@@ -87,6 +91,18 @@ public class BookControllerTest {
     private MockMvc mvc;
 
     /**
+     * Database access for books.
+     */
+    @Autowired
+    private BookRepository books;
+
+    /**
+     * Database access for book authors.
+     */
+    @Autowired
+    private BookAuthorRepository authors;
+
+    /**
      * Load test data.
      *
      * @throws java.io.IOException should never happen here.
@@ -94,6 +110,15 @@ public class BookControllerTest {
     @BeforeClass
     public static void setUpBeforeClass() throws IOException {
         provider = RandomDataProvider.of("/test.data.json");
+    }
+
+    /**
+     * Remove all books before each individual test.
+     */
+    @After
+    public void tearDown() {
+        this.books.deleteAll();
+        this.authors.deleteAll();
     }
 
     /**
@@ -182,9 +207,9 @@ public class BookControllerTest {
         assertThat(responseBook, equalTo(theBook));
 
         final var requestMaker = new RequestMaker(this.mvc);
-        final var books = requestMaker.getListOfBooks(responseContentType);
+        final var responseBooks = requestMaker.getListOfBooks(responseContentType);
 
-        assertThat(books.stream()
+        assertThat(responseBooks.stream()
                 .filter(book -> book.getTitle().equals(theBook.getTitle()))
                 .count(), equalTo(1L));
     }

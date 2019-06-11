@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.junit.Before;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +75,12 @@ public class BookTest {
     private BookRepository books;
 
     /**
+     * Database access for book authors.
+     */
+    @Autowired
+    private BookAuthorRepository authors;
+
+    /**
      * Load test data.
      *
      * @throws java.io.IOException should never happen here.
@@ -85,11 +91,12 @@ public class BookTest {
     }
 
     /**
-     * Remove all books before each individual test.
+     * Remove (cleanup) all books after each individual test.
      */
-    @Before
-    public void setUp() {
+    @After
+    public void tearDown() {
         this.books.deleteAll();
+        this.authors.deleteAll();
     }
 
     /**
@@ -133,7 +140,7 @@ public class BookTest {
     private List<Book> createBooks(final boolean uniqueAuthor) {
         final var titles = BookTest.provider.get(
                 RandomDataProvider.TITLE, MAX_BOOKS);
-        final var authors = BookTest.provider.get(
+        final var bookAuthors = BookTest.provider.get(
                 RandomDataProvider.AUTHOR, MAX_BOOKS);
         final var publishers = BookTest.provider.get(
                 RandomDataProvider.AUTHOR, MAX_BOOKS);
@@ -147,7 +154,7 @@ public class BookTest {
             final var realAuthorIndex = uniqueAuthor? index : 0;
             newBooks.add(Book.builder()
                     .title(titles.get(index))
-                    .author(Author.builder().fullName(authors.get(realAuthorIndex)).build())
+                    .author(Author.builder().fullName(bookAuthors.get(realAuthorIndex)).build())
                     .publisher(Publisher.builder().fullName(publishers.get(index)).build())
                     .isbn(isbn.get(index))
                     .yearOfPublication(Integer.valueOf(years.get(index)))

@@ -25,6 +25,7 @@ package comfortable.data.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.database.BookAuthorRepository;
 import comfortable.data.database.BookRepository;
 import comfortable.data.model.Author;
 import comfortable.data.model.Book;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.junit.Before;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,6 +93,12 @@ public class BookControllerQueryTest {
     private BookRepository books;
 
     /**
+     * Database access for book authors.
+     */
+    @Autowired
+    private BookAuthorRepository authors;
+
+    /**
      * Load test data.
      *
      * @throws java.io.IOException should never happen here.
@@ -104,9 +111,10 @@ public class BookControllerQueryTest {
     /**
      * Remove all books before each individual test.
      */
-    @Before
-    public void setUp() {
+    @After
+    public void tearDown() {
         this.books.deleteAll();
+        this.authors.deleteAll();
     }
 
     /**
@@ -148,7 +156,7 @@ public class BookControllerQueryTest {
     private List<Book> createBooks() {
         final var titles = BookControllerQueryTest.provider.get(
                 RandomDataProvider.TITLE, MAX_BOOKS);
-        final var authors = BookControllerQueryTest.provider.get(
+        final var bookAuthors = BookControllerQueryTest.provider.get(
                 RandomDataProvider.AUTHOR, MAX_BOOKS);
         final var publishers = BookControllerQueryTest.provider.get(
                 RandomDataProvider.AUTHOR, MAX_BOOKS);
@@ -161,7 +169,7 @@ public class BookControllerQueryTest {
         for (var index = 0; index < MAX_BOOKS; ++index) {
             newBooks.add(Book.builder()
                     .title(titles.get(index))
-                    .author(Author.builder().fullName(authors.get(index)).build())
+                    .author(Author.builder().fullName(bookAuthors.get(index)).build())
                     .publisher(Publisher.builder().fullName(publishers.get(index)).build())
                     .isbn(isbn.get(index))
                     .yearOfPublication(Integer.valueOf(years.get(index)))
