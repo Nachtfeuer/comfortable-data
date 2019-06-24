@@ -60,10 +60,40 @@ var app = new Vue({
             }
         },
 
+        /**
+         * Loading asynchronous the list of all stored authors.
+         * Also triggering the request to get the count of books.
+         * @returns nothing
+         */
         loadAuthors() {
             axios
                 .get('/books/authors')
-                .then(response => (this.authors = response.data));
+                .then(response => {
+                    this.authors = response.data;
+                    this.loadAuthorCounts();
+            });
+        },
+        
+        /**
+         * Loading asynchronous the list of all stored author counts.
+         * @returns nothing
+         */
+        loadAuthorCounts() {
+            axios
+                .get('/books/authors/count')
+                .then(response => {
+                    var newAuthors = this.authors;
+                    var authorCounts = response.data;
+                    for (var acx = 0; acx < authorCounts.length; ++acx) {
+                        for (var ax = 0; ax < newAuthors.length; ++ax) {
+                            if (newAuthors[ax]['fullName'] === authorCounts[acx]['fullName']) {
+                                newAuthors[ax]['count'] = authorCounts[acx]['count'];
+                                break;
+                            }
+                        }
+                    }
+                    this.$set(this.authors, newAuthors);
+            });            
         }
     },
 

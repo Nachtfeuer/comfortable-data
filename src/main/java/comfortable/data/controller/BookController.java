@@ -25,6 +25,7 @@ package comfortable.data.controller;
 
 import comfortable.data.database.BookRepository;
 import comfortable.data.exceptions.InternalServerError;
+import comfortable.data.model.AuthorCount;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.FileTools;
@@ -77,20 +78,32 @@ public final class BookController {
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
     public List<Book> getListOfBooksBySpec(
             @Joins({
-                @Join(path = "authors", alias = "a"),
-                @Join(path = "publisher", alias = "p"),
-                @Join(path = "tags", alias = "t")
-            })
+        @Join(path = "authors", alias = "a"),
+        @Join(path = "publisher", alias = "p"),
+        @Join(path = "tags", alias = "t")
+    })
             @And({
-                @Spec(path = "title", params = "title", spec = LikeIgnoreCase.class),
-                @Spec(path = "series", params = "series", spec = LikeIgnoreCase.class),
-                @Spec(path = "isbn", params = "isbn", spec = LikeIgnoreCase.class),
-                @Spec(path = "a.fullName", params = "author", spec = LikeIgnoreCase.class),
-                @Spec(path = "p.fullName", params = "publisher", spec = LikeIgnoreCase.class),
-                @Spec(path = "t.name", params = "tag", spec = LikeIgnoreCase.class)
-            })
+        @Spec(path = "title", params = "title", spec = LikeIgnoreCase.class),
+        @Spec(path = "series", params = "series", spec = LikeIgnoreCase.class),
+        @Spec(path = "isbn", params = "isbn", spec = LikeIgnoreCase.class),
+        @Spec(path = "a.fullName", params = "author", spec = LikeIgnoreCase.class),
+        @Spec(path = "p.fullName", params = "publisher", spec = LikeIgnoreCase.class),
+        @Spec(path = "t.name", params = "tag", spec = LikeIgnoreCase.class)
+    })
             final Specification<Book> spec) {
         return repository.findAll(spec);
+    }
+
+    /**
+     * List of authors and the number of books they are authors of in given database.
+     *
+     * @return list of authors and a counter.
+     */
+    @GetMapping(value = "/books/authors/count", produces = {
+        CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
+        CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    public List<AuthorCount> getListOfAuthorCount() {
+        return this.repository.queryAuthorCount();
     }
 
     /**
