@@ -30,6 +30,7 @@
         <pepple.version>3.0.8</pepple.version>
         <specification.arg.resolver.version>2.1.1</specification.arg.resolver.version>
         <commons.io.version>2.6</commons.io.version>
+        <metadata.extractor.version>2.12.0</metadata.extractor.version>
 
         <!-- Build plugins -->
         <maven.checkstyle.plugin>3.0.0</maven.checkstyle.plugin>
@@ -134,6 +135,12 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>${metadata.extractor.version}</version>
         </dependency>
     </dependencies>
      

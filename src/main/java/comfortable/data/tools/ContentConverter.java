@@ -104,9 +104,6 @@ public class ContentConverter<E> {
         } else if (this.source == CustomMediaType.APPLICATION_YAML) {
             final var yamlMapper = new ObjectMapper(new YAMLFactory());
             result = yamlMapper.readValue(content, this.theClass);
-        } else if (this.source == CustomMediaType.APPLICATION_MSGPACK) {
-            final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
-            result = msgPackMapper.readValue(content, this.theClass);
         }
         return result;
     }
