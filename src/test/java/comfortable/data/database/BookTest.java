@@ -50,6 +50,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class BookTest {
 
     /**

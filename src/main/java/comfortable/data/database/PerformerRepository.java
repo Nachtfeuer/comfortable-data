@@ -42,5 +42,5 @@ public interface PerformerRepository extends JpaRepository<Performer, String>,
 
     @Transactional(readOnly = true)
     @Override
-    List<Performer> findAll(final Specification<Performer> spec);
+    List<Performer> findAll(Specification<Performer> spec);
 }

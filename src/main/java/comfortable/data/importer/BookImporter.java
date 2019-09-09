@@ -52,7 +52,7 @@ import org.springframework.stereotype.Component;
  * </ul>
  */
 @Component
-@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+@SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "checkstyle:classfanoutcomplexity"})
 public class BookImporter {
 
     /**

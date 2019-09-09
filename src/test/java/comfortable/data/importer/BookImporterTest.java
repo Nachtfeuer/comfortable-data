@@ -48,6 +48,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class BookImporterTest {
 
     /**

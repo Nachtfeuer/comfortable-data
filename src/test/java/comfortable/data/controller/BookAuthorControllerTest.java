@@ -65,6 +65,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class BookAuthorControllerTest {
     
     /**

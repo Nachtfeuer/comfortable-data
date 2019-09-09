@@ -42,5 +42,5 @@ public interface ComposerRepository extends JpaRepository<Composer, String>,
 
     @Transactional(readOnly = true)
     @Override
-    List<Composer> findAll(final Specification<Composer> spec);
+    List<Composer> findAll(Specification<Composer> spec);
 }

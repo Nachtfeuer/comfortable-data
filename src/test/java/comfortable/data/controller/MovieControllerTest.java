@@ -48,6 +48,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MovieControllerTest {
     /**
      * Test year of publication.

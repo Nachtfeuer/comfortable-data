@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MovieComposerControllerTest {
 
     /**

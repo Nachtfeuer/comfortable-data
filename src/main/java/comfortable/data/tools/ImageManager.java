@@ -86,7 +86,7 @@ public class ImageManager {
         try {
             final var metadata = ImageMetadataReader.readMetadata(imagePath.toFile());
             for (final var directory : metadata.getDirectories()) {
-                directory.getTags().forEach((tag) -> {
+                directory.getTags().forEach(tag -> {
                     simplifiedMetaData.put(tag.getTagName(), tag.getDescription());
                 });
             }

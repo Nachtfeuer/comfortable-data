@@ -80,7 +80,8 @@
         </module>
         
         <module name="ClassFanOutComplexity">
-            <property name="max" value="10"/>
+            <property name="max" value="11"/>
+            <property name="excludedPackages" value="lombok, org.springframework, net.kaczmarzyk.spring"/>
         </module>
         
         <module name="CyclomaticComplexity">

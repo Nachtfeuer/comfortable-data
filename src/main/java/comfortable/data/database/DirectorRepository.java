@@ -42,5 +42,5 @@ public interface DirectorRepository extends JpaRepository<Director, String>,
 
     @Transactional(readOnly = true)
     @Override
-    List<Director> findAll(final Specification<Director> spec);
+    List<Director> findAll(Specification<Director> spec);
 }

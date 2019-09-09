@@ -33,12 +33,12 @@
         <metadata.extractor.version>2.12.0</metadata.extractor.version>
 
         <!-- Build plugins -->
-        <maven.checkstyle.plugin>3.0.0</maven.checkstyle.plugin>
+        <maven.checkstyle.plugin>3.1.0</maven.checkstyle.plugin>
         <spotbugs.maven.plugin.version>3.1.11</spotbugs.maven.plugin.version>
-        <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.4</jacoco.maven.plugin.version>
         <coveralls.maven.plugin.version>4.3.0</coveralls.maven.plugin.version>
-        <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
-        <maven-javadoc-plugin>3.1.0</maven-javadoc-plugin>
+        <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
+        <maven-javadoc-plugin>3.1.1</maven-javadoc-plugin>
         <asciidoctor.maven.plugin.version>2.0.0-RC.1</asciidoctor.maven.plugin.version>
     </properties>
 

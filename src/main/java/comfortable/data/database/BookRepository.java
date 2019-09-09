@@ -45,7 +45,7 @@ public interface BookRepository extends JpaRepository<Book, String>,
 
     @Transactional(readOnly = true)
     @Override
-    List<Book> findAll(final Specification<Book> spec);
+    List<Book> findAll(Specification<Book> spec);
 
     @Override
     void deleteAll();

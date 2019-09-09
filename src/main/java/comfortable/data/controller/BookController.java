@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on books.
  */
 @RestController
+@SuppressWarnings({"checkstyle:classfanoutcomplexity"})
 public final class BookController {
 
     /**
