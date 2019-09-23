@@ -29,6 +29,7 @@ import comfortable.data.model.AuthorCount;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.FileTools;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -46,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on books.
  */
 @RestController
-@SuppressWarnings({"checkstyle:classfanoutcomplexity"})
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "PMD.AvoidDuplicateLiterals"})
 public final class BookController {
 
     /**
@@ -64,6 +65,7 @@ public final class BookController {
     @PostMapping(value = "/books", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.create.or.update", extraTags = {"books", "create.or.update"})
     public Book createOrUpdateBook(@RequestBody final Book book) {
         return this.repository.save(book);
     }
@@ -77,6 +79,7 @@ public final class BookController {
     @GetMapping(value = "/books", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.get.by.spec", extraTags = {"books", "spec"})
     public List<Book> getListOfBooksBySpec(
             @Joins({
         @Join(path = "authors", alias = "a"),
@@ -103,6 +106,7 @@ public final class BookController {
     @GetMapping(value = "/books/authors/count", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.get.authors.count", extraTags = {"books", "count"})
     public List<AuthorCount> getListOfAuthorCount() {
         return this.repository.queryAuthorCount();
     }
@@ -114,6 +118,7 @@ public final class BookController {
      */
     @GetMapping(value = "/books", produces = {CustomMediaType.TEXT_HTML_VALUE})
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    @Timed(value = "books.get.html", extraTags = {"books", "html"})
     public String renderHtml() {
         final var content = FileTools.readResource("/html/books.dynamic.html");
         if (content != null) {
