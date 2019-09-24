@@ -34,6 +34,7 @@ info.app.description=Managing Books and Movie Data in a comfortable way
 info.java.version=@java.version@
 
 management.endpoints.web.exposure.include=health,info,metrics,prometheus
+management.endpoint.health.show-details=always
 ```
 
 The default is to have the endpoints **health** and **info** only.
