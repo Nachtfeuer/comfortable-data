@@ -28,6 +28,7 @@ import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.FileTools;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -42,18 +43,18 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on book publishers.
  *
  * <p>
- * The REST calls (except for the HTML) are all supporting
- * JSON, XML, YAML and MsgPack for sending/recieving data
- * to/from the REST service.
+ * The REST calls (except for the HTML) are all supporting JSON, XML, YAML and MsgPack for
+ * sending/recieving data to/from the REST service.
  * </p>
  */
 @RestController
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable",
+    "checkstyle:classfanoutcomplexity"})
 public class BookPublisherController {
 
     /**
-     * dependency injection of database class responsible for storing and
-     * querying data.
+     * dependency injection of database class responsible for storing and querying data.
      */
     @Autowired
     private transient BookPublisherRepository repository;
@@ -67,10 +68,12 @@ public class BookPublisherController {
     @PostMapping(value = "/books/publishers", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.publishers.create.or.update",
+            extraTags = {"books.publishers", "create.or.update"})
     public Publisher createOrUpdatePublisher(@RequestBody final Publisher publisher) {
         final Publisher responsePublisher;
         final var optionalAuthor = repository.findById(publisher.getFullName());
-        if(optionalAuthor.isPresent()) {
+        if (optionalAuthor.isPresent()) {
             responsePublisher = optionalAuthor.get();
         } else {
             responsePublisher = repository.save(publisher);
@@ -86,6 +89,7 @@ public class BookPublisherController {
     @GetMapping(value = "/books/publishers", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.publishers.get.list", extraTags = {"books.publishers", "list"})
     public List<Publisher> getListOfPublishers() {
         return repository.findAll();
     }
@@ -99,13 +103,13 @@ public class BookPublisherController {
     @GetMapping(value = "/books/publishers", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE},
-        params = {"fullName"})
+            params = {"fullName"})
+    @Timed(value = "books.publishers.get.by.spec", extraTags = {"books.publishers", "spec"})
     public List<Publisher> getListOfPublishersBySpec(
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)
             final Specification<Publisher> spec) {
         return repository.findAll(spec);
     }
-
 
     /**
      * Provide list of books publishers as HTML.
@@ -114,6 +118,7 @@ public class BookPublisherController {
      */
     @GetMapping(value = "/books/publishers", produces = {CustomMediaType.TEXT_HTML_VALUE})
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    @Timed(value = "books.publishers.get.html", extraTags = {"books.publishers", "html"})
     public String renderHtml() {
         final var content = FileTools.readResource("/html/publishers.dynamic.html");
         if (content != null) {

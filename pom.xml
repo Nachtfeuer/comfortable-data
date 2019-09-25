@@ -31,6 +31,7 @@
         <specification.arg.resolver.version>2.1.1</specification.arg.resolver.version>
         <commons.io.version>2.6</commons.io.version>
         <metadata.extractor.version>2.12.0</metadata.extractor.version>
+        <micrometer.version>1.2.1</micrometer.version>
 
         <!-- Build plugins -->
         <maven.checkstyle.plugin>3.1.0</maven.checkstyle.plugin>
@@ -53,6 +54,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring.boot.starter.jpa.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
         </dependency>
 
         <dependency>
@@ -165,7 +178,7 @@
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>2.2.1</version>
                 <configuration>
-                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <prefix>git</prefix>
                 </configuration>
                 <executions>
@@ -321,6 +334,7 @@
                 <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
+                        <id>repackage</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
@@ -331,6 +345,13 @@
                                 comfortable.data.Application
                             </mainClass>
                         </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

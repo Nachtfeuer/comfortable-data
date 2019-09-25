@@ -28,6 +28,7 @@ import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.FileTools;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -42,13 +43,14 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for all supported operations on book authors.
  *
  * <p>
- * The REST calls (except for the HTML) are all supporting
- * JSON, XML, YAML and MsgPack for sending/recieving data
- * to/from the REST service.
+ * The REST calls (except for the HTML) are all supporting JSON, XML, YAML and MsgPack for
+ * sending/recieving data to/from the REST service.
  * </p>
  */
 @RestController
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable"})
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable",
+    "checkstyle:classfanoutcomplexity"})
 public class BookAuthorController {
 
     /**
@@ -66,6 +68,8 @@ public class BookAuthorController {
     @PostMapping(value = "/books/authors", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.authors.create.or.update",
+            extraTags = {"books.authors", "create.or.update"})
     public Author createOrUpdateAuthor(@RequestBody final Author author) {
         final Author responseAuthor;
         final var optionalAuthor = repository.findById(author.getFullName());
@@ -77,7 +81,6 @@ public class BookAuthorController {
         return responseAuthor;
     }
 
-    
     /**
      * Provide list of all authors.
      *
@@ -86,6 +89,7 @@ public class BookAuthorController {
     @GetMapping(value = "/books/authors", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
+    @Timed(value = "books.authors.get.list", extraTags = {"books.authors", "list"})
     public List<Author> getListOfAuthors() {
         return repository.findAll();
     }
@@ -100,6 +104,7 @@ public class BookAuthorController {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE},
             params = {"fullName"})
+    @Timed(value = "books.authors.get.by.spec", extraTags = {"books.authors", "spec"})
     public List<Author> getListOfAuthorsBySpec(
             @Spec(path = "fullName", spec = LikeIgnoreCase.class)
             final Specification<Author> spec) {
@@ -113,6 +118,7 @@ public class BookAuthorController {
      */
     @GetMapping(value = "/books/authors", produces = {CustomMediaType.TEXT_HTML_VALUE})
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    @Timed(value = "books.authors.get.html", extraTags = {"books.authors", "html"})
     public String renderHtml() {
         final var content = FileTools.readResource("/html/authors.dynamic.html");
         if (content != null) {
