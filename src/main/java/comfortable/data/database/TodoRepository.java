@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.model;
+package comfortable.data.database;
 
-import java.io.Serializable;
-import javax.persistence.Embeddable;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import comfortable.data.model.Todo;
+import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * A tag can be used as category and for filtering.
+ * CRUD Access to todo data.
  */
-@Embeddable
-@Data
-@NoArgsConstructor
-@RequiredArgsConstructor
-public class Tag implements Serializable {
+@Transactional
+public interface TodoRepository extends JpaRepository<Todo, Integer>,
+                                        JpaSpecificationExecutor<Todo> {
+    @Transactional(readOnly = true)
+    @Override
+    List<Todo> findAll();
 
-    /**
-     * version of class.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * name of the tag.
-     */
-    @NonNull
-    private String name;
+    @Transactional(readOnly = true)
+    @Override
+    List<Todo> findAll(Specification<Todo> spec);
 }

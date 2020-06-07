@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -51,8 +52,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MovieDirectorControllerTest {
+    /**
+     * The movies director request.
+     */
+    private static final String REQUEST = "/movies/directors";
 
     /**
      * test director.
@@ -140,8 +146,8 @@ public class MovieDirectorControllerTest {
         final var responseDirector = createDirector(fullName, expectedMediaType);
         assertThat(responseDirector.getFullName(), equalTo(fullName));
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var directors = requestMaker.getListOfDirectors(expectedMediaType);
+        final var requestMaker = new RequestMaker<Director>(Director.class, this.mvc);
+        final var directors = requestMaker.getListOfData(REQUEST, expectedMediaType);
         assertThat(directors.stream()
                 .filter(director -> director.getFullName().equals(fullName))
                 .count(), equalTo(1L));
@@ -157,9 +163,8 @@ public class MovieDirectorControllerTest {
      */
     private Director createDirector(final String fullName,
             final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
+        final var requestMaker = new RequestMaker<Director>(Director.class,  this.mvc);
         final Director newDirector = new Director(fullName);
-        return requestMaker.createOrUpdate("/movies/directors",
-                newDirector, CustomMediaType.APPLICATION_JSON, expectedMediaType);
+        return requestMaker.postData(REQUEST, expectedMediaType, newDirector);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.model;
-
-import java.io.Serializable;
-import javax.persistence.Embeddable;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+package comfortable.data.tools;
 
 /**
- * A tag can be used as category and for filtering.
+ * Interface for defining a conversion of a value to a string.
+ * @param <E> the type of the value.
  */
-@Embeddable
-@Data
-@NoArgsConstructor
-@RequiredArgsConstructor
-public class Tag implements Serializable {
-
+public interface IConvertValue2String<E> {
     /**
-     * version of class.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * name of the tag.
-     */
-    @NonNull
-    private String name;
+     * Converts a value into a string.
+     *
+     * @param value some value
+     * @return string representation of value.     */
+    String convert(E value);
 }

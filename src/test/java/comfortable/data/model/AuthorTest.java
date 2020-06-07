@@ -73,7 +73,7 @@ public class AuthorTest {
      */
     @Test
     public void testSetter() {
-        final var fullName = AuthorTest.provider.get(RandomDataProvider.AUTHOR);
+        final var fullName = AuthorTest.provider.get(RandomDataProvider.BOOK_AUTHOR);
         final Author author = new Author();
         author.setFullName(fullName);
         assertThat(author.getFullName(), equalTo(fullName));
@@ -84,7 +84,7 @@ public class AuthorTest {
      */
     @Test
     public void testBuilder() {
-        final var fullName = AuthorTest.provider.get(RandomDataProvider.AUTHOR);
+        final var fullName = AuthorTest.provider.get(RandomDataProvider.BOOK_AUTHOR);
         final var author = Author.builder().fullName(fullName).build();
         assertThat(author.getFullName(), equalTo(fullName));
     }
@@ -98,7 +98,7 @@ public class AuthorTest {
     public void testToAndFromJson() throws Exception {
         final var timestamp = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
         final var author = Author.builder().fullName(
-                AuthorTest.provider.get(RandomDataProvider.AUTHOR)).created(timestamp).build();
+                AuthorTest.provider.get(RandomDataProvider.BOOK_AUTHOR)).created(timestamp).build();
 
         final var mapper = new ObjectMapper();
         final var json = mapper.writeValueAsString(author);

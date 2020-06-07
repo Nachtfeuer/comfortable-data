@@ -1,5 +1,5 @@
 {
-    "author": [
+    "book-author": [
         "Agatha Christie", "Rex Stout", "Stanislaw Lem", "Michael Moorcook",
         "Raymond Chandler", "Greg Bear", "Richard Schwartz", "Alan Dean Foster",
         "Marion Zimmer Bradley", "Brent Weeks", "Richard Herley", "Barbara Hambly",
@@ -7,17 +7,17 @@
         "Noah Gordon", "Barbara Wood", "Diana Gabaldon", "Sharon Shinn", "Jonathan Stroud",
         "Brandon Sanderson", "Anne Rice", "Trudi Canavan", "Brian Daley", "Leon Uris"
     ],
-    "publisher": [
+    "book-publisher": [
         "Bastei Lübbe", "Goldmann", "blanvalet", "Heyne", "dtv", "PIPER", "ullstein",
         "DROEMER", "Fischer", "detebe", "Zaubermond", "Diana", "rororo"
     ],
     "year": [
         1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
     ],
-    "pages": [
+    "book-pages": [
         200, 250, 300, 350, 400, 450, 500, 550, 600, 650
     ],
-    "tag": [
+    "book-tag": [
         "krimi", "science-fiction", "fantasy", "rpg", "evolution",
         "komödie", "utopie", "thriller", "horror"
     ],
@@ -25,7 +25,7 @@
         "gut", "sehr gut", "super", "ganz gut", "geht so", "mittelmäßig",
         "schlecht", "mit Schwächen", "sehr schlecht", "unzumutbar"
     ],
-    "isbn": [
+    "book-isbn": [
         "1-234-56789-0",
         "1-123-58132-1",
         "2-468-10121-4",
@@ -37,7 +37,7 @@
         "1-122-33445-5",
         "9-876-54321-0"
     ],
-    "title": [
+    "book-title": [
         "Und es geschah wieder ...",
         "Als die Nacht kam ...",
         "Das Grauen hat einen Namen ...",
@@ -51,5 +51,27 @@
         "Sonnenuntergang ...",
         "Ewige Nacht ...",
         "Das Licht ..."
+    ],
+    "todo-title": [
+        "Todo: Klasse implementieren",
+        "Todo: JPA Repository bereitstellen",
+        "Todo: Controller implementieren",
+        "Todo: Tests schreiben",
+        "Todo: Controller Tests schreiben"
+    ],
+    "todo-tag": [
+        "Tests",
+        "Erweiterung",
+        "Dokumentation",
+        "Refactoring",
+        "Performance",
+        "Bugfixing"
+    ],
+    "todo-description": [
+        "Implementierung der Datenklasse mit Lombok",
+        "Implementierung der Controller Klasse mit Unterstützung für JSON, YAML, XML und MSGPACK",
+        "Testen des Controller mit Test-Daten mit Hilfe des RandomDataProvider",
+        "Refactoring des RequestMaker",
+        ""
     ]
 }

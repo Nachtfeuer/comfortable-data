@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -51,8 +52,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MovieComposerControllerTest {
+    /**
+     * The Composer request.
+     */
+    private static final String REQUEST = "/movies/composers";
 
     /**
      * test composer.
@@ -140,8 +146,8 @@ public class MovieComposerControllerTest {
         final var  responseComposer = this.createComposer(fullName, expectedMediaType);
         assertThat(responseComposer.getFullName(), equalTo(fullName));
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var composers = requestMaker.getListOfComposers(expectedMediaType);
+        final var requestMaker = new RequestMaker<Composer>(Composer.class, this.mvc);
+        final var composers = requestMaker.getListOfData(REQUEST, expectedMediaType);
         assertThat(composers.stream()
                 .filter(composer -> composer.getFullName().equals(fullName))
                 .count(), equalTo(1L));
@@ -157,9 +163,9 @@ public class MovieComposerControllerTest {
      */
     private Composer createComposer(final String fullName,
             final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
+        final var requestMaker = new RequestMaker<Composer>(Composer.class, this.mvc);
         final var newComposer = new Composer(fullName);
-        return requestMaker.createOrUpdate("/movies/composers",
-                newComposer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
+        return requestMaker.postData(REQUEST,
+                CustomMediaType.APPLICATION_JSON, newComposer);
     }
 }

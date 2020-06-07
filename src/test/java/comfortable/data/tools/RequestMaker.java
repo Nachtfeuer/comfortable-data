@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,36 @@
  */
 package comfortable.data.tools;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import comfortable.data.model.Author;
-import comfortable.data.model.Book;
-import comfortable.data.model.Composer;
+
 import comfortable.data.model.CustomMediaType;
-import comfortable.data.model.Director;
-import comfortable.data.model.Movie;
-import comfortable.data.model.Performer;
-import comfortable.data.model.Publisher;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 /**
- * Helpers fpr running requests in the tests.
+ * Simplifying the requests in the tests.
+ * @param <E> The class the requests should be made for.
  */
-public class RequestMaker {
+public class RequestMaker<E> {
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestMaker.class);
+
+    /**
+     * The concrete class required for conversion.
+     */
+    private final Class<E> type;
 
     /**
      * mocked web layer.
@@ -56,251 +62,212 @@ public class RequestMaker {
     /**
      * Initializes the request make with the mvc.
      *
+     * @param initType the concrete class required for conversion.
      * @param initMvc the web layer.
      */
-    public RequestMaker(final MockMvc initMvc) {
+    public RequestMaker(final Class<E> initType, final MockMvc initMvc) {
+        this.type = initType;
         this.mvc = initMvc;
     }
 
     /**
-     * Get the current list of authors requesting either in JSON or in XML.
+     * Posting data via defined path and in defined format.
      *
+     * @param request the relative path that represents the concrete request.
+     * @param contentType the communication format (JSON, XML or YAML)
+     * @param value the data to save
+     * @return saved data
+     * @throws Exception when request has failed.
+     */
+    public E postData(final String request, final MediaType contentType,
+                      final E value) throws Exception {
+        final var documentName = "post" + request;
+        final var converterTo = getValue2StringConverter(contentType);
+        final var converterFrom = getString2ValueConverter(contentType);
+
+        final var responseContent = this.mvc.perform(post(request)
+                .accept(contentType)
+                .contentType(contentType)
+                .content(converterTo.convert(value)))
+                .andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
+
+        return converterFrom.convert(responseContent);
+    }
+
+    /**
+     * Get data via defined path and in defined format.
+     *
+     * @param request the relative path that represents the concrete request.
+     * @param contentType the communication format (JSON, XML or YAML)
+     * @return saved data
+     * @throws Exception when request has failed.
+     */
+    public List<E> getData(final String request, final MediaType contentType) throws Exception {
+        final var documentName = "get" + request.replaceAll("\\?.*", "");
+
+        final var content = this.mvc.perform(get(request)
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
+
+        return convertString2ListOfValue(content, contentType);
+    }
+    
+    /**
+     * Get one data (not a list).
+     *
+     * @param request the relative REST path representing the concrete request
      * @param expectedResponseType XML or JSON
-     * @return list of authors (empty list of nothing has been found).
+     * @return concrete data (record)
      * @throws Exception (should never happen)
      */
-    @SuppressWarnings("unchecked")
-    public List<Author> getListOfAuthors(final MediaType expectedResponseType) throws Exception {
-        final String content = this.mvc.perform(get("/books/authors")
+    public List<E> getListOfData(final String request,
+                                 final MediaType expectedResponseType) throws Exception {
+        final String content = this.mvc.perform(get(request)
                 .accept(expectedResponseType))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        final List<Author> authors;
-        if (expectedResponseType == CustomMediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            authors = mapper.readValue(content, new TypeReference<List<Author>>() {
-            });
-        } else if (expectedResponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            authors = mapper.readValue(content, new TypeReference<List<Author>>() {
-            });
-        } else {
-            final var xmlMapper = new XmlMapper();
-            authors = xmlMapper.readValue(content, new TypeReference<List<Author>>() {
-            });
-        }
-        return authors;
+        return convertString2ListOfValue(content, expectedResponseType);
     }
 
     /**
-     * Get the current list of publishers requesting either in JSON or in XML.
+     * Converts a string to a list of data.
      *
-     * @param expectedReponseType XML or JSON
-     * @return list of publishers (empty list of nothing has been found).
-     * @throws Exception (should never happen)
+     * @param content string content
+     * @param contentType the format of the string content (XML, JSON or YAML).
+     * @return List of data or null if not support
+     * @throws JsonProcessingException when conversion has failed.
      */
-    public List<Publisher> getListOfPublishers(
-            final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/books/publishers")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+    private List<E> convertString2ListOfValue(
+            final String content, final MediaType contentType) throws JsonProcessingException {
+        final List<E> data;
 
-        final List<Publisher> publishers;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
+        if (contentType == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
-            publishers = mapper.readValue(content, new TypeReference<List<Publisher>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
+            data = mapper.readValue(content,
+                    mapper.getTypeFactory().constructCollectionType(List.class, this.type));
+        } else if (contentType == CustomMediaType.APPLICATION_YAML) {
             final var mapper = new ObjectMapper(new YAMLFactory());
-            publishers = mapper.readValue(content, new TypeReference<List<Publisher>>() {
-            });
-        } else {
+            data = mapper.readValue(content,
+                    mapper.getTypeFactory().constructCollectionType(List.class, this.type));
+        } else if (contentType == MediaType.APPLICATION_XML) {
             final var xmlMapper = new XmlMapper();
-            publishers = xmlMapper.readValue(content, new TypeReference<List<Publisher>>() {
-            });
+            data = xmlMapper.readValue(content,
+                    xmlMapper.getTypeFactory().constructCollectionType(List.class, this.type));
+        } else {
+            data = null;
         }
-        return publishers;
+        
+        return data;
+    }
+    
+    /**
+     * Get the right value to string converter for given media type.
+     * Supported are JSON, XML and YAML.
+     * 
+     * @param contentType media type.
+     * @return interface to converter function or null if not supported.
+     */
+    private IConvertValue2String<E> getValue2StringConverter(final MediaType contentType) {
+       final IConvertValue2String<E> converter;
+
+        if (contentType == CustomMediaType.APPLICATION_JSON) {
+            final var jsonMapper = new ObjectMapper();
+            converter = theValue -> {
+                String strValue;
+                try {
+                    strValue = jsonMapper.writeValueAsString(theValue);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    strValue = null;
+                }
+                return strValue;
+            };
+        } else if (contentType == CustomMediaType.APPLICATION_YAML) {
+            final var yamlMapper = new ObjectMapper(new YAMLFactory());
+            converter = theValue -> {
+                String strValue;
+                try {
+                    strValue = yamlMapper.writeValueAsString(theValue);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    strValue = null;
+                }
+                return strValue;
+            };
+        } else if (contentType == CustomMediaType.APPLICATION_XML) {
+            final var xmlMapper = new XmlMapper();
+            converter = theValue -> {
+                String strValue;
+                try {
+                    strValue = xmlMapper.writeValueAsString(theValue);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    strValue = null;
+                }
+                return strValue;
+            };
+        } else {
+            converter = null;
+        }
+
+        return converter;
     }
 
     /**
-     * Get the current list of performers requesting either in JSON or in XML.
-     *
-     * @param expectedReponseType XML or JSON
-     * @return list of publishers (empty list of nothing has been found).
-     * @throws Exception (should never happen)
+     * Get the right string to value converter for given media type.
+     * Supported are JSON, XML and YAML.
+     * 
+     * @param contentType media type.
+     * @return interface to converter function or null if not supported.
      */
-    public List<Performer> getListOfPerformers(
-            final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/movies/performers")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+    private IConvertString2Value<E> getString2ValueConverter(final MediaType contentType) {
+       final IConvertString2Value<E> converter;
 
-        final List<Performer> performers;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            performers = mapper.readValue(content, new TypeReference<List<Performer>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            performers = mapper.readValue(content, new TypeReference<List<Performer>>() {
-            });
-        } else {
+       if (contentType == CustomMediaType.APPLICATION_JSON) {
+            final var jsonMapper = new ObjectMapper();
+            converter = theValue -> {
+                E value;
+                try {
+                    value = jsonMapper.readValue(theValue, this.type);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    value =  null;
+                }
+                return value;
+            };
+        } else if (contentType == CustomMediaType.APPLICATION_YAML) {
+            final var yamlMapper = new ObjectMapper(new YAMLFactory());
+            converter = theValue -> {
+                E value;
+                try {
+                    value = yamlMapper.readValue(theValue, this.type);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    value = null;
+                }
+                return value;
+            };
+        } else if (contentType == CustomMediaType.APPLICATION_XML) {
             final var xmlMapper = new XmlMapper();
-            performers = xmlMapper.readValue(content, new TypeReference<List<Performer>>() {
-            });
-        }
-        return performers;
-    }
-
-    /**
-     * Get the current list of books requesting either in JSON or in XML.
-     *
-     * @param expectedReponseType XML or JSON
-     * @return list of book (empty list of nothing has been found).
-     * @throws Exception (should never happen)
-     */
-    public List<Book> getListOfBooks(final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/books")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        final List<Book> books;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            books = mapper.readValue(content, new TypeReference<List<Book>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            books = mapper.readValue(content, new TypeReference<List<Book>>() {
-            });
+            converter = theValue -> {
+                E value;
+                try {
+                    value = xmlMapper.readValue(theValue, this.type);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    value = null;
+                }
+                return value;
+            };
         } else {
-            final var xmlMapper = new XmlMapper();
-            books = xmlMapper.readValue(content, new TypeReference<List<Book>>() {
-            });
+            converter = null;
         }
-        return books;
-    }
-
-    /**
-     * Get the current list of movies requesting either in JSON or in XML.
-     *
-     * @param expectedReponseType XML or JSON
-     * @return list of movies (empty list of nothing has been found).
-     * @throws Exception (should never happen)
-     */
-    public List<Movie> getListOfMovies(final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/movies")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        final List<Movie> movies;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            movies = mapper.readValue(content, new TypeReference<List<Movie>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            movies = mapper.readValue(content, new TypeReference<List<Movie>>() {
-            });
-        } else {
-            final var xmlMapper = new XmlMapper();
-            movies = xmlMapper.readValue(content, new TypeReference<List<Movie>>() {
-            });
-        }
-        return movies;
-    }
-
-    /**
-     * Get the current list of directors requesting either in JSON or in XML.
-     *
-     * @param expectedReponseType XML or JSON
-     * @return list of directors (empty list of nothing has been found).
-     * @throws Exception (should never happen)
-     */
-    public List<Director> getListOfDirectors(
-            final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/movies/directors")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        final List<Director> directors;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            directors = mapper.readValue(content, new TypeReference<List<Director>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            directors = mapper.readValue(content, new TypeReference<List<Director>>() {
-            });
-        } else {
-            final var xmlMapper = new XmlMapper();
-            directors = xmlMapper.readValue(content, new TypeReference<List<Director>>() {
-            });
-        }
-        return directors;
-    }
-
-    /**
-     * Get the current list of composers requesting either in JSON or in XML.
-     *
-     * @param expectedReponseType XML or JSON
-     * @return list of composers (empty list of nothing has been found).
-     * @throws Exception (should never happen)
-     */
-    public List<Composer> getListOfComposers(
-            final MediaType expectedReponseType) throws Exception {
-        final String content = this.mvc.perform(get("/movies/composers")
-                .accept(expectedReponseType))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        final List<Composer> composers;
-        if (expectedReponseType == MediaType.APPLICATION_JSON) {
-            final var mapper = new ObjectMapper();
-            composers = mapper.readValue(content, new TypeReference<List<Composer>>() {
-            });
-        } else if (expectedReponseType == CustomMediaType.APPLICATION_YAML) {
-            final var mapper = new ObjectMapper(new YAMLFactory());
-            composers = mapper.readValue(content, new TypeReference<List<Composer>>() {
-            });
-        } else {
-            final var xmlMapper = new XmlMapper();
-            composers = xmlMapper.readValue(content, new TypeReference<List<Composer>>() {
-            });
-        }
-        return composers;
-    }
-
-    /**
-     * Create or update an entity in the database.
-     *
-     * @param <E> the type like book or author
-     * @param path the REST path
-     * @param entity the entity to create or update in the database.
-     * @param contentType the format on how to send data to the Server.
-     * @param expectedResponseType XML or JSON
-     * @return persistent entity.
-     * @throws Exception when serialization/deserialization or the request has failed.
-     */
-    public <E> E createOrUpdate(final String path, final E entity,
-            final MediaType contentType,
-            final MediaType expectedResponseType) throws Exception {
-        @SuppressWarnings("unchecked")
-        final var converter = new ContentConverter<>((Class<E>) entity.getClass(),
-                expectedResponseType, contentType);
-
-        final String content = this.mvc.perform(post(path)
-                .accept(expectedResponseType)
-                .contentType(contentType)
-                .content(converter.toString(entity))).andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        return converter.fromString(content);
+       
+       return converter;
     }
 }

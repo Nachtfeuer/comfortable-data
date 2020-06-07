@@ -26,6 +26,7 @@ package comfortable.data.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -83,8 +84,7 @@ public class Book implements Serializable {
     private String description;
     
     /** all tags of the book. */
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ElementCollection
     @Singular
     private List<Tag> tags;
 

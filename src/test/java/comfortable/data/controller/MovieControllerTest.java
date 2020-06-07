@@ -36,6 +36,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -48,8 +49,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MovieControllerTest {
+    /**
+     * The movies request.
+     */
+    private static final String REQUEST = "/movies";
+
     /**
      * Test year of publication.
      */
@@ -67,8 +74,8 @@ public class MovieControllerTest {
      * @throws Exception (should never happen)
      */
     @Test
-    public void testCreateMovieWithJsonResponse() throws Exception {
-        runTest(createMovie(), CustomMediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_JSON);
+    public void testCreateMovieForJson() throws Exception {
+        runTest(createMovie(), CustomMediaType.APPLICATION_JSON);
     }
 
     /**
@@ -77,19 +84,17 @@ public class MovieControllerTest {
      *
      * @param theMovie the movie to create or update in database
      * @param contentType the type how to send movie data to the server.
-     * @param expectedMediaType the expected response type (XML, JSON or YAML).
      * @throws Exception when conversion has failed or one request
      */
     private void runTest(final Movie theMovie,
-            final MediaType contentType,
-            final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
-        final Movie responseMovie = requestMaker
-                .createOrUpdate("/movies", theMovie, contentType, expectedMediaType);
+            final MediaType contentType) throws Exception {
+
+        final var requestMaker = new RequestMaker<Movie>(Movie.class, this.mvc);
+        final Movie responseMovie = requestMaker.postData(REQUEST, contentType, theMovie);
 
         assertThat(responseMovie, equalTo(theMovie));
 
-        final var movies = requestMaker.getListOfMovies(expectedMediaType);
+        final var movies = requestMaker.getListOfData(REQUEST, contentType);
         assertThat(movies.stream()
                 .filter(movie -> {
                     return movie.getTitle().equals(theMovie.getTitle())

@@ -247,8 +247,9 @@ public class BookAuthorControllerTest {
             assertThat(responseAuthor.getFullName(), equalTo(fullName));
         }
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var listOfAuthors = requestMaker.getListOfAuthors(expectedResponseType);
+        final var requestMaker = new RequestMaker<Author>(Author.class, this.mvc);
+        final var listOfAuthors = requestMaker.getListOfData(
+                REQUEST, expectedResponseType);
         assertThat(listOfAuthors.size(), equalTo(fullNames.size()));
 
         listOfAuthors.forEach(author -> {

@@ -40,12 +40,12 @@ public final class RandomDataProvider {
     /**
      * Group "author" in data file.
      */
-    public static final String AUTHOR = "author";
+    public static final String BOOK_AUTHOR = "book-author";
 
     /**
      * Group "publisher" in data file.
      */
-    public static final String PUBLISHER = "publisher";
+    public static final String BOOK_PUBLISHER = "book-publisher";
 
     /**
      * Group "rating" in data file.
@@ -55,7 +55,7 @@ public final class RandomDataProvider {
     /**
      * Group "pages" in data file.
      */
-    public static final String PAGES = "pages";
+    public static final String BOOK_PAGES = "book-pages";
 
     /**
      * Group "year" in data file.
@@ -65,12 +65,27 @@ public final class RandomDataProvider {
     /**
      * Group "isbn" in data file.
      */
-    public static final String ISBN = "isbn";
+    public static final String BOOK_ISBN = "book-isbn";
 
     /**
-     * Group "title" in data file.
+     * Group "book-title" in data file.
      */
-    public static final String TITLE = "title";
+    public static final String BOOK_TITLE = "book-title";
+
+    /**
+     * Group "todo-title" in data file.
+     */
+    public static final String TODO_TITLE = "todo-title";
+
+    /**
+     * Group "todo-tag" in data file.
+     */
+    public static final String TODO_TAG = "todo-tag";
+
+    /**
+     * Group "todo-description" in data file.
+     */
+    public static final String TODO_DESCRIPTION = "todo-description";
 
     /**
      * group values like authors, publishers, directory, and so on.
