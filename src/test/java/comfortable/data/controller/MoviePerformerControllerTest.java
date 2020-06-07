@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -51,8 +52,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class MoviePerformerControllerTest {
+    /**
+     * The movies performer request.
+     */
+    private static final String REQUEST = "/movies/performers";
 
     /**
      * test performer.
@@ -143,8 +149,8 @@ public class MoviePerformerControllerTest {
         final var responsePerformer = this.createPerformer(fullName, expectedMediaType);
         assertThat(responsePerformer.getFullName(), equalTo(fullName));
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var performers = requestMaker.getListOfPerformers(expectedMediaType);
+        final var requestMaker = new RequestMaker<Performer>(Performer.class, this.mvc);
+        final var performers = requestMaker.getListOfData(REQUEST, expectedMediaType);
         assertThat(performers.stream()
                 .filter(performer -> performer.getFullName().equals(fullName))
                 .count(), equalTo(1L));
@@ -160,9 +166,9 @@ public class MoviePerformerControllerTest {
      */
     private Performer createPerformer(final String fullName,
             final MediaType expectedMediaType) throws Exception {
-        final var requestMaker = new RequestMaker(this.mvc);
+        final var requestMaker = new RequestMaker<Performer>(Performer.class, this.mvc);
         final Performer newPerformer = new Performer(fullName);
-        return requestMaker.createOrUpdate("/movies/performers",
-                newPerformer, CustomMediaType.APPLICATION_JSON, expectedMediaType);
+        return requestMaker.postData(REQUEST,
+                expectedMediaType, newPerformer);
     }
 }

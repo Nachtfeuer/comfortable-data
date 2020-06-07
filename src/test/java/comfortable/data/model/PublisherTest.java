@@ -63,7 +63,7 @@ public class PublisherTest {
      */
     @Test
     public void testChange() {
-        final var fullName = PublisherTest.provider.get(RandomDataProvider.PUBLISHER);
+        final var fullName = PublisherTest.provider.get(RandomDataProvider.BOOK_PUBLISHER);
         final Publisher publisher = new Publisher();
         publisher.setFullName(fullName);
         assertThat(publisher.getFullName(), equalTo(fullName));

@@ -108,5 +108,6 @@ public class Todo implements Serializable {
     @SuppressWarnings("PMD.UnusedPrivateMethod") // it is used!
     private void onPrePersist() {
         this.created = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
+        this.changed = this.created;
     }
 }

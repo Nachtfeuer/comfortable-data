@@ -86,7 +86,7 @@ public class Movie implements Serializable {
     private int runtime;
     
     /** all tags of the book. */
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ElementCollection
     @Singular
     private List<Tag> tags;
 }

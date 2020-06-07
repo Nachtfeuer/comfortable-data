@@ -242,8 +242,9 @@ public class BookPublisherControllerTest {
             assertThat(responsePublisher.getFullName(), equalTo(fullName));
         }
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var listOfPublishers = requestMaker.getListOfPublishers(expectedResponseType);
+        final var requestMaker = new RequestMaker<Publisher>(Publisher.class, this.mvc);
+        final var listOfPublishers = requestMaker.getListOfData(
+                REQUEST, expectedResponseType);
 
         final var filteredListOfPublishers = listOfPublishers.stream()
                 .filter(publisher -> fullNames.contains(publisher.getFullName()))

@@ -139,14 +139,10 @@ public class BookTest {
      * @return list of books.
      */
     private List<Book> createBooks(final boolean uniqueAuthor) {
-        final var titles = BookTest.provider.get(
-                RandomDataProvider.TITLE, MAX_BOOKS);
-        final var bookAuthors = BookTest.provider.get(
-                RandomDataProvider.AUTHOR, MAX_BOOKS);
-        final var publishers = BookTest.provider.get(
-                RandomDataProvider.AUTHOR, MAX_BOOKS);
-        final var isbn = BookTest.provider.get(
-                RandomDataProvider.ISBN, MAX_BOOKS);
+        final var titles = BookTest.provider.get(RandomDataProvider.BOOK_TITLE, MAX_BOOKS);
+        final var bookAuthors = BookTest.provider.get(RandomDataProvider.BOOK_AUTHOR, MAX_BOOKS);
+        final var publishers = BookTest.provider.get(RandomDataProvider.BOOK_AUTHOR, MAX_BOOKS);
+        final var isbn = BookTest.provider.get(RandomDataProvider.BOOK_ISBN, MAX_BOOKS);
         final var years = BookTest.provider.get(
                 RandomDataProvider.YEAR, MAX_BOOKS);
 

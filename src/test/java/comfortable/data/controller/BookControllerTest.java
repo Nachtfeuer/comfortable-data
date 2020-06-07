@@ -206,8 +206,8 @@ public class BookControllerTest {
         // why null? assertThat(responseBook.getPublisher().getCreated(), not(null));
         assertThat(responseBook, equalTo(theBook));
 
-        final var requestMaker = new RequestMaker(this.mvc);
-        final var responseBooks = requestMaker.getListOfBooks(responseContentType);
+        final var requestMaker = new RequestMaker<Book>(Book.class, this.mvc);
+        final var responseBooks = requestMaker.getListOfData(REQUEST, responseContentType);
 
         assertThat(responseBooks.stream()
                 .filter(book -> book.getTitle().equals(theBook.getTitle()))
@@ -233,7 +233,7 @@ public class BookControllerTest {
                 .author(Author.builder().fullName("Stanislaw Lem").build())
                 .publisher(Publisher.builder().fullName("suhrkamp").build())
                 .pages(Integer.valueOf(
-                        BookControllerTest.provider.get(RandomDataProvider.PAGES)))
+                        BookControllerTest.provider.get(RandomDataProvider.BOOK_PAGES)))
                 .yearOfPublication(Integer.valueOf(
                         BookControllerTest.provider.get(RandomDataProvider.YEAR)))
                 .description(description)

@@ -156,13 +156,13 @@ public class BookControllerQueryTest {
      */
     private List<Book> createBooks() {
         final var titles = BookControllerQueryTest.provider.get(
-                RandomDataProvider.TITLE, MAX_BOOKS);
+                RandomDataProvider.BOOK_TITLE, MAX_BOOKS);
         final var bookAuthors = BookControllerQueryTest.provider.get(
-                RandomDataProvider.AUTHOR, MAX_BOOKS);
+                RandomDataProvider.BOOK_AUTHOR, MAX_BOOKS);
         final var publishers = BookControllerQueryTest.provider.get(
-                RandomDataProvider.AUTHOR, MAX_BOOKS);
+                RandomDataProvider.BOOK_AUTHOR, MAX_BOOKS);
         final var isbn = BookControllerQueryTest.provider.get(
-                RandomDataProvider.ISBN, MAX_BOOKS);
+                RandomDataProvider.BOOK_ISBN, MAX_BOOKS);
         final var years = BookControllerQueryTest.provider.get(
                 RandomDataProvider.YEAR, MAX_BOOKS);
 
