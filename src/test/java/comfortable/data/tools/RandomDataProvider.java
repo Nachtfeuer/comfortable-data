@@ -83,9 +83,19 @@ public final class RandomDataProvider {
     public static final String TODO_TAG = "todo-tag";
 
     /**
+     * Group "todo-project" in data file.
+     */
+    public static final String TODO_PROJECT = "todo-project";
+
+    /**
      * Group "todo-description" in data file.
      */
     public static final String TODO_DESCRIPTION = "todo-description";
+
+    /**
+     * Group "todo-priority" in data file.
+     */
+    public static final String TODO_PRIORITY = "todo-priority";
 
     /**
      * group values like authors, publishers, directory, and so on.

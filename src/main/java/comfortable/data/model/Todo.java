@@ -92,6 +92,11 @@ public class Todo implements Serializable {
      * When true when todo is done.
      */
     private boolean completed;
+    
+    /**
+     * Priority of the todo.
+     */
+    private Priority priority;
 
     /**
      * List of tags (basically strings).
@@ -99,6 +104,13 @@ public class Todo implements Serializable {
     @ElementCollection
     @Singular
     private List<Tag> tags;
+
+    /**
+     * List of projects (basically strings).
+     */
+    @ElementCollection
+    @Singular
+    private List<Project> projects;
 
     /**
      * Called before persisting the todo.

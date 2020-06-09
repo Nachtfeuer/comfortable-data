@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,14 +32,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * A tag can be used as category and for filtering.
+ * A project can be used as similar category as tags for filtering.
  */
 @Embeddable
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class Tag implements Serializable {
+public class Project implements Serializable {
 
     /**
      * version of class.
@@ -47,7 +47,7 @@ public class Tag implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * name of the tag.
+     * name of the project.
      */
     @NonNull
     private String name;

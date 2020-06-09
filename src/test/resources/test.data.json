@@ -73,5 +73,21 @@
         "Testen des Controller mit Test-Daten mit Hilfe des RandomDataProvider",
         "Refactoring des RequestMaker",
         ""
+    ],
+    "todo-priority": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        " "
+    ],
+    "todo-project": [
+        "comfortable-data",
+        "concept-queens",
+        "pipeline",
+        "concept-cpp",
+        "concept-queen"
     ]
 }

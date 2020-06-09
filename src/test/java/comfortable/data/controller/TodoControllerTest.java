@@ -25,6 +25,8 @@ package comfortable.data.controller;
 
 import comfortable.data.database.TodoRepository;
 import comfortable.data.model.CustomMediaType;
+import comfortable.data.model.Priority;
+import comfortable.data.model.Project;
 import comfortable.data.model.Todo;
 import org.junit.Before;
 import org.junit.Test;
@@ -178,11 +180,13 @@ public class TodoControllerTest {
         assertThat(todos.get(0).getTitle(), equalTo(todo1.getTitle()));
         assertThat(todos.get(0).getDescription(), equalTo(todo1.getDescription()));
         assertThat(todos.get(0).getTags(), equalTo(todo1.getTags()));
+        assertThat(todos.get(0).getProjects(), equalTo(todo1.getProjects()));
 
         assertThat(todos.get(1).getId(), equalTo(savedTodo2.getId()));
         assertThat(todos.get(1).getTitle(), equalTo(todo2.getTitle()));
         assertThat(todos.get(1).getDescription(), equalTo(todo2.getDescription()));
         assertThat(todos.get(1).getTags(), equalTo(todo2.getTags()));
+        assertThat(todos.get(1).getProjects(), equalTo(todo2.getProjects()));
     }
 
     /**
@@ -200,6 +204,7 @@ public class TodoControllerTest {
         assertThat(savedTodo.getId(), not(equalTo(null)));
         assertThat(savedTodo.getTitle(), equalTo(todo.getTitle()));
         assertThat(savedTodo.getDescription(), equalTo(todo.getDescription()));
+        assertThat(savedTodo.getPriority(), equalTo(todo.getPriority()));        
         assertThat(savedTodo.getTags(), equalTo(todo.getTags()));        
     }
     
@@ -239,8 +244,16 @@ public class TodoControllerTest {
         return Todo.builder()
                 .title(provider.get(RandomDataProvider.TODO_TITLE))
                 .description(provider.get(RandomDataProvider.TODO_DESCRIPTION))
-                .tag(new Tag(provider.get(RandomDataProvider.TODO_TAG)))
-                .tag(new Tag(provider.get(RandomDataProvider.TODO_TAG)))
+                .priority(Priority.fromString(
+                        provider.get(RandomDataProvider.TODO_PRIORITY)))
+                .tag(Tag.builder().name(
+                        provider.get(RandomDataProvider.TODO_TAG)).build())
+                .tag(Tag.builder().name(
+                        provider.get(RandomDataProvider.TODO_TAG)).build())
+                .project(Project.builder().name(
+                        provider.get(RandomDataProvider.TODO_PROJECT)).build())
+                .project(Project.builder().name(
+                        provider.get(RandomDataProvider.TODO_PROJECT)).build())
                 .build();
     }
 }

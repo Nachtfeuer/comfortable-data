@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@ package comfortable.data.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.tools.TemplateEngine;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,10 +35,16 @@ import java.time.format.DateTimeFormatter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Testing of class {@link Todo}.
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TodoTest {
     /**
      * Test id.
@@ -52,6 +60,17 @@ public class TodoTest {
      * Test description.
      */
     private static final String TODO_DESCRIPTION = "some description";
+    
+    /**
+     * Test Priority.
+     */
+    private static final String TODO_PRIORITY = " ";
+    
+    /**
+     * Template engine.
+     */
+    @Autowired
+    TemplateEngine engine;
 
     /**
      * Testing deserialization from JSON.
@@ -60,9 +79,11 @@ public class TodoTest {
      */
     @Test
     public void testDeserializeFromJson() throws JsonProcessingException {
-        final var json = "{\"id\": 123, \"title\": \"" + TODO_TITLE + "\", "
-                + "\"completed\":true,"
-                + "\"description\": \"" + TODO_DESCRIPTION + "\"}";
+        final var separator = "\",";
+        final var json = "{\"id\": 123, \"title\": \"" + TODO_TITLE + separator
+                + "\"completed\": true,"
+                + "\"description\": \"" + TODO_DESCRIPTION + separator
+                + "\"priority\": \"" + TODO_PRIORITY + "\"}";
         final var mapper = new ObjectMapper();
         final var todo = mapper.readValue(json, Todo.class);
 
@@ -75,9 +96,10 @@ public class TodoTest {
      * Testing serialization to JSON.
      *
      * @throws JsonProcessingException when serialization has failed
+     * @throws IOException when reading JSON has failed.
      */
     @Test
-    public void testSerializeToJson() throws JsonProcessingException {
+    public void testSerializeToJson() throws JsonProcessingException, IOException {
         // Date and time at current zone (serializing to json converts to UTC)
         final var currentDateTime = LocalDateTime.now();
         final var currentTimestamp = Timestamp.valueOf(currentDateTime);
@@ -95,22 +117,29 @@ public class TodoTest {
                 .title(TODO_TITLE)
                 .description(TODO_DESCRIPTION)
                 .completed(false)
-                .tag(new Tag("tag1"))
-                .tag(new Tag("tag2"))
+                .priority(Priority.fromString(TODO_PRIORITY))
+                .tag(Tag.builder().name("tag1").build())
+                .tag(Tag.builder().name("tag2").build())
+                .project(Project.builder().name("project1").build())
+                .project(Project.builder().name("project2").build())
                 .build();
 
         final var mapper = new ObjectMapper();
         final var json = mapper.writeValueAsString(todo);
-        
-        final var separator = "\",";
-        final var expectedJson = "{\"id\":"+ TODO_ID + ","
-                + "\"created\":\"" + strCurrentDateTime + separator
-                + "\"changed\":\"" + strCurrentDateTime + separator
-                + "\"title\":\"" + TODO_TITLE + separator
-                + "\"description\":\"" + TODO_DESCRIPTION + separator
-                + "\"completed\":false,"
-                + "\"tags\":[{\"name\":\"tag1\"},{\"name\":\"tag2\"}]}";
 
+        final var renderer = engine.getRenderer("/templates/todo.json");
+        renderer.add("id", todo.getId());
+        renderer.add("created", strCurrentDateTime);
+        renderer.add("changed", strCurrentDateTime);
+        renderer.add("title", todo.getTitle());
+        renderer.add("description", todo.getDescription());
+        renderer.add("completed", todo.isCompleted());
+        renderer.add("priority", todo.getPriority());
+        renderer.add("tags", todo.getTags());
+        renderer.add("projects", todo.getProjects());
+
+        final var expectedJson = renderer.render().replaceAll("\\s(?=(\"[^\"]*\"|[^\"])*$)", "");
+        System.out.println(expectedJson);
         assertThat(json, equalTo(expectedJson));
     }
 }

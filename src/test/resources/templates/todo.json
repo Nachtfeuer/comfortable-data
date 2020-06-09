@@ -1,0 +1,19 @@
+{
+    "id": {{ id }},
+    "created": "{{ created }}",
+    "changed": "{{ changed }}",
+    "title": "{{ title }}",
+    "description": "{{ description }}",
+    "completed": {{ completed }},
+    "priority": "{{ priority }}",
+    "tags": [
+        {% for tag in tags %}
+            {"name": "{{ tag.name }}"}{% if loop.index+1 < tags.size() %},{% endif %}
+        {% endfor %}
+    ],
+    "projects": [
+        {% for project in projects %}
+            {"name": "{{ project.name }}"}{% if loop.index+1 < projects.size() %},{% endif %}
+        {% endfor %}
+    ]
+}

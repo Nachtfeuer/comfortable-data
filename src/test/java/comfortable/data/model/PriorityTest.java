@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +23,25 @@
  */
 package comfortable.data.model;
 
-import java.io.Serializable;
-import javax.persistence.Embeddable;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.Test;
 
 /**
- * A tag can be used as category and for filtering.
+ * Testing enum {@link Priority}.
  */
-@Embeddable
-@Data
-@NoArgsConstructor
-@RequiredArgsConstructor
-@Builder
-public class Tag implements Serializable {
-
+public class PriorityTest {
     /**
-     * version of class.
+     * Testing conversion from string to enum.
      */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * name of the tag.
-     */
-    @NonNull
-    private String name;
+    @Test
+    public void testFromString() {
+        assertThat(Priority.fromString("A"), equalTo(Priority.A));
+        assertThat(Priority.fromString("B"), equalTo(Priority.B));
+        assertThat(Priority.fromString("C"), equalTo(Priority.C));
+        assertThat(Priority.fromString("D"), equalTo(Priority.D));
+        assertThat(Priority.fromString("E"), equalTo(Priority.E));
+        assertThat(Priority.fromString("F"), equalTo(Priority.F));
+        assertThat(Priority.fromString(" "), equalTo(Priority.UNKNOWN));
+    }
 }
