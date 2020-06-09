@@ -38,7 +38,6 @@ import org.springframework.http.MediaType;
  *
  * @param <E> the type to use for the serialization and deserialization.
  */
-@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class ContentConverter<E> {
 
     /**
@@ -94,7 +93,7 @@ public class ContentConverter<E> {
      * @throws IOException happens when conversion has failed.
      */
     public E fromString(final String content) throws IOException {
-        E result = null;
+        final E result;
         if (this.source == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             result = mapper.readValue(content, this.theClass);
@@ -104,6 +103,8 @@ public class ContentConverter<E> {
         } else if (this.source == CustomMediaType.APPLICATION_YAML) {
             final var yamlMapper = new ObjectMapper(new YAMLFactory());
             result = yamlMapper.readValue(content, this.theClass);
+        } else {
+            result = null;
         }
         return result;
     }
@@ -116,10 +117,12 @@ public class ContentConverter<E> {
      * @throws IOException happens when conversion has failed.
      */
     public E fromBytes(final byte[] content) throws IOException {
-        E result = null;
+        final E result;
         if (this.source == CustomMediaType.APPLICATION_MSGPACK) {
             final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
             result = msgPackMapper.readValue(content, this.theClass);
+        } else {
+            result = null;
         }
         return result;
     }
@@ -133,7 +136,7 @@ public class ContentConverter<E> {
      * @throws JsonProcessingException when conversion has failed.
      */
     public String toString(final E object) throws JsonProcessingException {
-        var result = "";
+        final String result;
         if (this.destination == CustomMediaType.APPLICATION_JSON) {
             final var mapper = new ObjectMapper();
             result = mapper.writeValueAsString(object);
@@ -143,6 +146,8 @@ public class ContentConverter<E> {
         } else if (this.destination == CustomMediaType.APPLICATION_YAML) {
             final var yamlMapper = new ObjectMapper(new YAMLFactory());
             result = yamlMapper.writeValueAsString(object);
+        } else {
+            result = "";
         }
         return result;
     }
@@ -156,11 +161,14 @@ public class ContentConverter<E> {
      * @throws JsonProcessingException when conversion has failed.
      */
     public byte[] toBytes(final E object) throws JsonProcessingException {
-        byte[] result = null;
+        final byte[] result;
         if (this.destination == CustomMediaType.APPLICATION_MSGPACK) {
             final var msgPackMapper = new ObjectMapper(new MessagePackFactory());
             result = msgPackMapper.writeValueAsBytes(object);
+        } else {
+            result = null;
         }
         return result;
     }
 }
+    

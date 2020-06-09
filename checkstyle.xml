@@ -122,12 +122,6 @@
             <property name="max" value="30"/>        
         </module>
         
-
-        <module name="LineLength">
-            <property name="max" value="100"/>
-            <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-        </module>
-
         <module name="MethodCount">
             <property name="maxTotal" value="25"/>
         </module>
@@ -150,6 +144,12 @@
         <module name="NoWhitespaceBefore"/>
         <module name="OperatorWrap"/>
         <module name="ParenPad"/>
+    </module>
+    
+    <module name="LineLength">
+        <property name="max" value="100"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="fileExtensions" value="java"/>
     </module>
 
     <module name="FileLength">

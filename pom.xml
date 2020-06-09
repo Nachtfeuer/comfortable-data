@@ -34,11 +34,11 @@
         <micrometer.version>1.2.1</micrometer.version>
 
         <!-- Build plugins -->
-        <maven.checkstyle.plugin>3.1.0</maven.checkstyle.plugin>
-        <spotbugs.maven.plugin.version>3.1.11</spotbugs.maven.plugin.version>
+        <maven.checkstyle.plugin>3.1.1</maven.checkstyle.plugin>
+        <spotbugs.maven.plugin.version>4.0.0</spotbugs.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.4</jacoco.maven.plugin.version>
         <coveralls.maven.plugin.version>4.3.0</coveralls.maven.plugin.version>
-        <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
+        <maven.pmd.plugin.version>3.13.0</maven.pmd.plugin.version>
         <maven-javadoc-plugin>3.1.1</maven-javadoc-plugin>
         <asciidoctor.maven.plugin.version>2.0.0-RC.1</asciidoctor.maven.plugin.version>
     </properties>

@@ -23,6 +23,7 @@
  */
 package comfortable.data.tools;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import comfortable.data.model.Book;
 import comfortable.data.model.CustomMediaType;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
+import org.springframework.http.MediaType;
 
 /**
  * Testing of class {@link ContentConverter}.
@@ -164,6 +166,29 @@ public class ContentConverterTest {
         validateBook(book);
     }
 
+    /**
+     * Testing invalid usage.
+     *
+     * @throws JsonProcessingException should not happen here
+     * @throws IOException should not happen here
+     */
+    @Test
+    public void invalidUsage() throws JsonProcessingException, IOException {
+        var converter = new ContentConverter<>(Book.class,
+                CustomMediaType.APPLICATION_XML, CustomMediaType.APPLICATION_XML);
+        // don't care about the book because XML is choosen but the 'toBytes'
+        // the return value will be null
+        assertThat(converter.toBytes(Book.builder().build()), equalTo(null));
+
+        converter = new ContentConverter<>(Book.class,
+                MediaType.APPLICATION_PDF, MediaType.APPLICATION_PDF);
+        // don't care about the string not being a pdf because the not supported
+        // media type pdf should result into a return value null.
+        assertThat(converter.fromString("not a pdf"), equalTo(null));
+        // same reason but instead of a null an empty string should be returned.
+        assertThat(converter.toString(Book.builder().build()), equalTo(""));
+    }
+        
     /**
      * Validating the book data.
      *

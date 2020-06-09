@@ -45,6 +45,5 @@ public interface BookPublisherRepository extends JpaRepository<Publisher, String
     List<Publisher> findAll(Specification<Publisher> spec);
 
     @Override
-    @SuppressWarnings("PMD.ShortVariable")
     void deleteById(String id);
 }
