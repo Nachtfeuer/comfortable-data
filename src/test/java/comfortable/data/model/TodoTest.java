@@ -25,15 +25,13 @@ package comfortable.data.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import comfortable.data.tools.DateAndTime;
+import comfortable.data.tools.RandomDataProvider;
 import comfortable.data.tools.TemplateEngine;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +44,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TodoTest {
+
     /**
      * Test id.
      */
-    private static final int TODO_ID = 1234;
+    private static final long TODO_ID = 1234L;
 
     /**
      * Test title.
@@ -60,17 +59,32 @@ public class TodoTest {
      * Test description.
      */
     private static final String TODO_DESCRIPTION = "some description";
-    
+
     /**
      * Test Priority.
      */
     private static final String TODO_PRIORITY = " ";
-    
+
+    /**
+     * Provider for test data.
+     */
+    private static RandomDataProvider provider;
+
     /**
      * Template engine.
      */
     @Autowired
     TemplateEngine engine;
+
+    /**
+     * Load test data.
+     *
+     * @throws java.io.IOException should never happen here.
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws IOException {
+        provider = RandomDataProvider.of("/test.data.json");
+    }
 
     /**
      * Testing deserialization from JSON.
@@ -79,16 +93,32 @@ public class TodoTest {
      */
     @Test
     public void testDeserializeFromJson() throws JsonProcessingException {
+        final var strTestTitle = this.provider.get(RandomDataProvider.TODO_TITLE);
+        final var strTestDescription = this.provider.get(RandomDataProvider.TODO_DESCRIPTION);
+        final var strTestPriority = this.provider.get(RandomDataProvider.TODO_PRIORITY);
+        final var now = DateAndTime.now();
+
         final var separator = "\",";
-        final var json = "{\"id\": 123, \"title\": \"" + TODO_TITLE + separator
+        final var json = "{\"id\": 123,"
+                + "\"created\": \""
+                + now.toString() + separator
+                + "\"changed\": \""
+                + now.toString() + separator
+                + "\"title\": \""
+                + strTestTitle + separator
                 + "\"completed\": true,"
-                + "\"description\": \"" + TODO_DESCRIPTION + separator
-                + "\"priority\": \"" + TODO_PRIORITY + "\"}";
+                + "\"description\": \""
+                + strTestDescription + separator
+                + "\"priority\": \""
+                + strTestPriority
+                + "\"}";
         final var mapper = new ObjectMapper();
         final var todo = mapper.readValue(json, Todo.class);
 
-        assertThat(todo.getTitle(), equalTo(TODO_TITLE));
-        assertThat(todo.getDescription(), equalTo(TODO_DESCRIPTION));
+        assertThat(todo.getCreated(), equalTo(now));
+        assertThat(todo.getChanged(), equalTo(now));
+        assertThat(todo.getTitle(), equalTo(strTestTitle));
+        assertThat(todo.getDescription(), equalTo(strTestDescription));
         assertThat(todo.isCompleted(), equalTo(true));
     }
 
@@ -101,19 +131,12 @@ public class TodoTest {
     @Test
     public void testSerializeToJson() throws JsonProcessingException, IOException {
         // Date and time at current zone (serializing to json converts to UTC)
-        final var currentDateTime = LocalDateTime.now();
-        final var currentTimestamp = Timestamp.valueOf(currentDateTime);
-
-        // Get current UTC date and time in zone UTC
-        final var currentDateTimeWithTimeZone = LocalDateTime.now(
-                ZoneOffset.UTC).atZone(ZoneId.of("UTC"));
-        final var pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
-        final var strCurrentDateTime = currentDateTimeWithTimeZone.format(pattern);
+        final var currentDateTime = DateAndTime.now();
 
         final var todo = Todo.builder()
                 .id(TODO_ID)
-                .created(currentTimestamp)
-                .changed(currentTimestamp)
+                .created(currentDateTime)
+                .changed(currentDateTime)
                 .title(TODO_TITLE)
                 .description(TODO_DESCRIPTION)
                 .completed(false)
@@ -129,8 +152,8 @@ public class TodoTest {
 
         final var renderer = engine.getRenderer("/templates/todo.json");
         renderer.add("id", todo.getId());
-        renderer.add("created", strCurrentDateTime);
-        renderer.add("changed", strCurrentDateTime);
+        renderer.add("created", currentDateTime.toString());
+        renderer.add("changed", currentDateTime.toString());
         renderer.add("title", todo.getTitle());
         renderer.add("description", todo.getDescription());
         renderer.add("completed", todo.isCompleted());

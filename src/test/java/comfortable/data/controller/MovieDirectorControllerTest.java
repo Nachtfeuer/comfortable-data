@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Director;
 import comfortable.data.tools.RequestMaker;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -125,7 +126,8 @@ public class MovieDirectorControllerTest {
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
                 get("/movies/directors?fullName=howard").accept(CustomMediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
         final List<Director> directors = mapper.readValue(content,
                 new TypeReference<List<Director>>() {
         });

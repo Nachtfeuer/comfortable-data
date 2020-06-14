@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Performer;
 import comfortable.data.tools.RequestMaker;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -128,7 +129,8 @@ public class MoviePerformerControllerTest {
         final var mapper = new ObjectMapper();
         final var content = this.mvc.perform(
                 get("/movies/performers?fullName=john").accept(CustomMediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk()).andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
         final List<Performer> performers = mapper.readValue(content,
                 new TypeReference<List<Performer>>() {
         });

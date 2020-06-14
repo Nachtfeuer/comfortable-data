@@ -96,7 +96,6 @@ public enum Priority {
      * @return enum value
      */
     @JsonCreator
-    @SuppressWarnings("PMD.AvoidFinalLocalVariable")
     public static Priority fromString(final String value) {
         final Priority priority;
 

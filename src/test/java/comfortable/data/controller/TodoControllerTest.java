@@ -56,6 +56,10 @@ import org.springframework.http.MediaType;
 @AutoConfigureRestDocs
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class TodoControllerTest {
+    /**
+     * Delay one second.
+     */
+    private static final long DELAY = 1000L;
 
     /**
      * The base request for the todos.
@@ -107,8 +111,8 @@ public class TodoControllerTest {
      * @throws Exception when request has failed.
      */
     @Test
-    public void testCreateTodoForJson() throws Exception {
-        testCreateOrUpdate(MediaType.APPLICATION_JSON);
+    public void testCreateAndUpdateTodoForJson() throws Exception {
+        testCreateAndUpdateTodo(MediaType.APPLICATION_JSON);
     }
 
     /**
@@ -117,7 +121,7 @@ public class TodoControllerTest {
      */
     @Test
     public void testCreateTodoForXml() throws Exception {
-        testCreateOrUpdate(MediaType.APPLICATION_XML);
+        testCreateAndUpdateTodo(MediaType.APPLICATION_XML);
     }
 
     /**
@@ -127,7 +131,33 @@ public class TodoControllerTest {
      */
     @Test
     public void testCreateTodoForYaml() throws Exception {
-        testCreateOrUpdate(CustomMediaType.APPLICATION_YAML);
+        testCreateAndUpdateTodo(CustomMediaType.APPLICATION_YAML);
+    }
+
+    /**
+     * Testing deleting of todos.
+     * @throws Exception should not happen.
+     */
+    @Test
+    public void testDelete() throws Exception {
+        final var todo1 = createTestData();
+        final var todo2 = createTestData();
+
+        final var requestMaker = new RequestMaker<Todo>(Todo.class, this.mvc);
+
+        final var savedTodo1 = requestMaker.postData(REQUEST, MediaType.APPLICATION_JSON, todo1);
+        final var savedTodo2 = requestMaker.postData(REQUEST, MediaType.APPLICATION_JSON, todo2);
+        
+        assertThat(requestMaker.getListOfData(REQUEST, MediaType.APPLICATION_JSON).size(),
+                   equalTo(2));
+        assertThat(requestMaker.deleteData(REQUEST + '/' + savedTodo1.getId()),
+                   equalTo(savedTodo1.getId().toString()));
+        assertThat(requestMaker.getListOfData(REQUEST, MediaType.APPLICATION_JSON).size(),
+                   equalTo(1));
+        assertThat(requestMaker.deleteData(REQUEST + '/' + savedTodo2.getId()),
+                   equalTo(savedTodo2.getId().toString()));
+        assertThat(requestMaker.getListOfData(REQUEST, MediaType.APPLICATION_JSON).size(),
+                   equalTo(0));
     }
 
     /**
@@ -190,22 +220,34 @@ public class TodoControllerTest {
     }
 
     /**
-     * Create or update of a todo with customizable communication format.
+     * Test update create AND update of a todo.
      *
-     * @param contentType JSON, XML, YAML or MSGPACK
-     * @throws Exception when request has failed
+     * @param contentType for a concrete media type.
+     * @throws Exception should not happen.
      */
-    private void testCreateOrUpdate(final MediaType contentType) throws Exception {
-        final var todo = createTestData();
+    private void testCreateAndUpdateTodo(final MediaType contentType) throws Exception {
+        final var todo1 = createTestData();
+        final var todo2 = createTestData();
 
         final var requestMaker = new RequestMaker<Todo>(Todo.class, this.mvc);
-        final var savedTodo = requestMaker.postData(REQUEST, contentType, todo);
+        final var savedTodo1 = requestMaker.postData(REQUEST, contentType, todo1);
 
-        assertThat(savedTodo.getId(), not(equalTo(null)));
-        assertThat(savedTodo.getTitle(), equalTo(todo.getTitle()));
-        assertThat(savedTodo.getDescription(), equalTo(todo.getDescription()));
-        assertThat(savedTodo.getPriority(), equalTo(todo.getPriority()));        
-        assertThat(savedTodo.getTags(), equalTo(todo.getTags()));        
+        savedTodo1.setTitle(todo2.getTitle());
+        savedTodo1.setDescription(todo2.getDescription());
+
+        // ensuring that the change date is different
+        // (must be seconds since milliseconds are ignored)
+        Thread.sleep(DELAY);
+        final var savedTodo2 = requestMaker.postData(REQUEST, contentType, savedTodo1);
+        
+        assertThat(savedTodo2.getId(), equalTo(savedTodo1.getId()));
+        assertThat(savedTodo2.getCreated(), equalTo(savedTodo1.getCreated()));
+        assertThat(savedTodo2.getCreated(), not(equalTo(null)));
+        assertThat(savedTodo2.getChanged(), not(equalTo(savedTodo1.getChanged())));
+        assertThat(savedTodo2.getTitle(), equalTo(savedTodo1.getTitle()));
+        assertThat(savedTodo2.getDescription(), equalTo(savedTodo1.getDescription()));
+        assertThat(savedTodo2.getPriority(), equalTo(savedTodo1.getPriority()));        
+        assertThat(savedTodo2.getTags(), equalTo(savedTodo1.getTags()));        
     }
     
     /**

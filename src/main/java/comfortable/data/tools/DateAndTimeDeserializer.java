@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2020 Thomas Lehmann.
+ * Copyright 2019 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.database;
+package comfortable.data.tools;
 
-import comfortable.data.model.Todo;
-import java.util.List;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import java.io.IOException;
 
 /**
- * CRUD Access to todo data.
+ * Derserialize a JSON string to a DateAndTime object.
  */
-@Transactional
-public interface TodoRepository extends JpaRepository<Todo, Long>,
-                                        JpaSpecificationExecutor<Todo> {
-    @Transactional(readOnly = true)
-    @Override
-    List<Todo> findAll();
+public class DateAndTimeDeserializer extends JsonDeserializer<DateAndTime> {
 
-    @Transactional(readOnly = true)
     @Override
-    List<Todo> findAll(Specification<Todo> spec);
+    public DateAndTime deserialize(final JsonParser parser,
+            final DeserializationContext context) throws IOException, JsonProcessingException {
+        return DateAndTime.parse(parser.getText());
+    }
+
 }

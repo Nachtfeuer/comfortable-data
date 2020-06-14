@@ -32,6 +32,7 @@ import comfortable.data.model.Book;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.RandomDataProvider;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -134,7 +135,8 @@ public class BookControllerQueryTest {
                 .param("author", newBooks.get(0).getAuthors().get(0).getFullName())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         final var mapper = new ObjectMapper();
         final List<Book> foundBooks = mapper.readValue(

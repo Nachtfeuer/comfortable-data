@@ -29,6 +29,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import comfortable.data.model.CustomMediaType;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
@@ -91,9 +93,27 @@ public class RequestMaker<E> {
                 .content(converterTo.convert(value)))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return converterFrom.convert(responseContent);
+    }
+
+    /**
+     * Deleting a record.
+     *
+     * @param request delete request
+     * @return String of the response.
+     * @throws Exception when request has failed.
+     */
+    public String deleteData(final String request) throws Exception {
+        final var documentName = "delete" + request;
+
+        return this.mvc.perform(delete(request))
+                .andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -111,7 +131,8 @@ public class RequestMaker<E> {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return convertString2ListOfValue(content, contentType);
     }
@@ -129,7 +150,8 @@ public class RequestMaker<E> {
         final String content = this.mvc.perform(get(request)
                 .accept(expectedResponseType))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return convertString2ListOfValue(content, expectedResponseType);
     }

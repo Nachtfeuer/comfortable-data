@@ -21,26 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package comfortable.data.database;
+package comfortable.data.tools;
 
-import comfortable.data.model.Todo;
-import java.util.List;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
 
 /**
- * CRUD Access to todo data.
+ * Converting DateAndTime field into a string.
  */
-@Transactional
-public interface TodoRepository extends JpaRepository<Todo, Long>,
-                                        JpaSpecificationExecutor<Todo> {
-    @Transactional(readOnly = true)
-    @Override
-    List<Todo> findAll();
+public class DateAndTimeSerializer extends JsonSerializer<DateAndTime> {
 
-    @Transactional(readOnly = true)
     @Override
-    List<Todo> findAll(Specification<Todo> spec);
+    public void serialize(final DateAndTime dateAndTime,
+            final JsonGenerator generator,
+            final SerializerProvider provider) throws IOException {
+
+        generator.writeString(dateAndTime.toString());
+    }
 }

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="passthrough">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Getting Things Done</title>
+
+        <!-- Stylesheets -->
+        <link type="text/css" rel="stylesheet" href="/resources/libraries/bootstrap.min.css"></link>
+        <link type="text/css" rel="stylesheet" href="/resources/libraries/bootstrap-vue.min.css"></link>
+        <link type="text/css" rel="stylesheet" href="/resources/comfortable.data.css"></link>
+
+        <!-- Javascript -->
+        <script src="/resources/libraries/jquery.min.js"></script>
+        <script src="/resources/libraries/bootstrap.min.js"></script>
+        <script src="/resources/libraries/vue.min.js"></script>
+        <script src="/resources/libraries/bootstrap-vue.min.js"></script>
+        <script src="/resources/libraries/axios.min.js"></script>
+    </head>
+
+    <body>
+        <div id="content" class="container-fluid">
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <a class="navbar-brand" href="#">Getting Things Done</a>
+                <button class="button btn-success ml-auto mr-2"
+                        v-on:click="openCreateTodoDialog">
+                    New Todo
+                </button>
+
+                <!-- Search -->
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search"
+                           placeholder="Search for a todo" aria-label="Search"
+                           v-model="search"/>
+                </form>
+            </nav>
+
+            <!-- dialog for creating a new todo -->
+            <div id="create-todo" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success">
+                            <h4 class="modal-title">Create New Todo</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Title</span>
+                                </div>
+                                <input id="create-todo-title" type="text" class="form-control"
+                                       placeholder="Provide a reasonable title" aria-label="Title"
+                                       v-model="todo.title"></input>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Description</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Provide a reasonable short description" aria-label="Description"
+                                       v-model="todo.description"></input>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text font-weight-bold" for="priorities">Priority</label>
+                                </div>
+                                <select class="custom-select" id="priorities" v-model="todo.priority">
+                                    <option selected=" "> </option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Projects</span>
+                                </div>
+                                <b-form-tags class="form-control" data-role="tagsinput"
+                                             placeholder="Provide some projects" aria-label="Projeccts"
+                                             v-model="todo.projects"
+                                             tag-variant="info" remove-on-delete=""></b-form-tags>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Tags</span>
+                                </div>
+                                <b-form-tags class="form-control" data-role="tagsinput"
+                                             placeholder="Provide some tags" aria-label="Tags"
+                                             v-model="todo.tags"
+                                             tag-variant="secondary" remove-on-delete=""></b-form-tags>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="createTodo()">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- dialog for editing a todo -->
+            <div id="edit-todo" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success">
+                            <h4 class="modal-title">Change Todo</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Title</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Enter the title of the todo" aria-label="Title" v-model="todo.title"></input>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Description</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Enter the description of the todo" aria-label="Description" v-model="todo.description"></input>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text font-weight-bold" for="priorities">Priority</label>
+                                </div>
+                                <select class="custom-select" id="priorities" v-model="todo.priority">
+                                    <option selected=" "> </option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Projects</span>
+                                </div>
+                                <b-form-tags class="form-control" data-role="tagsinput"
+                                             placeholder="Provide some projects" aria-label="Projeccts"
+                                             v-model="todo.projects"
+                                             tag-variant="info" remove-on-delete=""></b-form-tags>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold">Tags</span>
+                                </div>
+                                <b-form-tags class="form-control" data-role="tagsinput"
+                                             placeholder="Enter some tags" aria-label="Tags"
+                                             v-model="todo.tags"
+                                             tag-variant="secondary" remove-on-delete=""></b-form-tags>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateTodo()">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- dialog to ask whether you really want to delete -->
+            <div id="do-you-really-want-to-delete" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h4 class="modal-title">Delete Todo</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-center">
+                                Do you really want to delete?<br/>
+                                "<strong>{{todo.title}}</strong>"
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="deleteTodo(todo)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="data-view" class="row">
+                <!-- sidebar with quick filters -->
+                <div id="sidebar" class="col-sm-2">
+                    <table class="table table-sm">
+                        <!-- Title for the common filters -->
+                        <tr>
+                            <td class="font-weight-bold text-white bg-dark" colspan="2">Common Filters</td>
+                        </tr>
+
+                        <!-- Filter for all todos and all not completed -->
+                        <tr>
+                            <td class="font-weight-bold">All</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isNotCompleted)">
+                                        {{count(isNotCompleted)}}
+                                    </span>
+                                </span>
+                                /
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isAll)">
+                                        {{count(isAll)}}
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Filter for completed todos only -->
+                        <tr>
+                            <td class="font-weight-bold">Completed</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isCompleted)">{{count(todo =&gt; todo.completed)}}</span>
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Filter for todos with priority 'A' -->
+                        <tr>
+                            <td class="font-weight-bold">High Priority</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isHighPriorityAndNotCompleted)">{{count(isHighPriorityAndNotCompleted)}}</span>
+                                </span>
+                                /
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isHighPriority)">{{count(isHighPriority)}}</span>
+                                </span>
+                            </td>
+                        </tr>
+                        
+                        <!-- Filter for todos being changed today -->
+                        <tr>
+                            <td class="font-weight-bold">Today</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(isToday)">
+                                        {{count(isToday)}}
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Title for the tag based filters -->
+                        <tr>
+                            <td class="font-weight-bold text-white bg-dark" colspan="2">Tags</td>
+                        </tr>
+
+                        <tr v-for="tag in getTags">
+                            <td class="font-weight-bold">{{ tag.name }}</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(hasTag(tag.name, isNotCompleted))">{{ count(hasTag(tag.name, isNotCompleted)) }}</span>
+                                </span>
+                                /
+                                <span class="badge badge-secondary badge-pill">
+                                    <span v-on:click="changeToFilter(hasTag(tag.name))">{{ tag.count }}</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- List of todos (depending on filter) -->
+                <div id="table" class="col">
+                    <table class="table table-striped table-sm">
+                        <tbody>
+                            <tr v-for="todo in filteredTodos">
+                                <td class="align-middle">
+                                    <div class="d-flex flex-column">
+                                        <strong>#{{ todo.id }}</strong>
+                                        <span v-if="todo.completed">
+                                            <img src="/resources/check.svg" v-if="todo.completed" v-on:click="toggleCompletion(todo)"/>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="align-middle">
+                                    <span class="font-weight-bold text-danger" v-if="todo.priority == 'A'">A</span>
+                                    <span class="font-weight-bold text-warning" v-else-if="todo.priority == 'B'">B</span>
+                                    <span class="font-weight-bold" v-else="">{{todo.priority}}</span>
+                                </td>
+
+                                <td>
+                                    <h3 v-if="todo.completed">
+                                        <s>{{ todo.title }}</s>
+                                    </h3>
+                                    <h3 v-if="!todo.completed">
+                                        {{ todo.title }}
+                                    </h3>
+
+                                    <p v-if="todo.description && todo.description.length > 0">{{ todo.description }}</p>
+                                    <small><strong>created:</strong> <em>{{ todo.created }}</em></small>
+                                    -
+                                    <small><strong>changed:</strong> <em>{{ todo.changed }}</em></small>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <div v-for="project in todo.projects">
+                                            <button type="button" class="btn btn-info m-1 p-1">
+                                                :{{ project }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <div v-for="tag in todo.tags">
+                                            <button type="button" class="btn btn-secondary m-1 p-1">
+                                                @{{ tag }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <img class="p-1" src="/resources/trash.svg" v-on:click="checkDelete(todo)"/>
+                                        <img class="p-1" src="/resources/check.svg" v-if="!todo.completed" v-on:click="toggleCompletion(todo)"/>
+                                        <img class="p-1" src="/resources/pencil.svg" v-on:click="editTodo(todo)"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="/resources/todos.js"></script>
+    </body>
+</html>

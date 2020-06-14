@@ -30,6 +30,7 @@ import comfortable.data.model.Author;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -171,7 +172,8 @@ public class BookAuthorControllerTest {
                 get(REQUEST + "?fullName=is").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         final List<Author> authors = mapper.readValue(content,
                 new TypeReference<List<Author>>() {
@@ -197,7 +199,8 @@ public class BookAuthorControllerTest {
 
         final var content = this.mvc.perform(get(REQUEST)
                 .accept(CustomMediaType.TEXT_HTML))
-                .andReturn().getResponse().getContentAsString().trim();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8).trim();
 
         assertThat(content, startsWith("<!doctype html>"));
         assertThat(content, containsString("<title>Books / Authors</title>"));
@@ -283,7 +286,8 @@ public class BookAuthorControllerTest {
                 .contentType(acceptContentType)
                 .content(converter.toString(newAuthor))).andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return converter.fromString(content);
     }
