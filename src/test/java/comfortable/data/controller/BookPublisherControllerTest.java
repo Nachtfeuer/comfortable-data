@@ -33,6 +33,7 @@ import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Publisher;
 import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RequestMaker;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
@@ -177,7 +178,8 @@ public class BookPublisherControllerTest {
                 get(REQUEST + "?fullName=n").accept(CustomMediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
         final List<Publisher> listOfPublishers = mapper.readValue(content,
                 new TypeReference<List<Publisher>>() {
         });
@@ -205,7 +207,8 @@ public class BookPublisherControllerTest {
 
         final var content = this.mvc.perform(get(REQUEST)
                 .accept(CustomMediaType.TEXT_HTML))
-                .andReturn().getResponse().getContentAsString().trim();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8).trim();
 
         assertThat(content, startsWith("<!doctype html>"));
         assertThat(content, containsString("<title>Books / Publishers</title>"));
@@ -281,7 +284,8 @@ public class BookPublisherControllerTest {
                 .contentType(acceptContentType)
                 .content(converter.toString(newPublisher))).andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return converter.fromString(content);
     }

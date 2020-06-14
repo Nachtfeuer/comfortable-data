@@ -34,6 +34,7 @@ import comfortable.data.tools.ContentConverter;
 import comfortable.data.tools.RandomDataProvider;
 import comfortable.data.tools.RequestMaker;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -163,7 +164,8 @@ public class BookControllerTest {
     public void testHtmlReponse() throws Exception {
         runTest(createBook(), CustomMediaType.APPLICATION_YAML, CustomMediaType.APPLICATION_JSON);
         final var content = this.mvc.perform(get(REQUEST).accept(CustomMediaType.TEXT_HTML))
-                .andReturn().getResponse().getContentAsString().trim();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8).trim();
 
         assertThat(content, startsWith("<!doctype html>"));
         assertThat(content, containsString("<title>Books</title>"));
@@ -194,7 +196,8 @@ public class BookControllerTest {
                 .contentType(acceptContentType)
                 .content(converter.toString(theBook))).andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         final var responseBook = converter.fromString(content);
 

@@ -26,6 +26,7 @@ package comfortable.data.controller;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Status;
 import comfortable.data.tools.ContentConverter;
+import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
@@ -62,7 +63,8 @@ public class StatusControllerTest {
     public void testStatus() throws Exception {
         final var content = this.mvc.perform(get("/status"))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         final var mapper = new ContentConverter<>(Status.class, CustomMediaType.APPLICATION_JSON);
         final var status = mapper.fromString(content);

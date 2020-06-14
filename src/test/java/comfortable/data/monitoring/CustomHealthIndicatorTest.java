@@ -23,6 +23,7 @@
  */
 package comfortable.data.monitoring;
 
+import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
@@ -57,7 +58,8 @@ public class CustomHealthIndicatorTest {
     public void testBasicContent() throws Exception {
         final String content = this.mvc.perform(get("/actuator/health"))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         assertThat(content, containsString("books performance"));
         assertThat(content, containsString("books authors performance"));

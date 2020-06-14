@@ -29,6 +29,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import comfortable.data.model.CustomMediaType;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,8 @@ public class RequestMaker<E> {
                 .content(converterTo.convert(value)))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return converterFrom.convert(responseContent);
     }
@@ -110,7 +112,8 @@ public class RequestMaker<E> {
         return this.mvc.perform(delete(request))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -128,7 +131,8 @@ public class RequestMaker<E> {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andDo(document(documentName))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return convertString2ListOfValue(content, contentType);
     }
@@ -146,7 +150,8 @@ public class RequestMaker<E> {
         final String content = this.mvc.perform(get(request)
                 .accept(expectedResponseType))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return convertString2ListOfValue(content, expectedResponseType);
     }
