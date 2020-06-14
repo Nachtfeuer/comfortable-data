@@ -36,6 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
@@ -94,6 +95,22 @@ public class RequestMaker<E> {
                 .andReturn().getResponse().getContentAsString();
 
         return converterFrom.convert(responseContent);
+    }
+
+    /**
+     * Deleting a record.
+     *
+     * @param request delete request
+     * @return String of the response.
+     * @throws Exception when request has failed.
+     */
+    public String deleteData(final String request) throws Exception {
+        final var documentName = "delete" + request;
+
+        return this.mvc.perform(delete(request))
+                .andExpect(status().isOk())
+                .andDo(document(documentName))
+                .andReturn().getResponse().getContentAsString();
     }
 
     /**

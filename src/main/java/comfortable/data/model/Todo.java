@@ -23,12 +23,9 @@
  */
 package comfortable.data.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import comfortable.data.tools.DateAndTime;
 import comfortable.data.tools.SuppressFBWarnings;
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -62,21 +59,18 @@ public class Todo implements Serializable {
      */
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     /**
      * Date and time when the todo has been created.
      */
     @Column(updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
-    @SuppressWarnings("PMD.BeanMembersShouldSerialize")
-    private Timestamp created;
+    private DateAndTime created;
 
     /**
      * Date and time when the todo has been changed.
      */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
-    private Timestamp changed;
+    private DateAndTime changed;
     
     /**
      * Short text (title) what to do.
@@ -119,7 +113,7 @@ public class Todo implements Serializable {
     @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
     @SuppressWarnings("PMD.UnusedPrivateMethod") // it is used!
     private void onPrePersist() {
-        this.created = Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC));
+        this.created = DateAndTime.now();
         this.changed = this.created;
     }
 }

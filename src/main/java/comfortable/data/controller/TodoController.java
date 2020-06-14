@@ -24,14 +24,22 @@
 package comfortable.data.controller;
 
 import comfortable.data.database.TodoRepository;
+import comfortable.data.exceptions.InternalServerError;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Todo;
+import comfortable.data.tools.DateAndTime;
+import comfortable.data.tools.FileTools;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +53,9 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  */
 @RestController
+@SuppressWarnings({"checkstyle:classfanoutcomplexity", "PMD.AvoidDuplicateLiterals"})
 public class TodoController {
+
     /**
      * dependency injection of database class responsible for storing and querying data.
      */
@@ -54,24 +64,27 @@ public class TodoController {
 
     /**
      * Create or update a todo.
-     * 
+     *
      * @param todo the todo data to be created or updated
      * @return the created or updated to (with the real id).
      */
     @PostMapping(value = "/todos", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE})
-    @SuppressWarnings("PMD.AvoidFinalLocalVariable")
     public Todo createOrUpdate(@RequestBody final Todo todo) {
         final Todo finalTodo;
-        
+
         if (todo.getId() == null) {
+            // create mode
             finalTodo = repository.save(todo);
         } else {
             final var optionalTodo = repository.findById(todo.getId());
             if (optionalTodo.isPresent()) {
-                finalTodo = optionalTodo.get();
+                // update mode
+                todo.setChanged(DateAndTime.now());
+                finalTodo = repository.save(todo);
             } else {
+                // create mode
                 finalTodo = repository.save(todo);
             }
         }
@@ -97,13 +110,41 @@ public class TodoController {
      * @param spec the search spec (here: id must match)
      * @return list of todos.
      */
-    @GetMapping(value = "todos", produces = {
+    @GetMapping(value = "/todos", produces = {
         CustomMediaType.APPLICATION_JSON_VALUE, CustomMediaType.APPLICATION_XML_VALUE,
         CustomMediaType.APPLICATION_YAML_VALUE, CustomMediaType.APPLICATION_MSGPACK_VALUE},
             params = {"id"})
     public List<Todo> getListOfTodosBySpec(
-            @Spec(path = "id", spec=Equal.class)
+            @Spec(path = "id", spec = Equal.class)
             final Specification<Todo> spec) {
         return repository.findAll(spec);
+    }
+
+    /**
+     * Deleting a todo by a given id.
+     *
+     * @param id id of an existing todo.
+     * @return reponse entity with id and http status code.
+     */
+    @DeleteMapping("/todos/{id}")
+    public ResponseEntity<Long> deleteTodoById(@PathVariable final Long id) {
+        repository.deleteById(id);
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    /**
+     * Provide visualization and management of todos via HTML frontend.
+     *
+     * @return provide list of book authors rendered into HTML.
+     */
+    @GetMapping(value = "/todos", produces = {CustomMediaType.TEXT_HTML_VALUE})
+    @Timed(value = "todos.get.html", extraTags = {"todos", "html"})
+    public String renderHtml() {
+        final var content = FileTools.readResource("/html/todos.dynamic.html");
+        if (content != null) {
+            return content;
+        }
+
+        throw new InternalServerError("Failed to provide HTML for book authors");
     }
 }

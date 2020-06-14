@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @SuppressWarnings({
-    "PMD.AvoidDuplicateLiterals", "PMD.AvoidFinalLocalVariable",
+    "PMD.AvoidDuplicateLiterals",
     "checkstyle:classfanoutcomplexity"})
 public class BookAuthorController {
 
@@ -117,7 +117,6 @@ public class BookAuthorController {
      * @return provide list of book authors rendered into HTML.
      */
     @GetMapping(value = "/books/authors", produces = {CustomMediaType.TEXT_HTML_VALUE})
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @Timed(value = "books.authors.get.html", extraTags = {"books.authors", "html"})
     public String renderHtml() {
         final var content = FileTools.readResource("/html/authors.dynamic.html");

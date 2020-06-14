@@ -117,7 +117,6 @@ public final class BookController {
      * @return provide list of book rendered into HTML.
      */
     @GetMapping(value = "/books", produces = {CustomMediaType.TEXT_HTML_VALUE})
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @Timed(value = "books.get.html", extraTags = {"books", "html"})
     public String renderHtml() {
         final var content = FileTools.readResource("/html/books.dynamic.html");

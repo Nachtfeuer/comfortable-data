@@ -35,7 +35,6 @@ import org.springframework.stereotype.Component;
  * Custom health indicator.
  */
 @Component
-@SuppressWarnings("PMD.AvoidFinalLocalVariable")
 public class CustomHealthIndicator implements HealthIndicator {
 
     /**
