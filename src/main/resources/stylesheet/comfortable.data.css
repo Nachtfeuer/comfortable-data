@@ -38,7 +38,7 @@
     font-size: 10px;
     float: left;
     margin-right: 2px;
-}            
+}
 
 .cover {
     float: left;
@@ -53,4 +53,10 @@
 
 .input-group .input-group-text {
     width: 100%;
+}
+
+.tooltip > .tooltip-inner {
+    background-color: #fdffe3;
+    color: black;
+    border: 1px solid black;
 }

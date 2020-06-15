@@ -47,6 +47,7 @@ mvn -N io.takari:maven:0.7.5:wrapper
  - https://bootstrap-vue.js.org/
  - https://www.baeldung.com/running-setup-logic-on-startup-in-spring
  - https://www.baeldung.com/spring-mvc-static-resources
+ - https://github.com/popperjs/popper-core
 
 ### Documentation
  - https://spring.io/guides/gs/testing-restdocs/

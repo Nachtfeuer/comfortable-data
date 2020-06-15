@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!doctype html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:v-on="passthrough">
+      xmlns:v-on="passthrough" xmlns:v-bind="passthrough">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +14,7 @@
 
         <!-- Javascript -->
         <script src="/resources/libraries/jquery.min.js"></script>
+        <script src="/resources/libraries/popper.min.js"></script>
         <script src="/resources/libraries/bootstrap.min.js"></script>
         <script src="/resources/libraries/vue.min.js"></script>
         <script src="/resources/libraries/bootstrap-vue.min.js"></script>
@@ -204,20 +205,25 @@
                     <table class="table table-sm">
                         <!-- Title for the common filters -->
                         <tr>
-                            <td class="font-weight-bold text-white bg-dark" colspan="2">Common Filters</td>
+                            <td class="font-weight-bold text-white bg-dark" colspan="2"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Common quick filter">Common Filters</td>
                         </tr>
 
                         <!-- Filter for all todos and all not completed -->
                         <tr>
-                            <td class="font-weight-bold">All</td>
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                title="Display all not completed todos or really all todos">All</td>
                             <td>
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      title="Display all not completed todos">
                                     <span v-on:click="changeToFilter(isNotCompleted)">
                                         {{count(isNotCompleted)}}
                                     </span>
                                 </span>
                                 /
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      title="Display all todos (completed ones included)">
                                     <span v-on:click="changeToFilter(isAll)">
                                         {{count(isAll)}}
                                     </span>
@@ -227,9 +233,11 @@
 
                         <!-- Filter for completed todos only -->
                         <tr>
-                            <td class="font-weight-bold">Completed</td>
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                title="Display all completed todos only">Completed</td>
                             <td>
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill"  data-toggle="tooltip" data-placement="right"
+                                      title="Display all completed todos only">
                                     <span v-on:click="changeToFilter(isCompleted)">{{count(todo =&gt; todo.completed)}}</span>
                                 </span>
                             </td>
@@ -237,13 +245,16 @@
 
                         <!-- Filter for todos with priority 'A' -->
                         <tr>
-                            <td class="font-weight-bold">High Priority</td>
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                title="Display all todos with priority 'A'">High Priority</td>
                             <td>
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      title="Display all not completed todos with priority 'A'">
                                     <span v-on:click="changeToFilter(isHighPriorityAndNotCompleted)">{{count(isHighPriorityAndNotCompleted)}}</span>
                                 </span>
                                 /
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      title="Display all todos with priority 'A' (completed ones included)">
                                     <span v-on:click="changeToFilter(isHighPriority)">{{count(isHighPriority)}}</span>
                                 </span>
                             </td>
@@ -251,9 +262,11 @@
                         
                         <!-- Filter for todos being changed today -->
                         <tr>
-                            <td class="font-weight-bold">Today</td>
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                title="Display all todos changed today">Today</td>
                             <td>
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      title="Display all todos changed today">
                                     <span v-on:click="changeToFilter(isToday)">
                                         {{count(isToday)}}
                                     </span>
@@ -263,17 +276,22 @@
 
                         <!-- Title for the tag based filters -->
                         <tr>
-                            <td class="font-weight-bold text-white bg-dark" colspan="2">Tags</td>
+                            <td class="font-weight-bold text-white bg-dark" colspan="2"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Quick filter for tags">@Tags</td>
                         </tr>
 
                         <tr v-for="tag in getTags">
-                            <td class="font-weight-bold">{{ tag.name }}</td>
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                v-bind:title="'Dispay all todos tagged with \'' + tag.name + '\''">{{ tag.name }}</td>
                             <td>
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      v-bind:title="'Dispay all not completed todos tagged with \'' + tag.name + '\''">
                                     <span v-on:click="changeToFilter(hasTag(tag.name, isNotCompleted))">{{ count(hasTag(tag.name, isNotCompleted)) }}</span>
                                 </span>
                                 /
-                                <span class="badge badge-secondary badge-pill">
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      v-bind:title="'Dispay all todos tagged with \'' + tag.name + '\' (completed ones included)'">
                                     <span v-on:click="changeToFilter(hasTag(tag.name))">{{ tag.count }}</span>
                                 </span>
                             </td>
@@ -319,7 +337,7 @@
                                     <div class="d-flex flex-column">
                                         <div v-for="project in todo.projects">
                                             <button type="button" class="btn btn-info m-1 p-1">
-                                                :{{ project }}
+                                                <small>:{{ project }}</small>
                                             </button>
                                         </div>
                                     </div>
@@ -329,7 +347,7 @@
                                     <div class="d-flex flex-column">
                                         <div v-for="tag in todo.tags">
                                             <button type="button" class="btn btn-secondary m-1 p-1">
-                                                @{{ tag }}
+                                                <small>@{{ tag }}</small>
                                             </button>
                                         </div>
                                     </div>

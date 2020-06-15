@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-var app = new Vue({
+new Vue({
     el: '#content',
     data: {
         todos: [],
@@ -377,5 +377,9 @@ var app = new Vue({
 $(document).ready(function() {
     $('#create-todo').on('shown.bs.modal', function() {
         $('#create-todo-title').focus();
+    });
+
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
     });
 });
