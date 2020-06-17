@@ -57,6 +57,11 @@ public class ApplicationConfiguration {
      * The sub folder name for movies.
      */
     private static final String MOVIES_FOLDER = "movies";
+    
+    /**
+     * Name of the todos JSON file.
+     */
+    private static final String TODOS_FILE = "todos.json";
 
     /**
      * Executed after service has been started to ensure existence of the application folder for
@@ -88,6 +93,15 @@ public class ApplicationConfiguration {
      */
     public Path getMoviesPath() {
         return Paths.get(this.getUserHome(), APPLICATION_FOLDER, MOVIES_FOLDER);
+    }
+
+    /**
+     * Provide path to the todos JSON file.
+     *
+     * @return path to the todos.
+     */
+    public Path getTodosPath() {
+        return Paths.get(getUserHome(), APPLICATION_FOLDER, TODOS_FILE);
     }
 
     /**

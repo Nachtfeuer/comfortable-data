@@ -74,6 +74,31 @@ new Vue({
             }
             
             return statisticAsArray;
+        },
+
+        /**
+         * Compute list of assigned tags and its occurences.
+         *
+         * @returns {Array} of tag names and its occurences.
+         */
+        getProjects: function() {
+            let statistic = {};
+            
+            this.todos.forEach(todo => {
+                todo.projects.forEach(project => {
+                   if (!(project in statistic)) {
+                       statistic[project] = 0;
+                   }
+                   statistic[project] += 1;
+                });
+            });
+
+            let statisticAsArray = [];
+            for (let name in statistic) {
+                statisticAsArray.push({name: name, count: statistic[name]});
+            }
+            
+            return statisticAsArray;
         }
     },
 
@@ -350,6 +375,21 @@ new Vue({
         hasTag: function(name, criteria=undefined) {
             return function(todo, recognizeSearchText=true) {
                 return todo.tags.findIndex(entry => entry === name) >= 0
+                    && (criteria === undefined || criteria(todo, recognizeSearchText));
+            };
+        },
+
+        /**
+         * Combined filtter for todos with given project name and optional
+         * another filter (useful for all not completed todos).
+         *
+         * @param {string} name of the project to filter for.
+         * @param {Function} another criteria criteria for filter or for counting.
+         * @returns {Function} criteria that does filter todos with given project name.
+         */
+        hasProject: function(name, criteria=undefined) {
+            return function(todo, recognizeSearchText=true) {
+                return todo.projects.findIndex(entry => entry === name) >= 0
                     && (criteria === undefined || criteria(todo, recognizeSearchText));
             };
         },

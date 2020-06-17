@@ -26,6 +26,7 @@ package comfortable.data;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring REST Application startup.
@@ -37,6 +38,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @SpringBootApplication
 @EnableJpaRepositories
+@EnableScheduling
 @SuppressWarnings("PMD.UseUtilityClass")
 public class Application {
 

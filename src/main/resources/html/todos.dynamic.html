@@ -201,7 +201,7 @@
 
             <div id="data-view" class="row">
                 <!-- sidebar with quick filters -->
-                <div id="sidebar" class="col-sm-2">
+                <div id="sidebar" class="col-sm-3">
                     <table class="table table-sm">
                         <!-- Title for the common filters -->
                         <tr>
@@ -238,7 +238,7 @@
                             <td>
                                 <span class="badge badge-secondary badge-pill"  data-toggle="tooltip" data-placement="right"
                                       title="Display all completed todos only">
-                                    <span v-on:click="changeToFilter(isCompleted)">{{count(todo =&gt; todo.completed)}}</span>
+                                    <span v-on:click="changeToFilter(isCompleted)">{{count(isCompleted)}}</span>
                                 </span>
                             </td>
                         </tr>
@@ -293,6 +293,29 @@
                                 <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
                                       v-bind:title="'Dispay all todos tagged with \'' + tag.name + '\' (completed ones included)'">
                                     <span v-on:click="changeToFilter(hasTag(tag.name))">{{ tag.count }}</span>
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Title for the project based filters -->
+                        <tr>
+                            <td class="font-weight-bold text-white bg-dark" colspan="2"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Quick filter for projects">:Projects</td>
+                        </tr>
+
+                        <tr v-for="project in getProjects">
+                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
+                                v-bind:title="'Dispay all todos with assigned project \'' + project.name + '\''">{{ project.name }}</td>
+                            <td>
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      v-bind:title="'Dispay all not completed todos with assigned project \'' + project.name + '\''">
+                                    <span v-on:click="changeToFilter(hasProject(project.name, isNotCompleted))">{{ count(hasProject(project.name, isNotCompleted)) }}</span>
+                                </span>
+                                /
+                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
+                                      v-bind:title="'Dispay all todos with assigned project \'' + project.name + '\' (completed ones included)'">
+                                    <span v-on:click="changeToFilter(hasProject(project.name))">{{ project.count }}</span>
                                 </span>
                             </td>
                         </tr>

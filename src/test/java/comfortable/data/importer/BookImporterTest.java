@@ -50,7 +50,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class BookImporterTest {
-
     /**
      * Mocked database instance.
      */
