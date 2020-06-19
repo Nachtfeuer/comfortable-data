@@ -25,7 +25,15 @@
         <div id="content" class="container-fluid">
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
                 <a class="navbar-brand" href="#">Getting Things Done</a>
-                <button class="button btn-success ml-auto mr-2"
+
+                <label class="ml-auto"></label>
+
+                <button v-if="working.id" class="button btn-success mr-2"
+                        v-on:click="stopWorking">
+                    Stop Timer
+                </button>
+                
+                <button class="button btn-success mr-2"
                         v-on:click="openCreateTodoDialog">
                     New Todo
                 </button>
@@ -202,8 +210,16 @@
             <div id="data-view" class="row">
                 <!-- sidebar with quick filters -->
                 <div id="sidebar" class="col-sm-3">
+                    <div v-if="working.id">
+                        <div class="mt-1 p-2 text-white bg-danger">
+                            <span>#<strong>{{working.id}}</strong>:</span>
+                            Working Time: {{workingTimeHumanReadable}}
+                        </div>
+                    </div>
+
                     <table class="table table-sm">
                         <!-- Title for the common filters -->
+                        <tr class="p-5"><td></td></tr>
                         <tr>
                             <td class="font-weight-bold text-white bg-dark" colspan="2"
                                 data-toggle="tooltip" data-placement="right"
@@ -275,6 +291,7 @@
                         </tr>
 
                         <!-- Title for the tag based filters -->
+                        <tr class="p-5"><td></td></tr>
                         <tr>
                             <td class="font-weight-bold text-white bg-dark" colspan="2"
                                 data-toggle="tooltip" data-placement="right"
@@ -298,6 +315,7 @@
                         </tr>
 
                         <!-- Title for the project based filters -->
+                        <tr class="p-5"><td></td></tr>
                         <tr>
                             <td class="font-weight-bold text-white bg-dark" colspan="2"
                                 data-toggle="tooltip" data-placement="right"
@@ -354,6 +372,11 @@
                                     <small><strong>created:</strong> <em>{{ todo.created }}</em></small>
                                     -
                                     <small><strong>changed:</strong> <em>{{ todo.changed }}</em></small>
+
+                                    <span v-if="todo.workingTime > 0">
+                                        -
+                                        <small><strong>workingTime:</strong> <em>{{ calculateHumanReadableWorkingTime(todo.workingTime) }}</em></small>                                        
+                                    </span>
                                 </td>
 
                                 <td>
@@ -381,6 +404,8 @@
                                         <img class="p-1" src="/resources/trash.svg" v-on:click="checkDelete(todo)"/>
                                         <img class="p-1" src="/resources/check.svg" v-if="!todo.completed" v-on:click="toggleCompletion(todo)"/>
                                         <img class="p-1" src="/resources/pencil.svg" v-on:click="editTodo(todo)"/>
+
+                                        <img v-if="!working.id" class="p-1" src="/resources/clock.svg" v-on:click="startWorking(todo)"/>
                                     </div>
                                 </td>
                             </tr>

@@ -105,6 +105,11 @@ public class Todo implements Serializable {
     @ElementCollection
     @Singular
     private List<Project> projects;
+    
+    /**
+     * Working time for this todo (in seconds).
+     */
+    private long workingTime;
 
     /**
      * Called before persisting the todo.

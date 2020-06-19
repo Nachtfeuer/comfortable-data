@@ -66,6 +66,11 @@ public class TodoTest {
     private static final String TODO_PRIORITY = " ";
 
     /**
+     * Test working time.
+     */
+    private static final long TODO_WORKING_TIME = 123;
+
+    /**
      * Provider for test data.
      */
     private static RandomDataProvider provider;
@@ -110,8 +115,9 @@ public class TodoTest {
                 + "\"description\": \""
                 + strTestDescription + separator
                 + "\"priority\": \""
-                + strTestPriority
-                + "\"}";
+                + strTestPriority + separator
+                + "\"workingTime\": " + TODO_WORKING_TIME
+                + "}";
         final var mapper = new ObjectMapper();
         final var todo = mapper.readValue(json, Todo.class);
 
@@ -120,6 +126,7 @@ public class TodoTest {
         assertThat(todo.getTitle(), equalTo(strTestTitle));
         assertThat(todo.getDescription(), equalTo(strTestDescription));
         assertThat(todo.isCompleted(), equalTo(true));
+        assertThat(todo.getWorkingTime(), equalTo(TODO_WORKING_TIME));
     }
 
     /**
@@ -160,6 +167,7 @@ public class TodoTest {
         renderer.add("priority", todo.getPriority());
         renderer.add("tags", todo.getTags());
         renderer.add("projects", todo.getProjects());
+        renderer.add("workingTime", todo.getWorkingTime());
 
         final var expectedJson = renderer.render().replaceAll("\\s(?=(\"[^\"]*\"|[^\"])*$)", "");
         System.out.println(expectedJson);
