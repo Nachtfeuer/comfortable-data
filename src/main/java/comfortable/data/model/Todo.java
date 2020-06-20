@@ -33,6 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,6 +49,7 @@ import lombok.Singular;
 @AllArgsConstructor
 @Builder
 @SuppressFBWarnings("EI_EXPOSE_REP")
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class Todo implements Serializable {
     /**
      * version of class.
@@ -90,8 +92,15 @@ public class Todo implements Serializable {
     /**
      * Priority of the todo.
      */
+    @NotNull
     private Priority priority;
 
+    /**
+     * Complexity of the todo.
+     */
+    @NotNull
+    private Complexity complexity;
+    
     /**
      * List of tags (basically strings).
      */

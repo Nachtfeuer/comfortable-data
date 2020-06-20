@@ -101,6 +101,7 @@ public class TodoTest {
         final var strTestTitle = this.provider.get(RandomDataProvider.TODO_TITLE);
         final var strTestDescription = this.provider.get(RandomDataProvider.TODO_DESCRIPTION);
         final var strTestPriority = this.provider.get(RandomDataProvider.TODO_PRIORITY);
+        final var strTestComplexity = this.provider.get(RandomDataProvider.TODO_COMPLEXITY);
         final var now = DateAndTime.now();
 
         final var separator = "\",";
@@ -116,6 +117,8 @@ public class TodoTest {
                 + strTestDescription + separator
                 + "\"priority\": \""
                 + strTestPriority + separator
+                + "\"complexity\": \""
+                + strTestComplexity + separator
                 + "\"workingTime\": " + TODO_WORKING_TIME
                 + "}";
         final var mapper = new ObjectMapper();
@@ -126,6 +129,8 @@ public class TodoTest {
         assertThat(todo.getTitle(), equalTo(strTestTitle));
         assertThat(todo.getDescription(), equalTo(strTestDescription));
         assertThat(todo.isCompleted(), equalTo(true));
+        assertThat(todo.getPriority(), equalTo(Priority.fromString(strTestPriority)));
+        assertThat(todo.getComplexity(), equalTo(Complexity.fromString(strTestComplexity)));
         assertThat(todo.getWorkingTime(), equalTo(TODO_WORKING_TIME));
     }
 
@@ -148,6 +153,7 @@ public class TodoTest {
                 .description(TODO_DESCRIPTION)
                 .completed(false)
                 .priority(Priority.fromString(TODO_PRIORITY))
+                .complexity(Complexity.MEDIUM)
                 .tag(Tag.builder().name("tag1").build())
                 .tag(Tag.builder().name("tag2").build())
                 .project(Project.builder().name("project1").build())
@@ -165,6 +171,7 @@ public class TodoTest {
         renderer.add("description", todo.getDescription());
         renderer.add("completed", todo.isCompleted());
         renderer.add("priority", todo.getPriority());
+        renderer.add("complexity", todo.getComplexity());
         renderer.add("tags", todo.getTags());
         renderer.add("projects", todo.getProjects());
         renderer.add("workingTime", todo.getWorkingTime());

@@ -23,6 +23,7 @@
  */
 new Vue({
     el: '#content',
+    mixins: [filterMixin, crudMixin],
     data: {
         todos: [],
         search: '',
@@ -49,13 +50,7 @@ new Vue({
             };
         }
 
-        axios.get('/todos').then(response => {
-            if (response.status === 200) {
-                this.todos = [];
-                response.data.forEach(
-                        entry => this.todos.push(this.convert2Frontend(entry)));
-            }
-        });
+        this.readTodos();
 
         setInterval(() => {
             this.workingTimeHumanReadable = this.calculateHumanReadableWorkingTime(
@@ -187,6 +182,7 @@ new Vue({
                 title: '',
                 description: '',
                 priority: ' ',
+                complexity: 'M',
                 completed: false,
                 tags: [],
                 projects: []
@@ -209,6 +205,7 @@ new Vue({
                 title: todo.title,
                 description: todo.description,
                 priority: todo.priority,
+                complexity: todo.complexity,
                 completed: todo.completed,
                 tags: [],
                 projects: [],
@@ -234,6 +231,7 @@ new Vue({
                 title: todo.title,
                 description: todo.description,
                 priority: todo.priority,
+                complexity: todo.complexity,
                 completed: todo.completed,
                 tags: [],
                 projects: [],
@@ -259,6 +257,7 @@ new Vue({
                 title: todo.title,
                 description: todo.description,
                 priority: todo.priority,
+                complexity: todo.complexity,
                 completed: todo.completed,
                 tags: [],
                 projects: [],
@@ -268,19 +267,6 @@ new Vue({
             todo.tags.forEach(entry => frontendTodo.tags.push(entry.name));
             todo.projects.forEach(entry => frontendTodo.projects.push(entry.name));
             return frontendTodo;
-        },
-
-        createTodo: function () {
-            const theTodo = this.convert2Backend(this.todo);
-            console.log("trying to create new todo \"" + theTodo.title + "\"");
-
-            axios.post('/todos', theTodo).then((response) => {
-                if (response.status === 200) {
-                    const theTodoSaved = this.convert2Frontend(response.data);
-                    console.log("successfully created new todo \"" + theTodoSaved.title + "\"");
-                    this.todos.push(theTodoSaved);
-                }
-            });
         },
 
         editTodo: function (todo) {
@@ -293,121 +279,9 @@ new Vue({
             $('#do-you-really-want-to-delete').modal();
         },
 
-        deleteTodo: function (todo) {
-            console.log("trying to delete \"" + todo.title + "\"");
-            axios.delete('/todos/' + todo.id).then((response) => {
-                if (response.status === 200) {
-                    console.log("successfully deleted " + todo.title + "\"");
-                    const pos = this.todos.findIndex(entry => entry.id === todo.id);
-                    this.$delete(this.todos, pos);
-                }
-            });
-        },
-
-        updateTodo: function () {
-            const theTodo = this.convert2Backend(this.todo);
-            console.log("trying to update todo \"" + theTodo.title + "\"");
-
-            axios.post('/todos', theTodo).then((response) => {
-                if (response.status === 200) {
-                    const theTodoSaved = this.convert2Frontend(response.data);
-                    console.log("successfully updated todo \"" + theTodoSaved.title + "\"");
-                    const pos = this.todos.findIndex(entry => entry.id === theTodoSaved.id);
-                    Vue.set(this.todos, pos, theTodoSaved);
-                }
-            });
-
-        },
-
-        /**
-         * Toggle completion state.
-         *
-         * @param {object} todo for which the completion state should be toggled.
-         */
-        toggleCompletion: function (todo) {
-            this.todo = this.copyFrontend(todo);
-            this.todo.completed = !this.todo.completed;
-            this.updateTodo();
-        },
-
         changeToFilter: function (newFilter) {
             this.search = '';
             this.currentFilter = newFilter;
-        },
-
-        isSearchText: function (todo) {
-            const searchText = this.search.toLowerCase();
-            return todo.title.toLowerCase().includes(searchText);
-        },
-
-        isAll: function (todo, recognizeSearchText = true) {
-            return !recognizeSearchText || this.isSearchText(todo);
-        },
-
-        isCompleted: function (todo, recognizeSearchText = true) {
-            return todo.completed
-                    && (!recognizeSearchText || this.isSearchText(todo));
-        },
-
-        isNotCompleted: function (todo, recognizeSearchText = true) {
-            return !todo.completed
-                    && (!recognizeSearchText || this.isSearchText(todo));
-        },
-
-        isHighPriorityAndNotCompleted: function (todo, recognizeSearchText = true) {
-            return todo.priority === 'A'
-                    && !todo.completed
-                    && (!recognizeSearchText || this.isSearchText(todo));
-        },
-
-        isHighPriority: function (todo, recognizeSearchText = true) {
-            return todo.priority === 'A'
-                    && (!recognizeSearchText || this.isSearchText(todo));
-        },
-
-        /**
-         * Check for given todo that last change was today.
-         *
-         * @param {type} todo concrete todo
-         * @param {type} recognizeSearchText consider search filter (default: no)
-         * @returns {Boolean} true when given today way changed today.
-         */
-        isToday: function (todo, recognizeSearchText = true) {
-            let now = new Date();
-            let changed = new Date(todo.changed);
-
-            let isCondition = now.getYear() === changed.getYear() &&
-                    now.getMonth() === changed.getMonth() &&
-                    now.getDay() === changed.getDay();
-
-            if (recognizeSearchText) {
-                isCondition = isCondition && this.isSearchText(todo);
-            }
-
-            return isCondition;
-        },
-
-        /**
-         * Check for given todo that last change was yesterday.
-         *
-         * @param {type} todo concrete todo
-         * @param {type} recognizeSearchText consider search filter (default: no)
-         * @returns {Boolean} true when given today way changed yesterday.
-         */
-        isYesterday: function (todo, recognizeSearchText = true) {
-            let yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            let changed = new Date(todo.changed);
-            let isCondition = yesterday.getYear() === changed.getYear() &&
-                    yesterday.getMonth() === changed.getMonth() &&
-                    yesterday.getDay() === changed.getDay();
-
-            if (recognizeSearchText) {
-                isCondition = isCondition && this.isSearchText(todo);
-            }
-
-            return isCondition;
         },
 
         /**
@@ -439,28 +313,6 @@ new Vue({
             return diff;
         },
 
-        hasTag: function (name, criteria = undefined) {
-            return function (todo, recognizeSearchText = true) {
-                return todo.tags.findIndex(entry => entry === name) >= 0
-                        && (criteria === undefined || criteria(todo, recognizeSearchText));
-            };
-        },
-
-        /**
-         * Combined filtter for todos with given project name and optional
-         * another filter (useful for all not completed todos).
-         *
-         * @param {string} name of the project to filter for.
-         * @param {Function} another criteria criteria for filter or for counting.
-         * @returns {Function} criteria that does filter todos with given project name.
-         */
-        hasProject: function (name, criteria = undefined) {
-            return function (todo, recognizeSearchText = true) {
-                return todo.projects.findIndex(entry => entry === name) >= 0
-                        && (criteria === undefined || criteria(todo, recognizeSearchText));
-            };
-        },
-
         /**
          * Counting todos by criteria.
          *
@@ -476,6 +328,22 @@ new Vue({
                 }
             }
             return count;
+        },
+        
+        /**
+         * Convert t-shirt size for complexity in long text (long form).
+         *
+         * @param {type} complexity (t-shirt size)
+         * @returns coomplexity as long form
+         */
+        visualizeComplexity: function(complexity) {
+            return {
+                XS: 'Very Small',
+                S: 'Small',
+                M: 'Medium',
+                L: 'Large',
+                XL: 'Very Large'
+            }[complexity];
         }
     }
 });

@@ -90,6 +90,19 @@
 
                             <div class="input-group mt-1">
                                 <div class="input-group-prepend">
+                                    <label class="input-group-text font-weight-bold" for="complexity">Complexity</label>
+                                </div>
+                                <select class="custom-select" id="complexity" v-model="todo.complexity">
+                                    <option value="XS">Extra Small</option>
+                                    <option value="S">Small</option>
+                                    <option value="M" selected="M">Medium</option>
+                                    <option value="L">Large</option>
+                                    <option value="XL">Extra Large</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold">Projects</span>
                                 </div>
                                 <b-form-tags class="form-control" data-role="tagsinput"
@@ -153,6 +166,19 @@
                                     <option value="D">D</option>
                                     <option value="E">E</option>
                                     <option value="F">F</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text font-weight-bold" for="complexity">Complexity</label>
+                                </div>
+                                <select class="custom-select" id="complexity" v-model="todo.complexity">
+                                    <option value="XS">Extra Small</option>
+                                    <option value="S">Small</option>
+                                    <option value="M" selected="M">Medium</option>
+                                    <option value="L">Large</option>
+                                    <option value="XL">Extra Large</option>
                                 </select>
                             </div>
 
@@ -369,21 +395,23 @@
                                     </h3>
 
                                     <p v-if="todo.description && todo.description.length > 0">{{ todo.description }}</p>
-                                    <small><strong>created:</strong> <em>{{ todo.created }}</em></small>
-                                    -
-                                    <small><strong>changed:</strong> <em>{{ todo.changed }}</em></small>
 
-                                    <span v-if="todo.workingTime > 0">
-                                        -
-                                        <small><strong>workingTime:</strong> <em>{{ calculateHumanReadableWorkingTime(todo.workingTime) }}</em></small>                                        
-                                    </span>
+                                <div class="row">
+                                    <div class="col"><small><strong>created:</strong> <em>{{ todo.created }}</em></small></div>
+                                    <div class="col"><small v-if="todo.workingTime > 0"><strong>workingTime:</strong> <em>{{ calculateHumanReadableWorkingTime(todo.workingTime) }}</em></small></div>
+                                    <div class="col"><small><strong>complexity:</strong> <em>{{ visualizeComplexity(todo.complexity) }}</em></small></div>
+                                    <div class="w-100"></div>
+                                    <div class="col"><small><strong>changed:</strong> <em>{{ todo.changed }}</em></small></div>
+                                    <div class="col"></div>
+                                    <div class="col"></div>
+                                  </div>
                                 </td>
 
                                 <td>
                                     <div class="d-flex flex-column">
                                         <div v-for="project in todo.projects">
-                                            <button type="button" class="btn btn-info m-1 p-1">
-                                                <small>:{{ project }}</small>
+                                            <button type="button" class="btn btn-info m-1 p-1">                                                
+                                                <small v-on:click="changeToFilter(hasProject(project, isNotCompleted))">:{{ project }}</small>
                                             </button>
                                         </div>
                                     </div>
@@ -393,7 +421,7 @@
                                     <div class="d-flex flex-column">
                                         <div v-for="tag in todo.tags">
                                             <button type="button" class="btn btn-secondary m-1 p-1">
-                                                <small>@{{ tag }}</small>
+                                                <small v-on:click="changeToFilter(hasTag(tag, isNotCompleted))">@{{ tag }}</small>
                                             </button>
                                         </div>
                                     </div>
@@ -402,10 +430,9 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <img class="p-1" src="/resources/trash.svg" v-on:click="checkDelete(todo)"/>
-                                        <img class="p-1" src="/resources/check.svg" v-if="!todo.completed" v-on:click="toggleCompletion(todo)"/>
-                                        <img class="p-1" src="/resources/pencil.svg" v-on:click="editTodo(todo)"/>
-
-                                        <img v-if="!working.id" class="p-1" src="/resources/clock.svg" v-on:click="startWorking(todo)"/>
+                                        <img class="p-1" src="/resources/check.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)" v-on:click="toggleCompletion(todo)"/>
+                                        <img class="p-1" src="/resources/pencil.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)" v-on:click="editTodo(todo)"/>
+                                        <img v-if="!todo.completed && !working.id" class="p-1" src="/resources/clock.svg" v-on:click="startWorking(todo)"/>
                                     </div>
                                 </td>
                             </tr>
@@ -415,6 +442,10 @@
             </div>
         </div>
 
+        <script src="/resources/todos.filter.mixin.js"></script>
+        <script src="/resources/todos.crud.mixin.js"></script>
         <script src="/resources/todos.js"></script>
+        
+        </script>
     </body>
 </html>

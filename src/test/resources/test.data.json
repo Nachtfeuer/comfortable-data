@@ -89,5 +89,6 @@
         "pipeline",
         "concept-cpp",
         "concept-queen"
-    ]
+    ],
+    "todo-complexity": ["XS", "S", "M", "L", "XL"]
 }

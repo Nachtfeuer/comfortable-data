@@ -85,7 +85,7 @@ public enum Priority {
      * @return priority.
      */
     @JsonValue
-    public char getPriority() {
+    public char getValue() {
         return this.priority;
     }
 

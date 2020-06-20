@@ -24,6 +24,7 @@
 package comfortable.data.controller;
 
 import comfortable.data.database.TodoRepository;
+import comfortable.data.model.Complexity;
 import comfortable.data.model.CustomMediaType;
 import comfortable.data.model.Priority;
 import comfortable.data.model.Project;
@@ -288,6 +289,8 @@ public class TodoControllerTest {
                 .description(provider.get(RandomDataProvider.TODO_DESCRIPTION))
                 .priority(Priority.fromString(
                         provider.get(RandomDataProvider.TODO_PRIORITY)))
+                .complexity(Complexity.fromString(
+                        provider.get(RandomDataProvider.TODO_COMPLEXITY)))
                 .tag(Tag.builder().name(
                         provider.get(RandomDataProvider.TODO_TAG)).build())
                 .tag(Tag.builder().name(

@@ -6,6 +6,7 @@
     "description": "{{ description }}",
     "completed": {{ completed }},
     "priority": "{{ priority }}",
+    "complexity": "{{ complexity }}",
     "tags": [
         {% for tag in tags %}
             {"name": "{{ tag.name }}"}{% if loop.index+1 < tags.size() %},{% endif %}

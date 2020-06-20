@@ -98,6 +98,11 @@ public final class RandomDataProvider {
     public static final String TODO_PRIORITY = "todo-priority";
 
     /**
+     * Group "todo-complexity" in data file.
+     */
+    public static final String TODO_COMPLEXITY = "todo-complexity";
+
+    /**
      * group values like authors, publishers, directory, and so on.
      */
     private final transient Map<String, List<String>> dataMap = new HashMap<>();
