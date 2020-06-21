@@ -28,16 +28,17 @@
 
                 <label class="ml-auto"></label>
 
-                <form class="form-inline">
-                    <button v-if="working.id" class="btn btn-outline-danger mr-2"
-                            v-on:click="stopWorking">
-                        Stop Timer
-                    </button>
+                <button v-if="working.id" class="btn btn-outline-danger mr-2"
+                        v-on:click="stopWorking">
+                    Stop Timer
+                </button>
 
-                    <button class="btn btn-outline-success mr-2"
-                            v-on:click="openCreateTodoDialog">
-                        New Todo
-                    </button>
+                <button class="btn btn-outline-success mr-2"
+                        v-on:click="openCreateTodoDialog">
+                    New Todo
+                </button>
+
+                <form class="form-inline">
 
                     <!-- Search -->
                     <div class="input-group ml-1">
