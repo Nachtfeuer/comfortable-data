@@ -23,11 +23,13 @@
  */
 new Vue({
     el: '#content',
-    mixins: [filterMixin, crudMixin],
+    mixins: [filterMixin, sortingMixin, crudMixin],
     data: {
         todos: [],
         search: '',
+        sorting: 'default',
         currentFilter: undefined,
+        currentCriteria: undefined,
         working: {
             id: undefined, // Id of the todo
             started: undefined     // Start Date and time (new Date())
@@ -38,9 +40,17 @@ new Vue({
 
     created: function () {
         this.currentFilter = this.isNotCompleted;
+        this.currentCriteria = this.defaultCriteria;
 
         if (localStorage.search) {
             this.search = localStorage.search;
+        }
+
+        if (localStorage.sorting) {
+            this.sorting = localStorage.sorting;
+            if (this.sorting === 'recent-changes') {
+                this.currentCriteria = this.recentChangesCriteria;
+            }
         }
 
         if (localStorage.working_id && localStorage.working_start) {
@@ -60,7 +70,7 @@ new Vue({
 
     computed: {
         filteredTodos: function () {
-            return this.todos.filter(this.currentFilter).sort(this.defaultCriteria);
+            return this.todos.filter(this.currentFilter).sort(this.currentCriteria);
         },
 
         /**
@@ -118,10 +128,23 @@ new Vue({
         search(newSearch) {
             localStorage.search = newSearch;
         },
+
         working(newWorking) {
             localStorage.working_id = newWorking.id;
             localStorage.working_start
                     = newWorking.start === undefined ? '' : newWorking.start.toISOString();
+        },
+
+        sorting(newSorting) {
+            localStorage.sorting = newSorting;
+            switch(newSorting) {
+                case 'default':
+                    this.currentCriteria = this.defaultCriteria;
+                    break;
+                case 'recent-changes':
+                    this.currentCriteria = this.recentChangesCriteria;
+                    break;
+            }
         }
     },
 
@@ -282,35 +305,6 @@ new Vue({
         changeToFilter: function (newFilter) {
             this.search = '';
             this.currentFilter = newFilter;
-        },
-
-        /**
-         * Comparison of two todo's.
-         * The main criteria is priority.
-         *
-         * @param {type} todoA the one todo for comparison.
-         * @param {type} todoB the other todo for comparison.
-         * @returns {Number} -1 for less than, 0 for equal, +1 for greater than
-         */
-        defaultCriteria: function (todoA, todoB) {
-            let diff = {false: 0, true: 1}[todoA.completed]
-                    - {false: 0, true: 1}[todoB.completed];
-
-            if (diff === 0) {
-                if (todoA.priority < todoB.priority) {
-                    return -1;
-                }
-                if (todoA.priority > todoB.priority) {
-                    return 1;
-                }
-
-
-                if (diff === 0) {
-                    diff = todoA.title.localeCompare(todoB.title);
-                }
-            }
-
-            return diff;
         },
 
         /**
