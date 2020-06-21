@@ -82,6 +82,10 @@
                                        v-model="todo.title"></input>
                             </div>
 
+                            <div class="text-center text-white bg-danger mt-2 mb-2 p-1" v-if="error_messages.title">
+                                {{ error_messages.title }}
+                            </div>
+
                             <div class="input-group mt-1">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold">Description</span>
@@ -141,7 +145,8 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="createTodo()">Create</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    v-on:click="createTodo()" v-bind:disabled="Object.keys(error_messages).length > 0">Create</button>
                         </div>
                     </div>
                 </div>
@@ -162,6 +167,10 @@
                                     <span class="input-group-text font-weight-bold">Title</span>
                                 </div>
                                 <input type="text" class="form-control" placeholder="Enter the title of the todo" aria-label="Title" v-model="todo.title"></input>
+                            </div>
+
+                            <div class="text-center text-white bg-danger mt-2 mb-2 p-1" v-if="error_messages.title">
+                                {{ error_messages.title }}
                             </div>
 
                             <div class="input-group mt-1">
@@ -222,7 +231,8 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateTodo()">Update</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    v-on:click="updateTodo()" v-bind:disabled="Object.keys(error_messages).length > 0">Update</button>
                         </div>
                     </div>
                 </div>
@@ -474,6 +484,7 @@
         <script src="/resources/todos.filter.mixin.js"></script>
         <script src="/resources/todos.sorting.mixin.js"></script>
         <script src="/resources/todos.crud.mixin.js"></script>
+        <script src="/resources/todos.validation.mixin.js"></script>
         <script src="/resources/todos.js"></script>
         
         </script>

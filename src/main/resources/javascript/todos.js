@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 new Vue({
     el: '#content',
-    mixins: [filterMixin, sortingMixin, crudMixin],
+    mixins: [filterMixin, sortingMixin, crudMixin, validationMixin],
     data: {
         todos: [],
         search: '',
