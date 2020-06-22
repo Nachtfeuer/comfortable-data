@@ -78,6 +78,15 @@ public class ApplicationConfiguration {
     }
 
     /**
+     * Provide root path of all configuration and data.
+     *
+     * @return root path of all configuration ad data.
+     */
+    public Path getRootPath() {
+        return Paths.get(getUserHome(), APPLICATION_FOLDER);
+    }
+
+    /**
      * Provide path to the books.
      *
      * @return path to the books.

@@ -78,7 +78,5 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new SpecificationArgumentResolver());
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
-    }
-    
-    
+    }    
 }

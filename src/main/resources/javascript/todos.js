@@ -21,6 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+// register hook for dialog 'create-todo' opening for setting focus on title
+$(document).ready(function () {
+    $('#create-todo').on('shown.bs.modal', function () {
+        $('#create-todo-title').focus();
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+});
 
 new Vue({
     el: '#content',
@@ -324,7 +334,7 @@ new Vue({
             }
             return count;
         },
-        
+
         /**
          * Convert t-shirt size for complexity in long text (long form).
          *
@@ -341,15 +351,4 @@ new Vue({
             }[complexity];
         }
     }
-});
-
-// register hook for dialog 'create-todo' opening for setting focus on title
-$(document).ready(function () {
-    $('#create-todo').on('shown.bs.modal', function () {
-        $('#create-todo-title').focus();
-    });
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
 });
