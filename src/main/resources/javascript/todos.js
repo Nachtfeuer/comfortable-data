@@ -61,6 +61,8 @@ new Vue({
             this.sorting = localStorage.sorting;
             if (this.sorting === 'recent-changes') {
                 this.currentCriteria = this.recentChangesCriteria;
+            } else if (this.sorting === 'complexity') {
+                this.currentCriteria = this.complexityCriteria;
             }
         }
 
@@ -154,6 +156,9 @@ new Vue({
                     break;
                 case 'recent-changes':
                     this.currentCriteria = this.recentChangesCriteria;
+                    break;
+                case 'complexity':
+                    this.currentCriteria = this.complexityCriteria;
                     break;
             }
         }

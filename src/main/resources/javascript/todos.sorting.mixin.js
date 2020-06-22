@@ -24,6 +24,26 @@
 let sortingMixin = {
     methods: {
         /**
+         * Convert priority character as number.
+         *
+         * @param {char} priority priority as character
+         * @returns {number} priority as number
+         */
+        priorityAsNumber: function(priority) {
+            return {A: 0, B: 1, C:2, D:3, E:4, F:5, ' ':6}[priority];
+        },
+
+        /**
+         * Convert complexity string as number.
+         *
+         * @param {string} complexity as string
+         * @returns {number} complexity as number
+         */
+        complexityAsNumber: function(complexity) {
+            return {XS: 0, S: 1, M:2, L:3, XL:4}[complexity];
+        },
+
+        /**
          * Comparison of two todo's.
          * The main criteria is priority.
          *
@@ -33,16 +53,11 @@ let sortingMixin = {
          */
         defaultCriteria: function (todoA, todoB) {
             let diff = {false: 0, true: 1}[todoA.completed]
-                    - {false: 0, true: 1}[todoB.completed];
+                     - {false: 0, true: 1}[todoB.completed];
 
             if (diff === 0) {
-                if (todoA.priority < todoB.priority) {
-                    return -1;
-                }
-                if (todoA.priority > todoB.priority) {
-                    return 1;
-                }
-
+                diff = this.priorityAsNumber(todoA.priority)
+                     - this.priorityAsNumber(todoB.priority)
 
                 if (diff === 0) {
                     diff = todoA.title.localeCompare(todoB.title);
@@ -71,6 +86,25 @@ let sortingMixin = {
             }
             
             return this.defaultCriteria(todoA, todoB);
+        },
+
+        /**
+         * Comparison of two todo's.
+         * The main criteria is the complexity.
+         *
+         * @param {type} todoA the one todo for comparison.
+         * @param {type} todoB the other todo for comparison.
+         * @returns {Number} -1 for less than, 0 for equal, +1 for greater than
+         */
+        complexityCriteria: function(todoA, todoB) {
+            let diff = this.complexityAsNumber(todoA.complexity)
+                     - this.complexityAsNumber(todoB.complexity)
+            
+            if (diff === 0) {
+                diff = this.defaultCriteria(todoA, todoB);
+            }
+
+            return diff;
         }
     }
 };
