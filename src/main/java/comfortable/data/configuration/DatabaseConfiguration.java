@@ -53,7 +53,7 @@ public class DatabaseConfiguration {
     /**
      * If given the url can be overwritten via application.properties.
      */
-    @Value("${spring.datasource.url}")
+    @Value("${spring.datasource.url:}")
     private transient String strDatabaseUrl;
     
     /**
@@ -66,7 +66,7 @@ public class DatabaseConfiguration {
         final var builder = DataSourceBuilder.create();
         final String strUrl;
 
-        if (this.strDatabaseUrl == null) {
+        if (this.strDatabaseUrl == null || this.strDatabaseUrl.isBlank()) {
             final var strDatabasePath = Paths.get(
                 configuration.getRootPath().toString(), "comfortable.data");        
             strUrl = "jdbc:h2:file:" + strDatabasePath.toString() + ";DB_CLOSE_ON_EXIT=FALSE";
