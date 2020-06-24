@@ -17,5 +17,6 @@
             {"name": "{{ project.name }}"}{% if loop.index+1 < projects.size() %},{% endif %}
         {% endfor %}
     ],
-    "workingTime": {{ workingTime }}
+    "workingTime": {{ workingTime }},
+    "estimatedWorkingTime": {{ estimatedWorkingTime }}
 }

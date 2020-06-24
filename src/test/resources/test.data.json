@@ -90,5 +90,7 @@
         "concept-cpp",
         "concept-queen"
     ],
-    "todo-complexity": ["XS", "S", "M", "L", "XL"]
+    "todo-complexity": ["XS", "S", "M", "L", "XL"],
+    "todo-working-time": [60, 120, 180, 240, 300, 360],
+    "todo-estimated-working-time": [60, 120, 180, 240, 300, 360]
 }

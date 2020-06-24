@@ -121,6 +121,11 @@ public class Todo implements Serializable {
     private long workingTime;
 
     /**
+     * Estimated working time for this todo (in seconds).
+     */
+    private long estimatedWorkingTime;
+
+    /**
      * Called before persisting the todo.
      */
     @PrePersist

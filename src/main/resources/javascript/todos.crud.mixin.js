@@ -37,6 +37,17 @@ let crudMixin = {
         },
 
         /**
+         * Read the status of the API
+         */
+        readStatus: function() {
+            axios.get('/status').then(response => {
+                if (response.status === 200) {
+                    this.version = response.data.apiVersion;
+                }
+            });            
+        },
+
+        /**
          * Creating the todo sending the data converted to the service (backend).
          */
         createTodo: function () {
@@ -112,6 +123,42 @@ let crudMixin = {
 
             this.todo.completed = !this.todo.completed;
             this.updateTodo();
-        }
+        },
+        
+        /**
+         * Increase the priority.
+         *
+         * @param {object} todo UI todo structure.
+         */
+        increasePriority: function(todo) {
+            this.todo = this.copyFrontend(todo);
+            switch(this.todo.priority) {
+                case 'B': this.todo.priority = 'A'; break;
+                case 'C': this.todo.priority = 'B'; break;
+                case 'D': this.todo.priority = 'C'; break;
+                case 'E': this.todo.priority = 'D'; break;
+                case 'F': this.todo.priority = 'E'; break;
+                case ' ': this.todo.priority = 'F'; break;
+            }
+            this.updateTodo();
+        },
+        
+        /**
+         * Decrease the priority.
+         *
+         * @param {object} todo UI todo structure.
+         */
+        decreasePriority: function(todo) {
+            this.todo = this.copyFrontend(todo);
+            switch(this.todo.priority) {
+                case 'A': this.todo.priority = 'B'; break;
+                case 'B': this.todo.priority = 'C'; break;
+                case 'C': this.todo.priority = 'D'; break;
+                case 'D': this.todo.priority = 'E'; break;
+                case 'E': this.todo.priority = 'F'; break;
+                case 'F': this.todo.priority = ' '; break;
+            }
+            this.updateTodo();
+        },
     }
 };

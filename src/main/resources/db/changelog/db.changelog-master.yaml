@@ -5,3 +5,6 @@ databaseChangeLog:
     # introducing the complexity for a todo
     - include:
         file: db/changelog/changeSet-2.yaml
+    # introducing the estimatedWorkingTime for a todo
+    - include:
+        file: db/changelog/changeSet-3.yaml

@@ -299,6 +299,10 @@ public class TodoControllerTest {
                         provider.get(RandomDataProvider.TODO_PROJECT)).build())
                 .project(Project.builder().name(
                         provider.get(RandomDataProvider.TODO_PROJECT)).build())
+                .workingTime(Long.valueOf(
+                        provider.get(RandomDataProvider.TODO_WORKING_TIME)))
+                .estimatedWorkingTime(Long.valueOf(
+                        provider.get(RandomDataProvider.TODO_ESTIMATED_WORKING_TIME)))
                 .build();
     }
 }

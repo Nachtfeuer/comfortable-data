@@ -43,6 +43,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class TodoTest {
 
     /**
@@ -79,7 +80,7 @@ public class TodoTest {
      * Template engine.
      */
     @Autowired
-    TemplateEngine engine;
+    private TemplateEngine engine;
 
     /**
      * Load test data.
@@ -98,40 +99,13 @@ public class TodoTest {
      */
     @Test
     public void testDeserializeFromJson() throws JsonProcessingException {
-        final var strTestTitle = this.provider.get(RandomDataProvider.TODO_TITLE);
-        final var strTestDescription = this.provider.get(RandomDataProvider.TODO_DESCRIPTION);
-        final var strTestPriority = this.provider.get(RandomDataProvider.TODO_PRIORITY);
-        final var strTestComplexity = this.provider.get(RandomDataProvider.TODO_COMPLEXITY);
         final var now = DateAndTime.now();
-
-        final var separator = "\",";
-        final var json = "{\"id\": 123,"
-                + "\"created\": \""
-                + now.toString() + separator
-                + "\"changed\": \""
-                + now.toString() + separator
-                + "\"title\": \""
-                + strTestTitle + separator
-                + "\"completed\": true,"
-                + "\"description\": \""
-                + strTestDescription + separator
-                + "\"priority\": \""
-                + strTestPriority + separator
-                + "\"complexity\": \""
-                + strTestComplexity + separator
-                + "\"workingTime\": " + TODO_WORKING_TIME
-                + "}";
+        final var todoA = createTestTodo(now);
         final var mapper = new ObjectMapper();
-        final var todo = mapper.readValue(json, Todo.class);
+        final var json = mapper.writeValueAsString(todoA);
+        final var todoB = mapper.readValue(json, Todo.class);
 
-        assertThat(todo.getCreated(), equalTo(now));
-        assertThat(todo.getChanged(), equalTo(now));
-        assertThat(todo.getTitle(), equalTo(strTestTitle));
-        assertThat(todo.getDescription(), equalTo(strTestDescription));
-        assertThat(todo.isCompleted(), equalTo(true));
-        assertThat(todo.getPriority(), equalTo(Priority.fromString(strTestPriority)));
-        assertThat(todo.getComplexity(), equalTo(Complexity.fromString(strTestComplexity)));
-        assertThat(todo.getWorkingTime(), equalTo(TODO_WORKING_TIME));
+        assertThat(todoA, equalTo(todoB));
     }
 
     /**
@@ -145,7 +119,22 @@ public class TodoTest {
         // Date and time at current zone (serializing to json converts to UTC)
         final var currentDateTime = DateAndTime.now();
 
-        final var todo = Todo.builder()
+        final var todo = createTestTodo(currentDateTime);
+        final String expectedJson = renderTodo(todo, currentDateTime);
+        final var mapper = new ObjectMapper();
+        final var json = mapper.writeValueAsString(todo);
+
+        assertThat(json, equalTo(expectedJson));
+    }
+
+    /**
+     * Create test todo.
+     *
+     * @param currentDateTime current date and time.
+     * @return test todo object.
+     */
+    private static Todo createTestTodo(final DateAndTime currentDateTime) {
+        return Todo.builder()
                 .id(TODO_ID)
                 .created(currentDateTime)
                 .changed(currentDateTime)
@@ -159,10 +148,17 @@ public class TodoTest {
                 .project(Project.builder().name("project1").build())
                 .project(Project.builder().name("project2").build())
                 .build();
+    }
 
-        final var mapper = new ObjectMapper();
-        final var json = mapper.writeValueAsString(todo);
-
+    /**
+     * Render todo as JSON string with a template.
+     *
+     * @param todo test todo data
+     * @param currentDateTime current date and time
+     * @return JSON string representation of the todo.
+     */
+    private String renderTodo(final Todo todo,
+                              final DateAndTime currentDateTime) throws IOException {
         final var renderer = engine.getRenderer("/templates/todo.json");
         renderer.add("id", todo.getId());
         renderer.add("created", currentDateTime.toString());
@@ -175,9 +171,8 @@ public class TodoTest {
         renderer.add("tags", todo.getTags());
         renderer.add("projects", todo.getProjects());
         renderer.add("workingTime", todo.getWorkingTime());
+        renderer.add("estimatedWorkingTime", todo.getEstimatedWorkingTime());
 
-        final var expectedJson = renderer.render().replaceAll("\\s(?=(\"[^\"]*\"|[^\"])*$)", "");
-        System.out.println(expectedJson);
-        assertThat(json, equalTo(expectedJson));
+        return renderer.render().replaceAll("\\s(?=(\"[^\"]*\"|[^\"])*$)", "");        
     }
 }

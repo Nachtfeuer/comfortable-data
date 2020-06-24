@@ -14,17 +14,21 @@
 
         <!-- Javascript -->
         <script src="/resources/libraries/jquery.min.js"></script>
+        <script src="/resources/libraries/jquery-ui.min.js"></script>
         <script src="/resources/libraries/popper.min.js"></script>
         <script src="/resources/libraries/bootstrap.min.js"></script>
         <script src="/resources/libraries/vue.min.js"></script>
         <script src="/resources/libraries/bootstrap-vue.min.js"></script>
         <script src="/resources/libraries/axios.min.js"></script>
     </head>
-
+    
     <body>
         <div id="content" class="container-fluid">
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-                <a class="navbar-brand" href="#">Getting Things Done</a>
+                <a class="navbar-brand" href="#">
+                    Getting Things Done
+                    <span v-if="version">(<small>{{ version }}</small>)</span>
+                </a>
 
                 <label class="ml-auto"></label>
 
@@ -91,8 +95,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold">Description</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Provide a reasonable short description" aria-label="Description"
-                                       v-model="todo.description"></input>
+                                <textarea type="text" class="form-control" placeholder="Provide a reasonable short description" aria-label="Description"
+                                          v-model="todo.description" rows="4"></textarea>
                             </div>
 
                             <div class="input-group mt-1">
@@ -121,6 +125,21 @@
                                     <option value="L">Large</option>
                                     <option value="XL">Extra Large</option>
                                 </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold"
+                                          data-toggle="tooltip" data-placement="right"
+                                          title="Estimated working time">Estimation</span>
+                                </div>
+                                <input id="create-todo-estimated-working-time" type="text" class="form-control"
+                                       placeholder="Provide a reasonable estimation" aria-label="Estimated Working Time"
+                                       v-model="todo.estimatedWorkingTime"></input>
+                            </div>
+
+                            <div class="text-center text-white bg-danger mt-2 mb-2 p-1" v-if="error_messages.estimatedWorkingTime">
+                                {{ error_messages.estimatedWorkingTime }}
                             </div>
 
                             <div class="input-group mt-1">
@@ -178,7 +197,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold">Description</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Enter the description of the todo" aria-label="Description" v-model="todo.description"></input>
+                                <textarea type="text" class="form-control" placeholder="Enter the description of the todo" aria-label="Description"
+                                          v-model="todo.description" rows="4"></textarea>
                             </div>
 
                             <div class="input-group mt-1">
@@ -207,6 +227,21 @@
                                     <option value="L">Large</option>
                                     <option value="XL">Extra Large</option>
                                 </select>
+                            </div>
+
+                            <div class="input-group mt-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold"
+                                          data-toggle="tooltip" data-placement="right"
+                                          title="Estimated working time">Estimation</span>
+                                </div>
+                                <input type="text" class="form-control"
+                                       placeholder="Provide a reasonable estimation" aria-label="Estimated Working Time"
+                                       v-model="todo.estimatedWorkingTime"></input>
+                            </div>
+
+                            <div class="text-center text-white bg-danger mt-2 mb-2 p-1" v-if="error_messages.estimatedWorkingTime">
+                                {{ error_messages.estimatedWorkingTime }}
                             </div>
 
                             <div class="input-group mt-1">
@@ -409,9 +444,15 @@
                                 </td>
 
                                 <td class="align-middle">
-                                    <span class="font-weight-bold text-danger" v-if="todo.priority == 'A'">A</span>
-                                    <span class="font-weight-bold text-warning" v-else-if="todo.priority == 'B'">B</span>
-                                    <span class="font-weight-bold" v-else="">{{todo.priority}}</span>
+                                    <div class="d-flex flex-column text-center">
+                                        <img class="mb-2" v-if="todo.priority != 'A'" src="/resources/arrow-up-circle.svg"
+                                             v-on:click="increasePriority(todo)"></img>
+                                        <span class="font-weight-bold text-danger" v-if="todo.priority == 'A'">A</span>
+                                        <span class="font-weight-bold text-warning" v-else-if="todo.priority == 'B'">B</span>
+                                        <span class="font-weight-bold" v-else="">{{todo.priority}}</span>
+                                        <img class="mt-2" v-if="todo.priority != ' '" src="/resources/arrow-down-circle.svg"
+                                             v-on:click="decreasePriority(todo)"></img>
+                                    </div>
                                 </td>
 
                                 <td>
@@ -426,11 +467,11 @@
 
                                 <div class="row">
                                     <div class="col"><small><strong>created:</strong> <em>{{ todo.created }}</em></small></div>
-                                    <div class="col"><small v-if="todo.workingTime > 0"><strong>workingTime:</strong> <em>{{ calculateHumanReadableWorkingTime(todo.workingTime) }}</em></small></div>
+                                    <div class="col"><small v-if="todo.workingTime > 0"><strong>workingTime:</strong> <em>{{ workingTimeAsHumanReadableString(todo.workingTime) }}</em></small></div>
                                     <div class="col"><small><strong>complexity:</strong> <em>{{ visualizeComplexity(todo.complexity) }}</em></small></div>
                                     <div class="w-100"></div>
                                     <div class="col"><small><strong>changed:</strong> <em>{{ todo.changed }}</em></small></div>
-                                    <div class="col"></div>
+                                    <div class="col"><small v-if="todo.estimatedWorkingTime.length > 0"><strong>estimation:</strong> <em>{{ todo.estimatedWorkingTime }}</em></small></div>
                                     <div class="col"></div>
                                   </div>
                                 </td>
@@ -486,6 +527,7 @@
         <script src="/resources/todos.sorting.mixin.js"></script>
         <script src="/resources/todos.crud.mixin.js"></script>
         <script src="/resources/todos.validation.mixin.js"></script>
+        <script src="/resources/todos.conversion.mixin.js"></script>
         <script src="/resources/todos.js"></script>
         
         </script>

@@ -29,6 +29,9 @@ let validationMixin = {
     watch: {
         'todo.title': function(value) {
             this.validateTitle(value);
+        },
+        'todo.estimatedWorkingTime': function(value) {
+            this.validateEstimatedWorkingTime(value);
         }
     },
 
@@ -38,6 +41,21 @@ let validationMixin = {
                 this.error_messages.title = 'Title must not be empty!';
             } else {
                 delete this.error_messages.title;
+            }
+        },
+
+        validateEstimatedWorkingTime: function(value) {
+            const duration = this.humanReadableWorkingTimeAsSeconds(value);
+            if (duration === undefined) {
+                console.log(value + " => " + duration);
+                const message = 'Invalid estimation.'
+                    + " Expected format is like 2d3h4m5s."
+                    + " You can define but you have to keep the order."
+                    + " The numbers have to be in valid range (example: a minute is between 1 and 59)."
+                    + " Leaving the field empty means no estimation"
+                this.error_messages.estimatedWorkingTime = message;
+            } else {
+                delete this.error_messages.estimatedWorkingTime;
             }
         }
     }

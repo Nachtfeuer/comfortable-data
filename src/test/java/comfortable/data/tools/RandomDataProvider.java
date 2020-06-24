@@ -103,6 +103,16 @@ public final class RandomDataProvider {
     public static final String TODO_COMPLEXITY = "todo-complexity";
 
     /**
+     * Group "todo-working-time" in data file.
+     */
+    public static final String TODO_WORKING_TIME = "todo-working-time";
+
+    /**
+     * Group "todo-estimated-working-time" in data file.
+     */
+    public static final String TODO_ESTIMATED_WORKING_TIME = "todo-estimated-working-time";
+
+    /**
      * group values like authors, publishers, directory, and so on.
      */
     private final transient Map<String, List<String>> dataMap = new HashMap<>();

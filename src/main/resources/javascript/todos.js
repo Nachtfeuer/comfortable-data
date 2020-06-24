@@ -27,6 +27,14 @@ $(document).ready(function () {
         $('#create-todo-title').focus();
     });
 
+    $("#create-todo").draggable({
+        handle: ".modal-header"
+    });
+
+    $("#edit-todo").draggable({
+        handle: ".modal-header"
+    });
+
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
@@ -34,8 +42,9 @@ $(document).ready(function () {
 
 new Vue({
     el: '#content',
-    mixins: [filterMixin, sortingMixin, crudMixin, validationMixin],
+    mixins: [filterMixin, sortingMixin, crudMixin, validationMixin, conversionMixin],
     data: {
+        version: '',
         todos: [],
         search: '',
         sorting: 'default',
@@ -74,9 +83,10 @@ new Vue({
         }
 
         this.readTodos();
+        this.readStatus();
 
         setInterval(() => {
-            this.workingTimeHumanReadable = this.calculateHumanReadableWorkingTime(
+            this.workingTimeHumanReadable = this.workingTimeAsHumanReadableString(
                     this.getWorkingTime())
         }, 1000);
     },
@@ -193,22 +203,6 @@ new Vue({
             return 0;
         },
 
-        calculateHumanReadableWorkingTime: function (duration) {
-            const days = (duration >= (60 * 60 * 24)) ? Math.trunc(duration / (60 * 60 * 24)) : 0;
-            duration = duration - 60 * 60 * 24 * days;
-            const hours = (duration >= (60 * 60)) ? Math.trunc(duration / (60 * 60)) : 0;
-            duration = duration - 60 * 60 * hours;
-            const minutes = (duration >= 60) ? Math.trunc(duration / 60) : 0;
-            duration = duration - 60 * minutes;
-            const seconds = duration;
-
-            return ""
-                    + ((days > 0) ? " " + days + "d" : "")
-                    + ((hours > 0) ? " " + hours + "h" : "")
-                    + ((minutes > 0) ? " " + minutes + "m" : "")
-                    + ((seconds > 0) ? " " + seconds + "s" : "");
-        },
-
         /**
          * Adjusts todo object which will be bound to the dialog widgets
          * just short before the dialog get opened.
@@ -224,7 +218,9 @@ new Vue({
                 complexity: 'M',
                 completed: false,
                 tags: [],
-                projects: []
+                projects: [],
+                workingTime: 0,
+                estimatedWorkingTime: ''
             };
 
             $('#create-todo').modal();
@@ -248,64 +244,13 @@ new Vue({
                 completed: todo.completed,
                 tags: [],
                 projects: [],
-                workingTime: todo.workingTime
+                workingTime: todo.workingTime,
+                estimatedWorkingTime: todo.estimatedWorkingTime
             };
 
             todo.tags.forEach(entry => copiedTodo.tags.push(entry));
             todo.projects.forEach(entry => copiedTodo.projects.push(entry));
             return copiedTodo;
-        },
-
-        /**
-         * Converts frontend todo structure into backend todo structure.
-         *
-         * @param {object} todo the ui todo structure.
-         * @returns backend todo structure.
-         */
-        convert2Backend: function (todo) {
-            let backendTodo = {
-                id: todo.id,
-                created: todo.created,
-                changed: todo.changed,
-                title: todo.title,
-                description: todo.description,
-                priority: todo.priority,
-                complexity: todo.complexity,
-                completed: todo.completed,
-                tags: [],
-                projects: [],
-                workingTime: todo.workingTime
-            };
-
-            todo.tags.forEach(entry => backendTodo.tags.push({name: entry}));
-            todo.projects.forEach(entry => backendTodo.projects.push({name: entry}));
-            return backendTodo;
-        },
-
-        /**
-         * Converts backend todo structure into frontend todo structure.
-         *
-         * @param {object} todo usually a todo as response from a REST call.
-         * @returns frontend todo structure
-         */
-        convert2Frontend: function (todo) {
-            let frontendTodo = {
-                id: todo.id,
-                created: todo.created,
-                changed: todo.changed,
-                title: todo.title,
-                description: todo.description,
-                priority: todo.priority,
-                complexity: todo.complexity,
-                completed: todo.completed,
-                tags: [],
-                projects: [],
-                workingTime: todo.workingTime
-            };
-
-            todo.tags.forEach(entry => frontendTodo.tags.push(entry.name));
-            todo.projects.forEach(entry => frontendTodo.projects.push(entry.name));
-            return frontendTodo;
         },
 
         editTodo: function (todo) {

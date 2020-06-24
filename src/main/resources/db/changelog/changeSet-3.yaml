@@ -1,0 +1,14 @@
+databaseChangeLog:
+    - changeSet:
+        id: 3
+        author: Thomas Lehmann
+        changes:
+            - addColumn:
+                tableName: todo
+                columns:
+                    - column:
+                        name: estimated_working_time
+                        type: bigint
+                        defaultValue: 0
+                        constraints:
+                            nullable: true

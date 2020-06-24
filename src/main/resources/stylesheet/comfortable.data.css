@@ -60,3 +60,11 @@
     color: black;
     border: 1px solid black;
 }
+
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    height: 450px;
+    overflow-y: auto;
+}

@@ -24,26 +24,6 @@
 let sortingMixin = {
     methods: {
         /**
-         * Convert priority character as number.
-         *
-         * @param {char} priority priority as character
-         * @returns {number} priority as number
-         */
-        priorityAsNumber: function(priority) {
-            return {A: 0, B: 1, C:2, D:3, E:4, F:5, ' ':6}[priority];
-        },
-
-        /**
-         * Convert complexity string as number.
-         *
-         * @param {string} complexity as string
-         * @returns {number} complexity as number
-         */
-        complexityAsNumber: function(complexity) {
-            return {XS: 0, S: 1, M:2, L:3, XL:4}[complexity];
-        },
-
-        /**
          * Comparison of two todo's.
          * The main criteria is priority.
          *
