@@ -42,7 +42,8 @@ $(document).ready(function () {
 
 new Vue({
     el: '#content',
-    mixins: [filterMixin, sortingMixin, crudMixin, validationMixin, conversionMixin],
+    mixins: [filterMixin, sortingMixin, crudMixin,
+             validationMixin, conversionMixin],
     data: {
         version: '',
         todos: [],
@@ -50,6 +51,7 @@ new Vue({
         sorting: 'default',
         currentFilter: undefined,
         currentCriteria: undefined,
+        previewDescription: false,
         working: {
             id: undefined, // Id of the todo
             started: undefined     // Start Date and time (new Date())
@@ -299,6 +301,16 @@ new Vue({
                 L: 'Large',
                 XL: 'Very Large'
             }[complexity];
+        },
+        
+        renderMarkdown: function(description) {
+            const converter = new showdown.Converter();
+            converter.setOption('headerStartLevel', 3);
+            return converter.makeHtml(description);
+        },
+        
+        togglePreviewDescription: function() {
+            this.previewDescription = !this.previewDescription;
         }
     }
 });

@@ -48,7 +48,7 @@
 }
 
 .input-group > .input-group-prepend {
-    flex: 0 0 30%;
+    flex: 0 0 130px;
 }
 
 .input-group .input-group-text {
@@ -61,9 +61,10 @@
     border: 1px solid black;
 }
 
-.modal-dialog{
-    overflow-y: initial !important
+.modal-dialog {
+    overflow-y: initial !important;
 }
+
 .modal-body{
     height: 450px;
     overflow-y: auto;
