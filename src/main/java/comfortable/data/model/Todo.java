@@ -32,6 +32,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -82,6 +83,7 @@ public class Todo implements Serializable {
     /**
      * Longer text with additional explanations (optional).
      */
+    @Lob
     private String description;
     
     /**

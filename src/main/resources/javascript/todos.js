@@ -56,7 +56,7 @@ new Vue({
             id: undefined, // Id of the todo
             started: undefined     // Start Date and time (new Date())
         },
-        workingTimeHumanReadable: '',
+        workingTime: 0,
         todo: {}
     },
 
@@ -88,8 +88,7 @@ new Vue({
         this.readStatus();
 
         setInterval(() => {
-            this.workingTimeHumanReadable = this.workingTimeAsHumanReadableString(
-                    this.getWorkingTime())
+            this.workingTime = this.getWorkingTime();
         }, 1000);
     },
 
@@ -187,7 +186,12 @@ new Vue({
         stopWorking: function () {
             let pos = this.todos.findIndex(todo => todo.id === this.working.id);
             this.todo = this.copyFrontend(this.todos[pos]);
-            this.todo.workingTime += this.getWorkingTime();
+            
+            const value = this.humanReadableWorkingTimeAsSeconds(this.todo.workingTime);
+            const newValue = value + this.getWorkingTime();
+            this.todo.workingTime = this.workingTimeAsHumanReadableString(
+                    newValue);
+
             this.working = {id: undefined, start: undefined};
             this.updateTodo();
         },
@@ -221,7 +225,7 @@ new Vue({
                 completed: false,
                 tags: [],
                 projects: [],
-                workingTime: 0,
+                workingTime: '',
                 estimatedWorkingTime: ''
             };
 

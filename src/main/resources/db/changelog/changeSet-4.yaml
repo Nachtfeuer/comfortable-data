@@ -1,0 +1,31 @@
+databaseChangeLog:
+    - changeSet:
+        id: 4
+        author: Thomas Lehmann
+        changes:
+            - addColumn:
+                tableName: todo
+                columns:
+                    - column:
+                        name: description_new
+                        type: clob
+                        constraints:
+                            nullable: true
+
+            - update:
+                tableName: todo
+                columns:
+                    - column:
+                        name: description_new
+                        valueComputed: description
+
+            - dropColumn:
+                tableName: todo
+                columns:
+                    - column:
+                        name: description
+
+            - renameColumn:
+                tableName: todo
+                oldColumnName: description_new
+                newColumnName: description

@@ -8,4 +8,6 @@ databaseChangeLog:
     # introducing the estimatedWorkingTime for a todo
     - include:
         file: db/changelog/changeSet-3.yaml
-
+    # changing description from varchar(255) to clob
+    - include:
+        file: db/changelog/changeSet-4.yaml

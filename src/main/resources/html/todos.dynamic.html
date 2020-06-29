@@ -81,7 +81,8 @@
                         <div class="modal-body">
                             <div v-if="Object.keys(error_messages).length > 0" class="row text-white bg-danger m-1">
                                 <div class="p-1" v-html="renderMarkdown(error_messages.title)" v-if="error_messages.title"></div>
-                                <div class="m-1 p-1" v-html="renderMarkdown(error_messages.estimatedWorkingTime)" v-if="error_messages.estimatedWorkingTime"></div>
+                                <div class="p-1 m-1" v-html="renderMarkdown(error_messages.workingTime)" v-if="error_messages.workingTime"></div>
+                                <div class="p-1 m-1" v-html="renderMarkdown(error_messages.estimatedWorkingTime)" v-if="error_messages.estimatedWorkingTime"></div>
                             </div>
 
                             <div class="row">
@@ -197,7 +198,8 @@
                         <div class="modal-body">
                             <div v-if="Object.keys(error_messages).length > 0" class="row text-white bg-danger m-1">
                                 <div class="p-1" v-html="renderMarkdown(error_messages.title)" v-if="error_messages.title"></div>
-                                <div class="m-1 p-1" v-html="renderMarkdown(error_messages.estimatedWorkingTime)" v-if="error_messages.estimatedWorkingTime"></div>
+                                <div class="p-1 m-1" v-html="renderMarkdown(error_messages.workingTime)" v-if="error_messages.workingTime"></div>
+                                <div class="p-1 m-1" v-html="renderMarkdown(error_messages.estimatedWorkingTime)" v-if="error_messages.estimatedWorkingTime"></div>
                             </div>
 
                             <div class="row">
@@ -267,6 +269,18 @@
 
                                     <div class="input-group mt-1">
                                         <div class="col-xs-2">
+                                            <label class="font-weight-bold" for="workingTime"
+                                                   data-toggle="tooltip" data-placement="right"
+                                                   title="Working time">Working Time</label>
+                                            <input id="workingTime" type="text" class="form-control"
+                                                   placeholder="Reasonable working time" aria-label="Working Time"
+                                                   v-model="todo.workingTime"
+                                                   v-bind:disabled="working.id === todo.id"></input>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group mt-1">
+                                        <div class="col-xs-2">
                                             <label class="font-weight-bold" for="estimation"
                                                    data-toggle="tooltip" data-placement="right"
                                                    title="Estimated working time">Estimation</label>
@@ -329,7 +343,7 @@
                     <div v-if="working.id">
                         <div class="mt-1 p-2 text-white bg-danger">
                             <span>#<strong>{{working.id}}</strong>:</span>
-                            Working Time: {{workingTimeHumanReadable}}
+                            Working Time: {{ workingTimeAsHumanReadableString(workingTime) }}
                         </div>
                     </div>
 
@@ -501,7 +515,7 @@
 
                                 <div class="row">
                                     <div class="col"><small><strong>created:</strong> <em>{{ todo.created }}</em></small></div>
-                                    <div class="col"><small v-if="todo.workingTime > 0"><strong>workingTime:</strong> <em>{{ workingTimeAsHumanReadableString(todo.workingTime) }}</em></small></div>
+                                    <div class="col"><small v-if="todo.workingTime.length > 0"><strong>workingTime:</strong> <em>{{ todo.workingTime }}</em></small></div>
                                     <div class="col"><small><strong>complexity:</strong> <em>{{ visualizeComplexity(todo.complexity) }}</em></small></div>
                                     <div class="w-100"></div>
                                     <div class="col"><small><strong>changed:</strong> <em>{{ todo.changed }}</em></small></div>

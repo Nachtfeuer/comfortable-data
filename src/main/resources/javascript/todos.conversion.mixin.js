@@ -59,10 +59,10 @@ let conversionMixin = {
             const seconds = duration;
 
             const text = ""
-                    + ((days > 0) ? " " + days + "d" : "")
-                    + ((hours > 0) ? " " + hours + "h" : "")
-                    + ((minutes > 0) ? " " + minutes + "m" : "")
-                    + ((seconds > 0) ? " " + seconds + "s" : "");
+                    + ((days > 0) ? days + "d" : "")
+                    + ((hours > 0) ? hours + "h" : "")
+                    + ((minutes > 0) ? minutes + "m" : "")
+                    + ((seconds > 0) ? seconds + "s" : "");
             return text.trim();
         },
         
@@ -116,7 +116,8 @@ let conversionMixin = {
                 completed: todo.completed,
                 tags: [],
                 projects: [],
-                workingTime: todo.workingTime,
+                workingTime: this.humanReadableWorkingTimeAsSeconds(
+                        todo.workingTime),
                 estimatedWorkingTime: this.humanReadableWorkingTimeAsSeconds(
                         todo.estimatedWorkingTime)
             };
@@ -144,7 +145,8 @@ let conversionMixin = {
                 completed: todo.completed,
                 tags: [],
                 projects: [],
-                workingTime: todo.workingTime,
+                workingTime: this.workingTimeAsHumanReadableString(
+                        todo.workingTime),
                 estimatedWorkingTime: this.workingTimeAsHumanReadableString(
                         todo.estimatedWorkingTime)
             };

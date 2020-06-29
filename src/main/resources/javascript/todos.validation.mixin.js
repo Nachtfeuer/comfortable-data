@@ -30,6 +30,9 @@ let validationMixin = {
         'todo.title': function(value) {
             this.validateTitle(value);
         },
+        'todo.workingTime': function(value) {
+            this.validateWorkingTime(value);
+        },
         'todo.estimatedWorkingTime': function(value) {
             this.validateEstimatedWorkingTime(value);
         }
@@ -44,11 +47,34 @@ let validationMixin = {
             }
         },
 
+        /**
+         * Validate the format of the human readable working time.
+         *
+         * @param {string} value workinng Time human readable
+         */
+        validateWorkingTime: function(value) {
+            const duration = this.humanReadableWorkingTimeAsSeconds(value);
+            if (duration === undefined) {
+                const message = '**Invalid working time:**\n\n'
+                    + " * Expected format is like _2d3h4m5s_.\n"
+                    + " * You can define less but you have to keep the order.\n"
+                    + " * The numbers have to be in valid range (example: a minute is between 1 and 59).\n"
+                    + " * Leaving the field empty means no working time";
+                this.error_messages.workingTime = message;
+            } else {
+                delete this.error_messages.workingTime;
+            }
+        },
+
+        /**
+         * Validate the format of the human readable estimated working time.
+         *
+         * @param {string} value workinng Time human readable
+         */
         validateEstimatedWorkingTime: function(value) {
             const duration = this.humanReadableWorkingTimeAsSeconds(value);
             if (duration === undefined) {
-                console.log(value + " => " + duration);
-                const message = '**Invalid estimation:**\n\n'
+               const message = '**Invalid estimation:**\n\n'
                     + " * Expected format is like _2d3h4m5s_.\n"
                     + " * You can define less but you have to keep the order.\n"
                     + " * The numbers have to be in valid range (example: a minute is between 1 and 59).\n"
