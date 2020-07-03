@@ -34,16 +34,15 @@ $(document).ready(function () {
     $("#edit-todo").draggable({
         handle: ".modal-header"
     });
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
 });
+
+Vue.component('priority', { props: ['value'], template: '#priority' });
+Vue.component('complexity', { props: ['value'], template: '#complexity' });
 
 new Vue({
     el: '#content',
     mixins: [filterMixin, sortingMixin, crudMixin,
-             validationMixin, conversionMixin],
+             validationMixin, conversionMixin, sidebarMixin],
     data: {
         version: '',
         todos: [],
@@ -95,56 +94,6 @@ new Vue({
     computed: {
         filteredTodos: function () {
             return this.todos.filter(this.currentFilter).sort(this.currentCriteria);
-        },
-
-        /**
-         * Compute list of assigned tags and its occurences.
-         *
-         * @returns {Array} of tag names and its occurences.
-         */
-        getTags: function () {
-            let statistic = {};
-
-            this.todos.forEach(todo => {
-                todo.tags.forEach(tag => {
-                    if (!(tag in statistic)) {
-                        statistic[tag] = 0;
-                    }
-                    statistic[tag] += 1;
-                });
-            });
-
-            let statisticAsArray = [];
-            for (let name in statistic) {
-                statisticAsArray.push({name: name, count: statistic[name]});
-            }
-
-            return statisticAsArray;
-        },
-
-        /**
-         * Compute list of assigned tags and its occurences.
-         *
-         * @returns {Array} of tag names and its occurences.
-         */
-        getProjects: function () {
-            let statistic = {};
-
-            this.todos.forEach(todo => {
-                todo.projects.forEach(project => {
-                    if (!(project in statistic)) {
-                        statistic[project] = 0;
-                    }
-                    statistic[project] += 1;
-                });
-            });
-
-            let statisticAsArray = [];
-            for (let name in statistic) {
-                statisticAsArray.push({name: name, count: statistic[name]});
-            }
-
-            return statisticAsArray;
         }
     },
 
@@ -260,6 +209,7 @@ new Vue({
         },
 
         editTodo: function (todo) {
+            this.previewDescription = false;
             this.todo = this.copyFrontend(todo);
             $('#edit-todo').modal();
         },

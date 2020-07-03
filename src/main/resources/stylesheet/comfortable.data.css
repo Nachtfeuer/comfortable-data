@@ -69,3 +69,13 @@
     height: 450px;
     overflow-y: auto;
 }
+
+.count:hover {
+    background-color: #007bff;
+    cursor: pointer;
+}
+
+.toggle-group:hover {
+    font-weight: bold;
+    cursor: pointer;
+}

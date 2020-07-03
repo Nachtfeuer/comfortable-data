@@ -24,6 +24,43 @@
     </head>
     
     <body>
+        <!-- Template for adjusting the priority of a todo -->
+        <template id="priority">
+            <div class="input-group">
+                <div class="col-xs-2">
+                    <label class="font-weight-bold"
+                           for="select-priority">Priority</label>
+                    <select class="form-control" id="select-priority"
+                            v-bind:value="value" v-on:change="$emit('input', $event.target.value)">
+                        <option selected=" "> </option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                    </select>
+                </div>
+            </div>
+        </template>
+
+        <!-- Template for adjusting the complexity of a todo -->
+        <template id="complexity">
+            <div class="input-group">
+                <div class="col-xs-2">
+                    <label class="font-weight-bold" for="select-complexity">Complexity</label>
+                    <select class="form-control" id="select-complexity"
+                            v-bind:value="value" v-on:change="$emit('input', $event.target.value)">
+                        <option value="XS">Extra Small</option>
+                        <option value="S">Small</option>
+                        <option value="M" selected="M">Medium</option>
+                        <option value="L">Large</option>
+                        <option value="XL">Extra Large</option>
+                    </select>
+                </div>
+            </div>
+        </template>
+
         <div id="content" class="container-fluid">
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
                 <a class="navbar-brand" href="#">
@@ -94,7 +131,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="input-group mt-2">
                                          <div class="col">
                                              <div>
@@ -134,43 +170,16 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="input-group">
-                                        <div class="col-xs-2">
-                                            <label class="font-weight-bold"
-                                                   for="priorities">Priority</label>
-                                            <select class="form-control" id="priorities" v-model="todo.priority">
-                                                <option selected=" "> </option>
-                                                <option value="A">A</option>
-                                                <option value="B">B</option>
-                                                <option value="C">C</option>
-                                                <option value="D">D</option>
-                                                <option value="E">E</option>
-                                                <option value="F">F</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    <priority v-model="todo.priority" ></priority>
+                                    <complexity class="mt-1" v-model="todo.complexity" ></complexity>
 
                                     <div class="input-group mt-1">
                                         <div class="col-xs-2">
                                             <label class="font-weight-bold" for="estimation"
-                                                   data-toggle="tooltip" data-placement="right"
-                                                   title="Estimated working time">Estimation</label>
+                                                   v-b-tooltip.hover.left="'Estimated working time'">Estimation</label>
                                             <input id="estimation" type="text" class="form-control"
                                                    placeholder="Provide a reasonable estimation" aria-label="Estimated Working Time"
                                                    v-model="todo.estimatedWorkingTime"></input>
-                                        </div>
-                                    </div>
-
-                                    <div class="input-group mt-1">
-                                        <div class="col-xs-2">
-                                            <label class="font-weight-bold" for="complexity">Complexity</label>
-                                            <select class="form-control" id="complexity" v-model="todo.complexity">
-                                                <option value="XS">Extra Small</option>
-                                                <option value="S">Small</option>
-                                                <option value="M" selected="M">Medium</option>
-                                                <option value="L">Large</option>
-                                                <option value="XL">Extra Large</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +241,8 @@
 
                                     <div class="input-group mt-1">
                                         <div class="col">
-                                            <label class="font-weight-bold" for="projects">Projects</label>
+                                            <label class="font-weight-bold" for="projects"
+                                                   v-b-tooltip.hover.right="'Assigned Projects'">Projects</label>
                                             <b-form-tags id="projects" class="form-control" data-role="tagsinput"
                                                          placeholder="Provide some projects" aria-label="Projeccts"
                                                          v-model="todo.projects"
@@ -242,7 +252,8 @@
 
                                     <div class="input-group mt-2">
                                         <div class="col">
-                                            <label class="font-weight-bold" for="tags">Tags</label>
+                                            <label class="font-weight-bold" for="tags"
+                                                   v-b-tooltip.hover.right="'Assigned tags'">Tags</label>
                                             <b-form-tags id="tags" class="form-control" data-role="tagsinput"
                                                          placeholder="Enter some tags" aria-label="Tags"
                                                          v-model="todo.tags"
@@ -251,27 +262,13 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="input-group">
-                                        <div class="col-xs-2">
-                                            <label class="font-weight-bold"
-                                                   for="priorities">Priority</label>
-                                            <select class="form-control" id="priorities" v-model="todo.priority">
-                                                <option selected=" "> </option>
-                                                <option value="A">A</option>
-                                                <option value="B">B</option>
-                                                <option value="C">C</option>
-                                                <option value="D">D</option>
-                                                <option value="E">E</option>
-                                                <option value="F">F</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    <priority v-model="todo.priority"></priority>
+                                    <complexity class="mt-1" v-model="todo.complexity" ></complexity>
 
                                     <div class="input-group mt-1">
                                         <div class="col-xs-2">
                                             <label class="font-weight-bold" for="workingTime"
-                                                   data-toggle="tooltip" data-placement="right"
-                                                   title="Working time">Working Time</label>
+                                                   v-b-tooltip.hover.left="'Working time'">Working Time</label>
                                             <input id="workingTime" type="text" class="form-control"
                                                    placeholder="Reasonable working time" aria-label="Working Time"
                                                    v-model="todo.workingTime"
@@ -282,24 +279,10 @@
                                     <div class="input-group mt-1">
                                         <div class="col-xs-2">
                                             <label class="font-weight-bold" for="estimation"
-                                                   data-toggle="tooltip" data-placement="right"
-                                                   title="Estimated working time">Estimation</label>
+                                                   v-b-tooltip.hover.left="'Estimated working time'">Estimation</label>
                                             <input id="estimation" type="text" class="form-control"
                                                    placeholder="Provide a reasonable estimation" aria-label="Estimated Working Time"
                                                    v-model="todo.estimatedWorkingTime"></input>
-                                        </div>
-                                    </div>
-
-                                    <div class="input-group mt-1">
-                                        <div class="col-xs-2">
-                                            <label class="font-weight-bold" for="complexity">Complexity</label>
-                                            <select class="form-control" id="complexity" v-model="todo.complexity">
-                                                <option value="XS">Extra Small</option>
-                                                <option value="S">Small</option>
-                                                <option value="M" selected="M">Medium</option>
-                                                <option value="L">Large</option>
-                                                <option value="XL">Extra Large</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -339,135 +322,47 @@
 
             <div id="data-view" class="row">
                 <!-- sidebar with quick filters -->
-                <div id="sidebar" class="col-sm-3">
-                    <div v-if="working.id">
-                        <div class="mt-1 p-2 text-white bg-danger">
+                <div id="sidebar" class="col-sm-3 ml-3">
+                    <div>
+                        <div v-if="working.id" class="mt-1 p-2 text-white bg-danger">
                             <span>#<strong>{{working.id}}</strong>:</span>
                             Working Time: {{ workingTimeAsHumanReadableString(workingTime) }}
                         </div>
+
+                        <div class="mt-2" v-for="group in getGroups">
+                            <div class="p-2 row font-weight-bold text-white bg-dark">{{ group.name }}</div>
+                            <div class="row" v-for="(child, index) in group.children">
+                                <div v-if="index < 5 || group.expanded" class="mt-1 col-lg-7 font-weight-bold">{{ child.name }}</div>
+                                <div v-if="index < 5 || group.expanded" class="mt-1 col border-left">
+                                    <span class="count badge badge-secondary badge-pill float-right"
+                                          v-if="child.notCompletedCriteria"
+                                          v-b-tooltip.hover.right="child.notCompletedTitle">                                        <span v-on:click="changeToFilter(child.notCompletedCriteria)">
+                                            {{count(child.notCompletedCriteria)}}
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div v-if="index < 5 || group.expanded" class="mt-1 col border-left">
+                                    <span class="count badge badge-secondary badge-pill float-right"
+                                          v-if="child.allCriteria"
+                                          v-b-tooltip.hover.right="child.allTitle">
+                                        <span v-on:click="changeToFilter(child.allCriteria)">
+                                            {{count(child.allCriteria)}}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div v-if="group.children.length > 5" class="row mt-1 text-right">
+                                <div class="col text-primary">
+                                    <span class="toggle-group"
+                                          v-on:click="group.expanded = !group.expanded">
+                                        {{group.expanded? 'Show less...' : 'Show more...'}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <table class="table table-sm">
-                        <!-- Title for the common filters -->
-                        <tr class="p-5"><td></td></tr>
-                        <tr>
-                            <td class="font-weight-bold text-white bg-dark" colspan="2"
-                                data-toggle="tooltip" data-placement="right"
-                                title="Common quick filter">Common Filters</td>
-                        </tr>
-
-                        <!-- Filter for all todos and all not completed -->
-                        <tr>
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                title="Display all not completed todos or really all todos">All</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      title="Display all not completed todos">
-                                    <span v-on:click="changeToFilter(isNotCompleted)">
-                                        {{count(isNotCompleted)}}
-                                    </span>
-                                </span>
-                                /
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      title="Display all todos (completed ones included)">
-                                    <span v-on:click="changeToFilter(isAll)">
-                                        {{count(isAll)}}
-                                    </span>
-                                </span>
-                            </td>
-                        </tr>
-
-                        <!-- Filter for completed todos only -->
-                        <tr>
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                title="Display all completed todos only">Completed</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill"  data-toggle="tooltip" data-placement="right"
-                                      title="Display all completed todos only">
-                                    <span v-on:click="changeToFilter(isCompleted)">{{count(isCompleted)}}</span>
-                                </span>
-                            </td>
-                        </tr>
-
-                        <!-- Filter for todos with priority 'A' -->
-                        <tr>
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                title="Display all todos with priority 'A'">High Priority</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      title="Display all not completed todos with priority 'A'">
-                                    <span v-on:click="changeToFilter(isHighPriorityAndNotCompleted)">{{count(isHighPriorityAndNotCompleted)}}</span>
-                                </span>
-                                /
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      title="Display all todos with priority 'A' (completed ones included)">
-                                    <span v-on:click="changeToFilter(isHighPriority)">{{count(isHighPriority)}}</span>
-                                </span>
-                            </td>
-                        </tr>
-                        
-                        <!-- Filter for todos being changed today -->
-                        <tr>
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                title="Display all todos changed today">Today</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      title="Display all todos changed today">
-                                    <span v-on:click="changeToFilter(isToday)">
-                                        {{count(isToday)}}
-                                    </span>
-                                </span>
-                            </td>
-                        </tr>
-
-                        <!-- Title for the tag based filters -->
-                        <tr class="p-5"><td></td></tr>
-                        <tr>
-                            <td class="font-weight-bold text-white bg-dark" colspan="2"
-                                data-toggle="tooltip" data-placement="right"
-                                title="Quick filter for tags">@Tags</td>
-                        </tr>
-
-                        <tr v-for="tag in getTags">
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                v-bind:title="'Dispay all todos tagged with \'' + tag.name + '\''">{{ tag.name }}</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      v-bind:title="'Dispay all not completed todos tagged with \'' + tag.name + '\''">
-                                    <span v-on:click="changeToFilter(hasTag(tag.name, isNotCompleted))">{{ count(hasTag(tag.name, isNotCompleted)) }}</span>
-                                </span>
-                                /
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      v-bind:title="'Dispay all todos tagged with \'' + tag.name + '\' (completed ones included)'">
-                                    <span v-on:click="changeToFilter(hasTag(tag.name))">{{ tag.count }}</span>
-                                </span>
-                            </td>
-                        </tr>
-
-                        <!-- Title for the project based filters -->
-                        <tr class="p-5"><td></td></tr>
-                        <tr>
-                            <td class="font-weight-bold text-white bg-dark" colspan="2"
-                                data-toggle="tooltip" data-placement="right"
-                                title="Quick filter for projects">:Projects</td>
-                        </tr>
-
-                        <tr v-for="project in getProjects">
-                            <td class="font-weight-bold" data-toggle="tooltip" data-placement="right"
-                                v-bind:title="'Dispay all todos with assigned project \'' + project.name + '\''">{{ project.name }}</td>
-                            <td>
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      v-bind:title="'Dispay all not completed todos with assigned project \'' + project.name + '\''">
-                                    <span v-on:click="changeToFilter(hasProject(project.name, isNotCompleted))">{{ count(hasProject(project.name, isNotCompleted)) }}</span>
-                                </span>
-                                /
-                                <span class="badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="right"
-                                      v-bind:title="'Dispay all todos with assigned project \'' + project.name + '\' (completed ones included)'">
-                                    <span v-on:click="changeToFilter(hasProject(project.name))">{{ project.count }}</span>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
                 </div>
 
                 <div id="table" class="col">
@@ -510,7 +405,6 @@
 
                                     <p v-if="todo.description && todo.description.length > 0"
                                        v-html="renderMarkdown(todo.description)">
-                                        <!--{{ todo.description }} -->
                                     </p>
 
                                 <div class="row">
@@ -548,20 +442,16 @@
                                     <div class="d-flex flex-column">
                                         <img class="p-1" src="/resources/trash.svg"
                                              v-on:click="checkDelete(todo)"
-                                             data-toggle="tooltip" data-placement="left"
-                                             v-bind:title="'Deleting todo with id #' + todo.id" />
+                                             v-b-tooltip.hover.left="'Deleting todo with id #' + todo.id" />
                                         <img class="p-1" src="/resources/check.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)"
                                              v-on:click="toggleCompletion(todo)"
-                                             data-toggle="tooltip" data-placement="left"
-                                             v-bind:title="'Completing todo with id #' + todo.id" />
+                                             v-b-tooltip.hover.left="'Completing todo with id #' + todo.id" />
                                         <img class="p-1" src="/resources/pencil.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)"
                                              v-on:click="editTodo(todo)"
-                                             data-toggle="tooltip" data-placement="left"
-                                             v-bind:title="'Editing todo with id #' + todo.id" />
+                                             v-b-tooltip.hover.left="'Editing todo with id #' + todo.id" />
                                         <img v-if="!todo.completed && !working.id" class="p-1" src="/resources/clock.svg"
                                              v-on:click="startWorking(todo)"
-                                             data-toggle="tooltip" data-placement="left"
-                                             v-bind:title="'Start working on todo with id #' + todo.id + ' (time tracking)'" />
+                                             v-b-tooltip.hover.left="'Start working on todo with id #' + todo.id + ' (time tracking)'" />
                                     </div>
                                 </td>
                             </tr>
@@ -576,6 +466,7 @@
         <script src="/resources/todos.crud.mixin.js"></script>
         <script src="/resources/todos.validation.mixin.js"></script>
         <script src="/resources/todos.conversion.mixin.js"></script>
+        <script src="/resources/todos.sidebar.mixin.js"></script>
         <script src="/resources/todos.js"></script>
         
         </script>
