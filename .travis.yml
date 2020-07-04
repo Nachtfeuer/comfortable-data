@@ -6,6 +6,7 @@ jdk:
     - openjdk11
     - openjdk12
     - openjdk13
+    - openjdk14
 
 script:
     - ./mvnw -B clean package verify
