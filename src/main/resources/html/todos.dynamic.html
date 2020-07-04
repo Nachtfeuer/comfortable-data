@@ -332,7 +332,8 @@
                         <div class="mt-2" v-for="group in getGroups">
                             <div class="p-2 row font-weight-bold text-white bg-dark">{{ group.name }}</div>
                             <div class="row" v-for="(child, index) in group.children">
-                                <div v-if="index < 5 || group.expanded" class="mt-1 col-lg-7 font-weight-bold">{{ child.name }}</div>
+                                <div v-if="index < 5 || group.expanded" class="mt-1 col-lg-7 font-weight-bold"
+                                     v-b-tooltip.html.hover.right="getDetails(child.name, child.allCriteria)">{{ child.name }}</div>
                                 <div v-if="index < 5 || group.expanded" class="mt-1 col border-left">
                                     <span class="count badge badge-secondary badge-pill float-right"
                                           v-if="child.notCompletedCriteria"
@@ -468,7 +469,5 @@
         <script src="/resources/todos.conversion.mixin.js"></script>
         <script src="/resources/todos.sidebar.mixin.js"></script>
         <script src="/resources/todos.js"></script>
-        
-        </script>
     </body>
 </html>

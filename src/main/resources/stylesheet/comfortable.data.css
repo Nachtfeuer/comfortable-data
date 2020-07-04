@@ -55,10 +55,12 @@
     width: 100%;
 }
 
-.tooltip > .tooltip-inner {
+.tooltip-inner {
+    max-width: none;
     background-color: #fdffe3;
     color: black;
     border: 1px solid black;
+    text-align: left;
 }
 
 .modal-dialog {

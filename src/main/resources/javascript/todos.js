@@ -265,6 +265,44 @@ new Vue({
         
         togglePreviewDescription: function() {
             this.previewDescription = !this.previewDescription;
+        },
+        
+        /**
+         * Collecting details for a concrete quick filter.
+         *
+         * @param {type} name name of the quick filter
+         * @param {type} criteria filter for todos
+         * @returns {string} HTML for tooltip dispaying details
+         */
+        getDetails: function(name, criteria) {
+            const filteredTodos = this.todos.filter(criteria);
+            let countNotCompleted = 0;
+            let sumNotCompletedWorkingTime = 0;
+            let sumOverallWorkingTime = 0;
+            let sumNotCompletedEstimatedWorkingTime = 0;
+            let sumOverallEstimatedWorkingTime = 0;
+
+            filteredTodos.forEach(todo => {
+                const workingTime = this.humanReadableWorkingTimeAsSeconds(todo.workingTime);
+                const estimatedWorkingTime = this.humanReadableWorkingTimeAsSeconds(todo.estimatedWorkingTime);
+                if (!todo.completed) {
+                    countNotCompleted += 1;
+                    sumNotCompletedWorkingTime += workingTime;
+                    sumNotCompletedEstimatedWorkingTime += estimatedWorkingTime;
+                }
+                sumOverallWorkingTime += workingTime;
+                sumOverallEstimatedWorkingTime += estimatedWorkingTime;
+            });
+            
+            const details = '### ' + name + '\n'
+                + ' - *Not completed todos*: ' + countNotCompleted + '\n'
+                + ' - *Overall todos*: ' + filteredTodos.length + '\n'
+                + ' - *Sum Not Completed Working Time*: ' + this.workingTimeAsHumanReadableString(sumNotCompletedWorkingTime) + '\n'
+                + ' - *Sum Overall Working Time*: ' + this.workingTimeAsHumanReadableString(sumOverallWorkingTime) + '\n'
+                + ' - *Sum Not Completed Working Time (estimated)*: ' + this.workingTimeAsHumanReadableString(sumNotCompletedEstimatedWorkingTime) + '\n'
+                + ' - *Sum Overall Working Time (estimated)*: ' + this.workingTimeAsHumanReadableString(sumOverallEstimatedWorkingTime);
+
+            return this.renderMarkdown(details);
         }
     }
 });
