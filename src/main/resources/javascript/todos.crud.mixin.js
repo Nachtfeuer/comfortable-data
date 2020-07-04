@@ -117,7 +117,9 @@ let crudMixin = {
             // completing a todo also the working on it should end
             // the working time should be added.
             if (!this.todo.completed && this.working.id === this.todo.id) {
-                this.todo.workingTime += this.getWorkingTime();
+                const value = this.humanReadableWorkingTimeAsSeconds(this.todo.workingTime);
+                const newValue = value + this.getWorkingTime();
+                this.todo.workingTime = this.workingTimeAsHumanReadableString(newValue);
                 this.working = {id: undefined, start: undefined};
             }
 

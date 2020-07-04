@@ -138,16 +138,29 @@ let filterMixin = {
         },
 
         /**
-         * Combined filtter for todos with given project name and optional
+         * Combined filter for todos with given project name and optional
          * another filter (useful for all not completed todos).
          *
          * @param {string} name of the project to filter for.
-         * @param {Function} another criteria criteria for filter or for counting.
+         * @param {Function} criteria another criteria criteria for filter or for counting.
          * @returns {Function} criteria that does filter todos with given project name.
          */
         hasProject: function (name, criteria = undefined) {
             return function (todo, recognizeSearchText = true) {
                 return todo.projects.findIndex(entry => entry === name) >= 0
+                        && (criteria === undefined || criteria(todo, recognizeSearchText));
+            };
+        },
+
+        /**
+         * Filter for todos with no estimation.
+         *
+         * @param {Function} criteria another criteria criteria for filter or for counting.
+         * @returns {Function} criteria that does filter todo for those that have no estimation
+         */
+        hasNoEstimation: function(criteria = undefined) {
+            return function (todo, recognizeSearchText = true) {
+                return todo.estimatedWorkingTime === ''
                         && (criteria === undefined || criteria(todo, recognizeSearchText));
             };
         }

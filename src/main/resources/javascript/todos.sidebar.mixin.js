@@ -74,11 +74,14 @@ let sidebarMixin = {
                  undefined, '',
                  this.isCompleted, 'Displaying all completed todos')
             .add('High Priority',
-                 this.isHighPriorityAndNotCompleted, 'Displaying all not completed of priority A',
+                 this.isHighPriorityAndNotCompleted, 'Displaying all not completed todos with priority A',
                  this.isHighPriority, 'Displaying all todos with priority A')
             .add('Today',
                  undefined, '',
-                 this.isToday, 'Displaying all todos of today'));
+                 this.isToday, 'Displaying all todos of today')
+            .add('No Estimation',
+                 this.hasNoEstimation(this.isNotCompleted), 'Displaying all not completed todos with no estimation',
+                 this.hasNoEstimation(), 'Displaying all todos with no estimation'));
 
         let tagGroup = new GroupModel('@Tags');
         this.baseGroups.push(tagGroup);
@@ -135,7 +138,7 @@ let sidebarMixin = {
                 });
             });
 
-            return tags;
+            return tags.sort((tagA, tagB) => tagA.localeCompare(tagB));
         },
 
         /**
@@ -154,7 +157,7 @@ let sidebarMixin = {
                 });
             });
 
-            return projects;
+            return projects.sort((projectA, projectB) => projectA.localeCompare(projectB));
         }
     }
 };
