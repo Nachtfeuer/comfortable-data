@@ -128,6 +128,13 @@ public class Todo implements Serializable {
     private long estimatedWorkingTime;
 
     /**
+     * List of tasks as refinement for the todo.
+     */
+    @ElementCollection
+    @Singular
+    private List<Task> tasks;
+
+    /**
      * Called before persisting the todo.
      */
     @PrePersist

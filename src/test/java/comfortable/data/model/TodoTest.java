@@ -147,6 +147,8 @@ public class TodoTest {
                 .tag(Tag.builder().name("tag2").build())
                 .project(Project.builder().name("project1").build())
                 .project(Project.builder().name("project2").build())
+                .task(Task.builder().description("task1").build())
+                .task(Task.builder().description("task2").completed(true).build())
                 .build();
     }
 
@@ -172,6 +174,7 @@ public class TodoTest {
         renderer.add("projects", todo.getProjects());
         renderer.add("workingTime", todo.getWorkingTime());
         renderer.add("estimatedWorkingTime", todo.getEstimatedWorkingTime());
+        renderer.add("tasks", todo.getTasks());
 
         return renderer.render().replaceAll("\\s(?=(\"[^\"]*\"|[^\"])*$)", "");        
     }

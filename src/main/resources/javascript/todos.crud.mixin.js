@@ -162,5 +162,27 @@ let crudMixin = {
             }
             this.updateTodo();
         },
+
+        addTask() {
+            this.todo.tasks.push({
+                description: this.task.description,
+                completed: false
+            });
+            this.updateTodo();
+        },
+
+        updateTask() {
+            this.todo.tasks[this.taskIndex] = {
+                description: this.task.description,
+                completed: this.task.completed
+            };
+            this.updateTodo();
+        },
+        
+        deleteTask() {
+            delete this.todo.tasks[this.taskIndex];
+            this.updateTodo();
+        }
     }
+    
 };

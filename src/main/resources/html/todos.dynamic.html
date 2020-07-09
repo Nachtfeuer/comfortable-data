@@ -62,7 +62,7 @@
         </template>
 
         <div id="content" class="container-fluid">
-            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
                 <a class="navbar-brand" href="#">
                     Getting Things Done
                     <span v-if="version">(<small>{{ version }}</small>)</span>
@@ -81,7 +81,6 @@
                 </button>
 
                 <form class="form-inline">
-
                     <!-- Search -->
                     <div class="input-group ml-1">
                         <div class="input-group-prepend">
@@ -107,7 +106,7 @@
             </nav>
 
             <!-- dialog for creating a new todo -->
-            <div id="create-todo" class="modal fade" role="dialog">
+            <div id="create-todo-dialog" class="modal fade" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header bg-success">
@@ -196,7 +195,7 @@
             </div>
             
             <!-- dialog for editing a todo -->
-            <div id="edit-todo" class="modal fade" role="dialog">
+            <div id="edit-todo-dialog" class="modal fade" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header bg-success">
@@ -299,7 +298,7 @@
             </div>
 
             <!-- dialog to ask whether you really want to delete -->
-            <div id="do-you-really-want-to-delete" class="modal fade" role="dialog">
+            <div id="do-you-really-want-to-delete-dialog" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
@@ -315,6 +314,60 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="deleteTodo(todo)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- dialog to ask whether you really want to delete a task of a todo -->
+            <div id="do-you-really-want-to-delete-task-dialog" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h4 class="modal-title">Delete Task</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-center">
+                                Do you really want to delete?<br/>
+                                "<strong>{{ task.description }}</strong>"
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="deleteTask()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- dialog to create or to edit a task -->
+            <div id="task-dialog" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h4 v-if="dialog.context === 'create'" class="modal-title">Add Task For "{{ todo.title }}"</h4>
+                            <h4 v-if="dialog.context === 'edit'" class="modal-title">Edit Task For "{{ todo.title }}"</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group">
+                                 <div class="col">
+                                    <label class="font-weight-bold" for="task-description">Description</label>
+                                    <textarea id="task-description" type="text" class="form-control"
+                                              placeholder="Enter the description of the task" aria-label="Description"
+                                              v-model="task.description" rows="4"></textarea>
+                                 </div>
+                                <div class="col">
+                                    <label class="font-weight-bold" for="task-preview">Preview</label>
+                                    <div id="task-preview" v-html="renderMarkdown(task.description)"></div>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button v-if="dialog.context === 'create'" type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="addTask()">Add</button>
+                            <button v-if="dialog.context === 'edit'" type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateTask()">Update</button>
                         </div>
                     </div>
                 </div>
@@ -378,9 +431,6 @@
                                 <td class="align-middle border-right">
                                     <div class="d-flex flex-column">
                                         <strong>#{{ todo.id }}</strong>
-                                        <span v-if="todo.completed">
-                                            <img src="/resources/check.svg" v-if="todo.completed" v-on:click="toggleCompletion(todo)"/>
-                                        </span>
                                     </div>
                                 </td>
 
@@ -408,6 +458,31 @@
                                        v-html="renderMarkdown(todo.description)">
                                     </p>
 
+                                    <table class="table border-striped">
+                                        <tr v-for="(task, index) in todo.tasks">
+                                            <td class="task align-middle">
+                                                <div v-if="!task.completed" v-html="renderMarkdown(task.description)"></div>
+                                                <div v-if="task.completed"><s v-html="renderMarkdown(task.description)"></s></div>
+                                            </td>
+                                            <td class="task align-middle">
+                                                <div class="d-flex flex-row">
+                                                    <img class="ml-1" src="/resources/trash.svg" v-if="!working.id || working.id === todo.id"
+                                                         v-on:click="checkDeleteTask(todo, task, index)"
+                                                         v-b-tooltip.hover.left="'Deleting task'" />
+                                                    <img class="ml-1" src="/resources/square.svg" v-if="!task.completed && (!working.id || working.id === todo.id)"
+                                                         v-on:click="toggleCompletionTask(todo, task, index)"
+                                                         v-b-tooltip.hover.left="'Completing task'" />
+                                                    <img class="ml-1" src="/resources/check-square.svg" v-if="task.completed && (!working.id || working.id === todo.id)"
+                                                         v-on:click="toggleCompletionTask(todo, task, index)"
+                                                         v-b-tooltip.hover.left="'Undo completing task'" />
+                                                    <img class="ml-1" src="/resources/pencil.svg" v-if="!task.completed && (!working.id || working.id === todo.id)"
+                                                         v-on:click="editTaskDialog(todo, index)"
+                                                         v-b-tooltip.hover.left="'Editing task'" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
                                 <div class="row">
                                     <div class="col"><small><strong>created:</strong> <em>{{ todo.created }}</em></small></div>
                                     <div class="col"><small v-if="todo.workingTime.length > 0"><strong>workingTime:</strong> <em>{{ todo.workingTime }}</em></small></div>
@@ -415,7 +490,12 @@
                                     <div class="w-100"></div>
                                     <div class="col"><small><strong>changed:</strong> <em>{{ todo.changed }}</em></small></div>
                                     <div class="col"><small v-if="todo.estimatedWorkingTime.length > 0"><strong>estimation:</strong> <em>{{ todo.estimatedWorkingTime }}</em></small></div>
-                                    <div class="col"></div>
+                                    <div class="col">
+                                        <small v-if="todo.tasks.length > 0">
+                                            <strong>completed:</strong>
+                                            <em>{{ percentageCompletion(todo) }}%</em>
+                                        </small>
+                                     </div>
                                   </div>
                                 </td>
 
@@ -444,7 +524,10 @@
                                         <img class="p-1" src="/resources/trash.svg"
                                              v-on:click="checkDelete(todo)"
                                              v-b-tooltip.hover.left="'Deleting todo with id #' + todo.id" />
-                                        <img class="p-1" src="/resources/check.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)"
+                                        <img class="p-1" src="/resources/square.svg" v-if="!todo.completed && canComplete(todo) && (!working.id || working.id === todo.id)"
+                                             v-on:click="toggleCompletion(todo)"
+                                             v-b-tooltip.hover.left="'Completing todo with id #' + todo.id" />
+                                        <img class="p-1" src="/resources/check-square.svg" v-if="todo.completed && (!working.id || working.id === todo.id)"
                                              v-on:click="toggleCompletion(todo)"
                                              v-b-tooltip.hover.left="'Completing todo with id #' + todo.id" />
                                         <img class="p-1" src="/resources/pencil.svg" v-if="!todo.completed && (!working.id || working.id === todo.id)"
@@ -453,6 +536,9 @@
                                         <img v-if="!todo.completed && !working.id" class="p-1" src="/resources/clock.svg"
                                              v-on:click="startWorking(todo)"
                                              v-b-tooltip.hover.left="'Start working on todo with id #' + todo.id + ' (time tracking)'" />
+                                        <img v-if="!todo.completed" class="p-1" src="/resources/card-checklist.svg"
+                                             v-on:click="openCreateTaskDialog(todo)"
+                                             v-b-tooltip.hover.left="'Adding task for todo id #' + todo.id" />
                                     </div>
                                 </td>
                             </tr>

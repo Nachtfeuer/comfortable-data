@@ -11,3 +11,6 @@ databaseChangeLog:
     # changing description from varchar(255) to clob
     - include:
         file: db/changelog/changeSet-4.yaml
+    # adding subtasks
+    - include:
+        file: db/changelog/changeSet-5.yaml

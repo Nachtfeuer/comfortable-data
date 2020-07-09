@@ -18,5 +18,10 @@
         {% endfor %}
     ],
     "workingTime": {{ workingTime }},
-    "estimatedWorkingTime": {{ estimatedWorkingTime }}
+    "estimatedWorkingTime": {{ estimatedWorkingTime }},
+    "tasks": [
+        {% for task in tasks %}
+            {"description": "{{ task.description }}","completed": {{ task.completed }}}{% if loop.index+1 < tasks.size() %},{% endif %}
+        {% endfor %}
+    ]
 }

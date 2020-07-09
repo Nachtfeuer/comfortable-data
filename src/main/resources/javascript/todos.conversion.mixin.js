@@ -119,11 +119,14 @@ let conversionMixin = {
                 workingTime: this.humanReadableWorkingTimeAsSeconds(
                         todo.workingTime),
                 estimatedWorkingTime: this.humanReadableWorkingTimeAsSeconds(
-                        todo.estimatedWorkingTime)
+                        todo.estimatedWorkingTime),
+                tasks: []
             };
 
             todo.tags.forEach(entry => backendTodo.tags.push({name: entry}));
             todo.projects.forEach(entry => backendTodo.projects.push({name: entry}));
+            todo.tasks.forEach(entry => backendTodo.tasks.push(
+                    {description: entry.description, completed: entry.completed}));
             return backendTodo;
         },
 
@@ -148,11 +151,14 @@ let conversionMixin = {
                 workingTime: this.workingTimeAsHumanReadableString(
                         todo.workingTime),
                 estimatedWorkingTime: this.workingTimeAsHumanReadableString(
-                        todo.estimatedWorkingTime)
+                        todo.estimatedWorkingTime),
+                tasks: []
             };
 
             todo.tags.forEach(entry => frontendTodo.tags.push(entry.name));
             todo.projects.forEach(entry => frontendTodo.projects.push(entry.name));
+            todo.tasks.forEach(entry => frontendTodo.tasks.push(
+                    {description: entry.description, completed: entry.completed}));
             return frontendTodo;
         }
     }

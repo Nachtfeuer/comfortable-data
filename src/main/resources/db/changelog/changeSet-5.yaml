@@ -1,0 +1,28 @@
+databaseChangeLog:
+    - changeSet:
+        id: 5
+        author: Thomas Lehmann
+        changes:
+            - createTable:
+                tableName: todo_tasks
+                columns:
+                    - column:
+                        name: todo_id
+                        type: integer
+                        constraints:
+                            foreignKeyName: fk_tasks_todo_id
+                            references: todo(id)
+                    - column:
+                        name: description
+                        type: clob
+                    - column:
+                        name: completed
+                        type: boolean
+
+            - createIndex:
+                tableName: todo_tasks
+                unique: false
+                columns:
+                    - column:
+                        name: todo_id
+                        descending: false

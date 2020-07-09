@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Thomas Lehmann.
+ * Copyright 2020 Thomas Lehmann.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,72 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-body {
-    margin-top: 60px !important;
-}
+package comfortable.data.model;
 
-.navbar-brand {
-    color: rgba(255, 255, 255, 1.0) !important;
-    font-size: 22px;
-}
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.Test;
 
-.series {
-    font-size: 10px;
-}
+/**
+ * Testing of {@link Task}.
+ */
+public class TaskTest {
+    /**
+     * Test task description.
+     */
+    private static final String TEST_DESCRIPTION = "some task";
 
-.isbn {
-    font-size: 10px;
-}
-
-.tag {
-    font-size: 10px;
-    float: left;
-    margin-right: 2px;
-}
-
-.cover {
-    float: left;
-    margin-right: 5px;
-    pargin-bottom: 5px;
-    width: 150px;
-}
-
-.input-group > .input-group-prepend {
-    flex: 0 0 130px;
-}
-
-.input-group .input-group-text {
-    width: 100%;
-}
-
-.tooltip-inner {
-    max-width: none;
-    background-color: #fdffe3;
-    color: black;
-    border: 1px solid black;
-    text-align: left;
-}
-
-.modal-dialog {
-    overflow-y: initial !important;
-}
-
-.modal-lg > .modal-body{
-    height: 450px;
-    overflow-y: auto;
-}
-
-.count:hover {
-    background-color: #007bff;
-    cursor: pointer;
-}
-
-.toggle-group:hover {
-    font-weight: bold;
-    cursor: pointer;
-}
-
-td.task, td.task > * {
-    padding-bottom: 0px;
-    margin-bottom: 0px;
+    /**
+     * Test task completetion state.
+     */
+    private static final boolean TEST_COMPLETED = true;
+    
+    @Test
+    public void testDefault() {
+        final var task = Task.builder()
+                .description(TEST_DESCRIPTION).completed(TEST_COMPLETED).build();
+        assertThat(task.getDescription(), equalTo(TEST_DESCRIPTION));
+        assertThat(task.isCompleted(), equalTo(TEST_COMPLETED));
+    }
 }
