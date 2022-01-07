@@ -24,7 +24,7 @@
         <jackson.dataformat.xml.version>2.10.0.pr3</jackson.dataformat.xml.version>
         <jackson.dataformat.yaml.version>2.9.9</jackson.dataformat.yaml.version>
         <jackson.dataformat.msgpack.version>0.8.16</jackson.dataformat.msgpack.version>
-        <h2.version>1.4.200</h2.version>
+        <h2.version>2.0.206</h2.version>
         <javax.persistence.version>2.1.0</javax.persistence.version>
         <jta.version>1.1</jta.version>
         <pepple.version>3.1.4</pepple.version>
