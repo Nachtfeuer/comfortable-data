@@ -28,7 +28,7 @@
         <javax.persistence.version>2.1.0</javax.persistence.version>
         <jta.version>1.1</jta.version>
         <pepple.version>3.1.4</pepple.version>
-        <specification.arg.resolver.version>2.1.1</specification.arg.resolver.version>
+        <specification.arg.resolver.version>2.6.3</specification.arg.resolver.version>
         <commons.io.version>2.6</commons.io.version>
         <metadata.extractor.version>2.12.0</metadata.extractor.version>
         <micrometer.version>1.2.1</micrometer.version>
